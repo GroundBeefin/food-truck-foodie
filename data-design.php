@@ -36,7 +36,7 @@
 	</ul>
 
 	<ul>
-
+		<h3>Post</h3>
 		<li>postId</li>
 		<li>postTruckId</li>
 		<li>postContent</li>
@@ -56,7 +56,7 @@
 <h3>Relations</h3>
 
 	<p>One <b>User</b> can have many<b>Trucks</b>. (1 - n)<br>
-	One <b>Truck</b> can make one <b>User</b>. (1 - 1)<br>
+	One <b>Truck</b> can have one <b>User</b>. (1 - 1)<br>
 	One <b>Truck</b> can make many <b>Posts</b>. (1 - n)<br>
 	One <b>User</b> can make many <b>Comments</b>.(1 - n)
 	</p>
