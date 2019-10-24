@@ -7,12 +7,13 @@
 
 <body>
 	<div>
-		<h3>User(Food Trucks):</h3>
-		<p>As a user, I want to share my location with consumers and hosts by posting a message on my profile.</p>
-		<h3>Consumer:</h3>
-		<p>As a consumer, I want to locate a food truck by name or my location.</p>
-		<h3>Host:</h3>
-		<p>As a Host, I want to contact Users for collaboration through contact form.</p>
+		<h3>User:</h3>
+		<p>As a user, I want to create a profile on Food Truck Foodies.</p>
+		<h3>User w/ Food Truck:</h3>
+		<p>As a user, with registered food truck I can keep the public informed of the locations I will be at,</br>
+			by posting messages and updates to my profile. </p>
+		<h3>User:</h3>
+		<p>As a Food Truck Foodie user I want to be able to follow registered food trucks and comment on their posts.</p>
 	</div>
 </body>
 </html>
