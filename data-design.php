@@ -37,6 +37,7 @@
 
 	<ul>
 		<h3>Post</h3>
+
 		<li>postId</li>
 		<li>postTruckId</li>
 		<li>postContent</li>
