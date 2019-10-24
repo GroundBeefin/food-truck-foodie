@@ -13,55 +13,53 @@
 
 <h2>Entities & Attributes</h2>
 
-<h3>Food Truck Profile</h3>
+<h3>User</h3>
 
 <ul>
-	<li>foodTruckProfileId</li>
-	<li> foodTruckProfileActivationToken</li>
-	<li>foodTruckProfileAvatarUrl</li>
-	<li> foodTruckProfileEmail</li>
-	<li> foodTruckProfileFoodType</li>
-	<li>foodTruckProfileHash</li>
-	<li>foodTruckProfileUserName</li>
+	<li>userId</li>
+	<li>userActivationToken</li>
+	<li>userAvatarUrl</li>
+	<li>userEmail</li>
+	<li>userHash</li>
+	<li>UserName</li>
 </ul>
 
-<h3>Post</h3>
+ <h3>Truck</h3>
 
-<ul>
+	<ul>
+		<li>truckId</li>
+		<li>truckUserId</li>
+		<li>truckAvatarUrl</li>
+		<li>truckFoodType</li>
+		<li>truckMenu</li>
+		<li>truckName</li>
+	</ul>
 
-	<li>postId</li>
-	<li>postContent</li>
-	<li>postDatetime</li>
+	<ul>
 
-</ul>
-<h3>Profile</h3>
+		<li>postId</li>
+		<li>postTruckId</li>
+		<li>postContent</li>
+		<li>postDatetime</li>
 
-<ul>
-
-	<li>userProfileId</li>
-	<li>userProfileActivationToken</li>
-	<li>userProfileAvatarUrl</li>
-	<li>userProfileEmail</li>
-	<li>userProfileHash</li>
-	<li>userProfileUsername</li>
-
-</ul>
+	</ul>
 
 <h3>Comment</h3>
 <ul>
 
-	<li> commentId(primary key)</li>
-	<li>commentUserProfileId(foreign key)</li>
-	<li>commentFoodTruckProfileId</li>
+	<li>commentId(primary key)</li>
+	<li>commentUserId(foreign key)</li>
+	<li>commentContent</li>
 	<li>commentDateTime</li>
 </ul>
 
 <h3>Relations</h3>
 
-<p>One <b>fooTruckProfile</b> can  make many<b>posts</b>. (1 - n)<br>
-	One <b>userProfile</b> can make many <b>comments</b>. (1 - n)<br>
-	One <b>fooTruckProfile</b> can make many <b>comments</b>. (1 - n)</p>
-
+	<p>One <b>User</b> can have many<b>Trucks</b>. (1 - n)<br>
+	One <b>Truck</b> can make one <b>User</b>. (1 - 1)<br>
+	One <b>Truck</b> can make many <b>Posts</b>. (1 - n)<br>
+	One <b>User</b> can make many <b>Comments</b>.(1 - n)
+	</p>
 </body>
 </html>
 
