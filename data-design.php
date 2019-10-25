@@ -30,9 +30,9 @@
 
 		<h3>Truck</h3>
 
-		<li>truckId</li>
-		<li>truckUserId(primary key)</li>
-		<li>truckAvatarUrl(foreign key)</li>
+		<li>truckId(primary Key)</li>
+		<li>truckUserId(foreign key)</li>
+		<li>truckAvatarUrl</li>
 		<li>truckFoodType</li>
 		<li>truckMenu</li>
 		<li>truckName</li>
