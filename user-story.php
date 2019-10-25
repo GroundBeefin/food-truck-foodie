@@ -6,14 +6,17 @@
 </head>
 
 <body>
-	<div>
-		<h3>User:</h3>
-		<p>As a user, I want to create a profile on Food Truck Foodies.</p>
-		<h3>User w/ Food Truck:</h3>
-		<p>As a user, with registered food truck I can keep the public informed of the locations I will be at,</br>
-			by posting messages and updates to my profile. </p>
-		<h3>User:</h3>
-		<p>As a Food Truck Foodie user I want to be able to follow registered food trucks and comment on their posts.</p>
-	</div>
+
+<div>
+	<h3>User Story</h3>
+	<ul>
+		<li>As a user, I want to create a profile on Food Truck Foodies.</li>
+		<li>As a registered user of Food Truck Foodies, I want to register one or more of my food trucks.</li>
+		<li>As a user with a registered Food Truck, I want to have a profile for my Food Truck.</li>
+		<li>As a user with a  Food truck profile, I want to update my locations via a post.</li>
+	</ul>
+</div>
+
 </body>
+
 </html>
