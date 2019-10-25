@@ -33,6 +33,7 @@
 		<li>truckId(primary Key)</li>
 		<li>truckUserId(foreign key)</li>
 		<li>truckAvatarUrl</li>
+		<li>trckEmail</li>
 		<li>truckFoodType</li>
 		<li>truckMenu</li>
 		<li>truckName</li>
