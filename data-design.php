@@ -13,7 +13,7 @@
 
 <h2>Entities & Attributes</h2>
 
-<h3>User</h3>
+		<h3>User</h3>
 
 <ul>
 	<li>userId</li>
@@ -24,7 +24,7 @@
 	<li>UserName</li>
 </ul>
 
- <h3>Truck</h3>
+ 		<h3>Truck</h3>
 
 	<ul>
 		<li>truckId</li>
@@ -45,7 +45,7 @@
 
 	</ul>
 
-<h3>Comment</h3>
+		<h3>Comment</h3>
 <ul>
 
 	<li>commentId(primary key)</li>
@@ -54,7 +54,7 @@
 	<li>commentDateTime</li>
 </ul>
 
-<h3>Relations</h3>
+		<h3>Relations</h3>
 
 	<p>One <b>User</b> can have many<b>Trucks</b>. (1 - n)<br>
 	One <b>Truck</b> can have one <b>User</b>. (1 - 1)<br>
