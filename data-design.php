@@ -38,6 +38,8 @@
 		<li>truckMenu</li>
 		<li>truckName</li>
 		<li>truckPhoneNumber</li>
+		<li>truckVerifyImage</li>
+		<li>truckVerifyCheck</li>
 	</ul>
 
 
