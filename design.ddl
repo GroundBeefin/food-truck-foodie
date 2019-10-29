@@ -9,7 +9,7 @@ create table user(
 	userAvatarUrl varchar(255),
 	userEmail varchar(128) not null,
 	userProfileHash char(97) not null,
-	username varchar(16)not null,
+	userName varchar(16)not null,
 	unique (userEmail),
 	primary key(userId)
 );
@@ -18,12 +18,11 @@ create table truck(
 	truckId binary(16) not null,
 	truckActivationToken char(32) not null,
 	truckAvatarUrl varchar(255),
-	truckEmail varchar(32) not null,
+	truckEmail varchar(128) not null,
 	truckFoodType varchar(50) not null,
-	truckMenu varchar(255),
+	truckMenuUrl varchar(255),
 	truckVerifyImage varchar(255),
-	truckVerifiedCheck varchar(255),
-	truckHash char(97) not null,
+	truckVerifiedCheck tinyint(1) not null,
 	truckName varchar(16),
 	primary key (truckId)
 );
