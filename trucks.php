@@ -16,4 +16,16 @@ class Truck {
 		 * This is the id for this profile; this is the primary key
 		 * @var Uuid $truckId
 		 */
+		private $truckId;
+		/**
+		 * This is the trucks user id; this is a foreign key
+		 * @var string $truckUserId
+		 */
+		private $truckUserId;
+		/**
+		 * The avatar url for this truck
+		 * @var string $trucksUserId
+		 * */
+		private $truckAvatarUrl;
+		
 }
