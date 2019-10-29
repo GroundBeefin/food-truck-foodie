@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<img src="images/FoodTruckFoodieErd.jpg" alt="ERD Image">
+	<img src="images/foodTruckFoodieErd.jpg" alt="">
 </body>
 
 </html>
