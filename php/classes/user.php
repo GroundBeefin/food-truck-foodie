@@ -206,7 +206,7 @@ public function setUserId($newUserId): void {
 	/**
 	 * mutator method for userName
 	 *
-	 * @param string $newUsername new value of userName
+	 * @param string $newUserName new value of userName
 	 * @throw \InvalidArgumentException if $newUserName is not a string or insecure
 	 * @throw \RangeException if $newUserName is > 16 characters
 	 * @throws \TypeError if $newUserName is not a string
@@ -228,7 +228,7 @@ public function setUserId($newUserId): void {
 	 **/
 	public function jsonSerialize() {
 		$fields = get_object_vars($this);
-		$fields["userId"] = $this->UserId->toString();
+		$fields["userId"] = $this->userId->toString();
 		unset($fields["userHash"]);
 		return ($fields);
 	}
