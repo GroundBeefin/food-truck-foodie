@@ -115,3 +115,23 @@ public function setTruckId($newTruckId): void {
 public function getTruckUserId(): ?string {
 	return ($this->truckUserId);
 }
+/**
+ * mutator method for truck avatar url
+ *
+ * @param string $newTruckAvatarUrl new value of at truck
+ * @throws InvalidArgumentException if $newTruckAvatarUrl is not a string or insecure
+ * @throws RangeException if $newTruckAvatarUrl is > 32 characters
+ * @throws TypeError if $newTruckAvatarUrl is not a string
+ **/
+public function setTruckAvatarUrl(string $newTruckAvatarUrl): void {
+	// verify the at int is secure
+	$newTruckAvatarUrl = trim($newTruckAvatarUrl);
+	$newTruckAvatarUrl = filter_var($newTruckAvatarUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	if(empty($newTruckAvatarUrl) === true) {
+		throw(new InvalidArgumentException("Truck at handle is empty or insecure"));
+	}
+	// verify the at handle will fit in the database
+	if(strlen($newTruckAvatarUrl) > 255) {
+		throw(new RangeException("Truck at handle is too large"));
+	}
+}
