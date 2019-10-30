@@ -24,7 +24,7 @@ class Truck {
 		private $truckUserId;
 		/**
 		 * The avatar url for this truck
-		 * @var string $trucksUserId
+		 * @var string $trucksAvatarUrl
 		 * */
 		private $truckAvatarUrl;
 		/**
@@ -51,6 +51,22 @@ class Truck {
 		 * this is the phone number of the truck
 		 *@var $truckPhoneNumber
 		 */
-
 		private $truckPhoneNumber;
+	/**
+	 * constructor for this truck
+	 *
+	 * @param string|Uuid $newTruckId id of this user if a new user
+	 * @param string $newTruckUserId activation token to sage guard against malicious accounts
+	 * @param string $newTuckAvatarUrl string containing truck url
+	 * @param string $newTruckEmail string containing email
+	 * @param string $newTruckFoodType string containing food type of truck
+	 * @param string $newTuckMenuUrl string containing Url for truck menu
+	 * @param string $newTruckName string containing truckName
+	 */
+	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber) {
+		try {: {
+			//determine what exception type was thrown
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
 }
