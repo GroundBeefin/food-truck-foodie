@@ -27,5 +27,30 @@ class Truck {
 		 * @var string $trucksUserId
 		 * */
 		private $truckAvatarUrl;
-		
+		/**
+		 * This is the email for the truck
+		 * @var string $truckEmail
+		 */
+		private $truckEmail;
+		/**
+		 * This is the tuck food type
+		 * @var string $truckFoodType
+		 */
+		private $truckFoodType;
+		/**
+		 * This is the truck menu url
+		 * @var $truckMenuUrl
+		 */
+		private $truckMenuUrl;
+		/**
+		 * This is the name of the truck
+		 * @var $truckName
+		 */
+		private $truckName;
+		/**
+		 * this is the phone number of the truck
+		 *@var $truckPhoneNumber
+		 */
+
+		private $truckPhoneNumber;
 }
