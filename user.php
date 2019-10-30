@@ -26,7 +26,7 @@ class User {
 	private $userActivationToken;
 	/**
 	 * avatar url for this user
-	 * @var string userAvatarUrl
+	 * @var string $userAvatarUrl
 	 */
 	private $userAvatarUrl;
 	/**
@@ -126,9 +126,9 @@ public function setUserId($newUserId): void {
 			$this->getUserAvatarUrl = null;
 			return;
 		}
-		//verify the at handle is secure
+		//verify the at avatar is secure
 		$newUserAvatarUrl = trim($newUserAvatarUrl);
-		$newUserAvatarUrl = filter_var($newUserAvatarUrl, FILTER_VALIDATE_URL,);
+		$newUserAvatarUrl = filter_var($newUserAvatarUrl, FILTER_VALIDATE_URL);
 		if($newUserAvatarUrl === false) {
 			throw(new \InvalidArgumentException("user url is empty or insecure"));
 		}
