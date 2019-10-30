@@ -63,7 +63,8 @@ class Truck {
 	 * @param string $newTruckFoodType string containing food type of truck
 	 * @param string $newTuckMenuUrl string containing Url for truck menu
 	 * @param string $newTruckName string containing truckName
-	 */
+	 * @param string $newTruckPhoneNumber containing truckPhoneNumber
+	 * */
 	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber) {
 		try {
 			$this->setTruckId($newTruckId);
@@ -73,6 +74,7 @@ class Truck {
 			$this->settruckFoodType($newTruckFoodType);
 			$this->settruckMenuUrl($newTruckMenuUrl);
 			$this->settruckName($newTruckName);
+			$this->settruckPhoneNumber($newTruckPhoneNumber);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \ TypeError $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
@@ -134,4 +136,7 @@ public function setTruckAvatarUrl(string $newTruckAvatarUrl): void {
 	if(strlen($newTruckAvatarUrl) > 255) {
 		throw(new RangeException("Truck at handle is too large"));
 	}
+
+// store the avatar url
+	$this->truckAvatarUrl = $newTruckAvatarUrl;
 }
