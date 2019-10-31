@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="4d0ef9e5-4955-4d10-9974-07d8195881ba" name="food-truck-foodie" url="https://bootcamp-coders.cnm.edu/~ifoster2/food-truck-foodie">
+        <fileTransfer host="bootcamp-coders.cnm.edu" port="22" rootFolder="/home/ifoster2/public_html/food-truck-foodie" accessType="SFTP" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

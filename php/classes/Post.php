@@ -230,7 +230,6 @@ class Post implements \JsonSerializable {
 	}
 }
 
-
 /**
  * gets the Post by PostTruckId
  *
@@ -269,9 +268,4 @@ public static function getPostByPostTruckId(\PDO $pdo, $postTruckId) : \SplFixed
 	}
 	return($posts);
 }
-
-
-
-
-
 
