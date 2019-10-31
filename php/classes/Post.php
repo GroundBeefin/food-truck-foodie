@@ -215,12 +215,15 @@ class post implements \JsonSerializable {
 	}
 
 
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		// TODO: Implement jsonSerialize() method.
+	}
 }
 
-/**Post:
-postId binary(16) not null,
-postTruckId binary(16),
-postUserId binary(16),
-postContent varchar(144) null,
-postDatetime datetime(6) not null,
-primary key (postId
