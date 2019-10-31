@@ -152,8 +152,8 @@ class post implements \JsonSerializable {
 	 *
 	 * @return string value of post content
 	 **/
-	public function getPostContent() : string {
-		return($this->postContent);
+	public function getPostContent(): string {
+		return ($this->postContent);
 	}
 
 	/**
@@ -164,7 +164,7 @@ class post implements \JsonSerializable {
 	 * @throws \RangeException if $newPostContent is > 144 characters
 	 * @throws \TypeError if $newPostContent is not a string
 	 **/
-	public function setPostContent(string $newPostContent) : void {
+	public function setPostContent(string $newPostContent): void {
 		// verify the post content is secure
 		$newPostContent = trim($newPostContent);
 		$newPostContent = filter_var($newPostContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -186,8 +186,8 @@ class post implements \JsonSerializable {
 	 *
 	 * @return \DateTime value of post date time
 	 **/
-	public function getPostDatetime() : \DateTime {
-		return($this->postDatetime);
+	public function getPostDatetime(): \DateTime {
+		return ($this->postDatetime);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class post implements \JsonSerializable {
 	 * @throws \InvalidArgumentException if $newPostDatetime is not a valid object or string
 	 * @throws \RangeException if $newPostDatetime is a date time that does not exist
 	 **/
-	public function setPostDatetime($newPostDatetime = null) : void {
+	public function setPostDatetime($newPostDatetime = null): void {
 		// base case: if the date is null, use the current date and time
 		if($newPostDatetime === null) {
 			$this->postDatetime = new \DateTime();
@@ -226,4 +226,3 @@ class post implements \JsonSerializable {
 		// TODO: Implement jsonSerialize() method.
 	}
 }
-
