@@ -118,7 +118,7 @@ public function setTruckId($newTruckId): void {
 		$exceptionType = get_class($exception);
 		throw (new $exceptionType($exception->getMessage(), 0,$exception));
 	}
-	//convert and store this author id
+	//convert and store this truck id
 	$this->truckId = $uuid;
 }
 
@@ -186,7 +186,7 @@ public function setTruckEmail(string $newTruckEmail): void {
  * @return string value of food type
  * */
 public function getTruckFoodType(): string {
-	return ($this->truckFoodType);
+	return $this->truckFoodType;
 	/**
 	 * mutator method for truck food type
 	 *
@@ -210,6 +210,38 @@ public function getTruckFoodType(): string {
 		$this->truckFoodType = $newTruckFoodType;
 	}
 
+}
+/**
+ * accessor method for the menu url to the truck
+ *
+ * @return string value of the menu url for the truck
+ **/
+public function getTruckMenuUrl(): string {
+	return $this->truckMenuUrl;
+	/**
+	 * mutator method for truck avatar url
+	 *
+	 * @param string $newTruckAvatarUrl new value of at truck
+	 * @throws InvalidArgumentException if $newTruckAvatarUrl is not a string or insecure
+	 * @throws RangeException if $newTruckAvatarUrl is > 32 characters
+	 * @throws TypeError if $newTruckAvatarUrl is not a string
+	 **/
+	public function setTruckMenuUrl(string $newTruckMenuUrl): void {
+		// verify the at int is secure
+		$newTruckMenuUrl = trim($newTruckMenuUrl);
+		$newTruckMenuUrl = filter_var($newTruckMenuUrl, FILTER_VALIDATE_URL;
+		if(empty($newTruckMenueUrl) === true) {
+			throw(new InvalidArgumentException("Truck menu url is not available at this time"));
+		}
+		// verify the at handle will fit in the database
+		if(strlen($newTruckMenuUrl) > 255) {
+			throw(new RangeException("Truck food menu url is too large"));
+
+		}
+
+// store the truck avatar url
+		$this->truckMenuUrl = $newTruckMenuUrl;
+	}
 }
 
 
