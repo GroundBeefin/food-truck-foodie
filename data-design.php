@@ -35,7 +35,7 @@
 		<li>truckAvatarUrl</li>
 		<li>trckEmail</li>
 		<li>truckFoodType</li>
-		<li>truckMenu</li>
+		<li>truckMenuUrl</li>
 		<li>truckName</li>
 		<li>truckPhoneNumber</li>
 		<li>truckVerifyImage</li>
