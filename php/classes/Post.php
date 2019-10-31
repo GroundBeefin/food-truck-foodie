@@ -10,7 +10,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @author Leonela Guteirrez <leonela_gutierrez@hotmail.com>
  **/
-class post implements \JsonSerializable {
+class Post implements \JsonSerializable {
 	use ValidateUuid;
 	/**
 	 * Id for post; this is the primary key
@@ -152,8 +152,8 @@ class post implements \JsonSerializable {
 	 *
 	 * @return string value of post content
 	 **/
-	public function getPostContent() : string {
-		return($this->postContent);
+	public function getPostContent(): string {
+		return ($this->postContent);
 	}
 
 	/**
@@ -164,7 +164,7 @@ class post implements \JsonSerializable {
 	 * @throws \RangeException if $newPostContent is > 144 characters
 	 * @throws \TypeError if $newPostContent is not a string
 	 **/
-	public function setPostContent(string $newPostContent) : void {
+	public function setPostContent(string $newPostContent): void {
 		// verify the post content is secure
 		$newPostContent = trim($newPostContent);
 		$newPostContent = filter_var($newPostContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -186,8 +186,8 @@ class post implements \JsonSerializable {
 	 *
 	 * @return \DateTime value of post date time
 	 **/
-	public function getPostDatetime() : \DateTime {
-		return($this->postDatetime);
+	public function getPostDatetime(): \DateTime {
+		return ($this->postDatetime);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class post implements \JsonSerializable {
 	 * @throws \InvalidArgumentException if $newPostDatetime is not a valid object or string
 	 * @throws \RangeException if $newPostDatetime is a date time that does not exist
 	 **/
-	public function setPostDatetime($newPostDatetime = null) : void {
+	public function setPostDatetime($newPostDatetime = null): void {
 		// base case: if the date is null, use the current date and time
 		if($newPostDatetime === null) {
 			$this->postDatetime = new \DateTime();
@@ -215,12 +215,20 @@ class post implements \JsonSerializable {
 	}
 
 
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		$fields = get_object_vars($this);
+		$fields["postId"] = $this->postId->toString();
+		unset($fields["authorHash"]);
+		return ($fields);
+	}
 }
 
-/**Post:
-postId binary(16) not null,
-postTruckId binary(16),
-postUserId binary(16),
-postContent varchar(144) null,
-postDatetime datetime(6) not null,
-primary key (postId
+
+
