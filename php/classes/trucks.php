@@ -1,7 +1,7 @@
 <?php
 namespace Groundbeefin\FoodTruckFoodie;
 require_once ("autoload.php");
-
+require_once (dirname(__DIR__, 1)."/vendor/autoload.php");
 use http\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 
