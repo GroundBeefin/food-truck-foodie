@@ -249,7 +249,7 @@ class Post implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime FROM post WHERE postTruckId = :postTruckId";
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime WHERE postTruckId = :postTruckId";
 		$statement = $pdo->prepare($query);
 		// bind the post truck id to the place holder in the template
 		$parameters = ["postTruckId" => $postTruckId->getBytes()];
