@@ -3,6 +3,9 @@ namespace Groundbeefin\FoodTruckFoodie;
 
 require_once ("autoload.php");
 require_once(dirname(__DIR__, 1) ."/classes/autoload.php");
+
+use InvalidArgumentException;
+use phpDocumentor\Reflection\Types\Integer;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -87,7 +90,7 @@ public function getUserId(): Uuid {
 public function setUserId($newUserId): void {
 	try {
 		$uuid = self::validateUuid($newUserId);
-	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+	} catch(InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 		$exceptionType = get_class($exception);
 		throw(new $exceptionType($exception->getMessage(), 0, $exception));
 	}
@@ -118,7 +121,7 @@ public function setUserId($newUserId): void {
 	/**
 	 * mutator method for user avatar url
 	 * @param string|null $newUserAvatarUrl
-	 * @throws \InvalidArgumentException if $newUserAvatarUrl is not a string or insecure
+	 * @throws InvalidArgumentException if $newUserAvatarUrl is not a string or insecure
 	 * 
 	 */
 	public function setUserAvatarUrl(?string $newUserAvatarUrl): void {
@@ -130,7 +133,7 @@ public function setUserId($newUserId): void {
 		$newUserAvatarUrl = trim($newUserAvatarUrl);
 		$newUserAvatarUrl = filter_var($newUserAvatarUrl, FILTER_VALIDATE_URL);
 		if($newUserAvatarUrl === false) {
-			throw(new \InvalidArgumentException("user url is empty or insecure"));
+			throw(new InvalidArgumentException("user url is empty or insecure"));
 		}
 		if(strlen($newUserAvatarUrl) > 255) {
 			throw(new \RangeException("avatar is too large"));
@@ -151,7 +154,7 @@ public function setUserId($newUserId): void {
 	 * mutator method for email
 	 *
 	 * @param string $newUserEmail new value of email
-	 * @throws \InvalidArgumentException if $newEmail is not valid email or insecure
+	 * @throws InvalidArgumentException if $newEmail is not valid email or insecure
 	 * @throws \RangeException if $newEmail is > 128 characters
 	 * @throws \TypeError if $newEmail is not a string
 	 */
@@ -161,7 +164,7 @@ public function setUserId($newUserId): void {
 		$newUserEmail = trim($newUserEmail);
 		$newUserEmail = filter_var($newUserEmail, FILTER_VALIDATE_EMAIL);
 		if(empty($newUserEmail) === true) {
-			throw(new \InvalidArgumentException("profile email is empty or insecure"));
+			throw(new InvalidArgumentException("profile email is empty or insecure"));
 		}
 		//verify the email will fit in the database
 		if(strlen($newUserEmail) > 128) {
@@ -181,7 +184,7 @@ public function setUserId($newUserId): void {
 	 * mutator method for user profile hash password
 	 *
 	 * @param string $newUserProfileHash
-	 * @throws \InvalidArgumentException if the hash is not secure
+	 * @throws InvalidArgumentException if the hash is not secure
 	 * @throws \RangeException if the hash is not 97 characters
 	 * @throws \TypeError if profile hash is not a string
 	 */
@@ -190,11 +193,11 @@ public function setUserId($newUserId): void {
 		$newUserProfileHash = trim($newUserProfileHash);
 		$newUserProfileHash = strtolower($newUserProfileHash);
 		if(empty($newUserProfileHash) === true) {
-			throw(new \InvalidArgumentException("user password hash is empty or insecure"));
+			throw(new InvalidArgumentException("user password hash is empty or insecure"));
 		}
 		//enforce hash is really an Argon hash
 		if(!ctype_xdigit($newUserProfileHash)) {
-			throw(new \InvalidArgumentException("user password hash is empty or insecure"));
+			throw(new InvalidArgumentException("user password hash is empty or insecure"));
 		}
 		//enforce that the has is exactly 97 characters.
 		if(strlen($newUserProfileHash) !== 97) {
@@ -274,5 +277,16 @@ VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :u
 		$statement = $pdo->prepare($query);
 		$parameters = ["userId" => $this->userId->getBytes(), "userActivationToken" => $this->userActivationToken->getBytes(), "userAvatarUrl" => $this->userAvatarUrl->getBytes(), "userEmail" => $this->userEmail->getBytes(), "userHash" => $this->userHash->getBytes(), "userName" => $this->userName->getBytes()];
 		$statement->execute($parameters);
+	}
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		// TODO: Implement jsonSerialize() method.
 	}
 }
