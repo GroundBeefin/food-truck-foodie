@@ -5,7 +5,8 @@
     "swiftmailer/swiftmailer": "@stable",
     "lcobucci/jwt": "3.2",
     "ramsey/uuid": "@stable",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-http": "*"
   },
   "scripts":{
     "phpunit": "./vendor/bin/phpunit -c ./Classes/Test --coverage-html coverage"
