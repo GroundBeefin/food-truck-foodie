@@ -379,23 +379,20 @@ public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 
 
 //get truck by food type
-public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType) : \SplFixedArray {
+public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType, $trucks) : \SplFixedArray {
 	// sanitize the description before searching
-	$truckFoodType = trim($truckFoodType);
 	$truckFoodType = filter_var($truckFoodType, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	if(empty($truckFoodType) === true) {
 		throw(new \PDOException("truck food type is invalid"));
 	}
-	// escape any mySQL wild cards
-	$truckFoodType = str_replace("", "\\", str_replace("%", "\\%", $truckFoodType));
+
 	// create query template
 	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
 	$statement = $pdo->prepare($query);
 	// bind the truck food type to the place holder in the template
-	$truckFoodType = "%$truckFoodType%";
 	$parameters = ["truckFoodType" => $truckFoodType];
 	$statement->execute($parameters);
-	// build an array of tweets
+	// build an array of trucks
 	$truck = new \SplFixedArray($statement->rowCount());
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
@@ -410,7 +407,7 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType)
 	}
 	return($trucks);
 }
-public static function getTruckByUserId(\PDO $pdo, string $truckUserId) : \SplFixedArray {
+public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $trucks) : \SplFixedArray {
 	try {
 		$truckUserId = self::validateUuid($truckUserId);
 	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
@@ -418,12 +415,12 @@ public static function getTruckByUserId(\PDO $pdo, string $truckUserId) : \SplFi
 	}
 
 	// create query template
-	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
+	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckUserId LIKE :truckUserId";
 	$statement = $pdo->prepare($query);
 	// bind the truck food type to the place holder in the template
 	$parameters = ["truckUserId" => $truckUserId];
 	$statement->execute($parameters);
-	// build an array of tweets
+	// build an array of trucks
 	$truck = new \SplFixedArray($statement->rowCount());
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
@@ -437,4 +434,8 @@ public static function getTruckByUserId(\PDO $pdo, string $truckUserId) : \SplFi
 		}
 	}
 	return($trucks);
+	}
+
+
+
 }
