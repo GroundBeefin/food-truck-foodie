@@ -4,13 +4,14 @@ namespace Groundbeefin\FoodTruckFoodie;
 require_once("autoload.php");
 require_once(dirname(__DIR__, 1) ."/vendor/autoload.php");
 use Ramsey\Uuid\Uuid;
+use TypeError;
 
 /**
  * Cloass for Post
  *
  * @author Leonela Guteirrez <leonela_gutierrez@hotmail.com>
  **/
-class post implements \JsonSerializable {
+class Post implements \JsonSerializable {
 	use ValidateUuid;
 	/**
 	 * Id for post; this is the primary key
@@ -46,7 +47,7 @@ class post implements \JsonSerializable {
 	 * @param string|Uuid $postUserId id of user for new post
 	 * @throws \InvalidArgumentException if data types are not valid
 	 * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
-	 * @throws \TypeError if data types violate type hints
+	 * @throws TypeError if data types violate type hints
 	 * @throws \Exception if some other exception occurs
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 * */
@@ -59,7 +60,7 @@ class post implements \JsonSerializable {
 			$this->setPostContent($newPostContent);
 			$this->setPostDatetime($newPostDatetime);
 		} //determine what exception type was thrown
-		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -84,7 +85,7 @@ class post implements \JsonSerializable {
 	public function setPostId($newPostId): void {
 		try {
 			$uuid = self::validateUuid($newPostId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -111,7 +112,7 @@ class post implements \JsonSerializable {
 	public function setPostTruckId($newPostTruckId): void {
 		try {
 			$uuid = self::validateUuid($newPostTruckId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -139,7 +140,7 @@ class post implements \JsonSerializable {
 	public function setPostUserId($newPostUserId): void {
 		try {
 			$uuid = self::validateUuid($newPostUserId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -162,7 +163,7 @@ class post implements \JsonSerializable {
 	 * @param string $newPostContent new value of post content
 	 * @throws \InvalidArgumentException if $newPostContent is not a string or insecure
 	 * @throws \RangeException if $newPostContent is > 144 characters
-	 * @throws \TypeError if $newPostContent is not a string
+	 * @throws TypeError if $newPostContent is not a string
 	 **/
 	public function setPostContent(string $newPostContent): void {
 		// verify the post content is secure
@@ -223,6 +224,50 @@ class post implements \JsonSerializable {
 	 * @since 5.4.0
 	 */
 	public function jsonSerialize() {
-		// TODO: Implement jsonSerialize() method.
+		$fields = get_object_vars($this);
+		$fields["postId"] = $this->postId->toString();
+		unset($fields["authorHash"]);
+		return ($fields);
 	}
+
+
+	/**
+	 * gets the Post by PostTruckId
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid|string $postTruckId truck id to search by
+	 * @return \SplFixedArray SplFixedArray of posts found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId): \SplFixedArray {
+
+		try {
+			$postTruckId = self::validateUuid($postTruckId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+
+		// create query template
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime FROM post WHERE postTruckId = :postTruckId";
+		$statement = $pdo->prepare($query);
+		// bind the post truck id to the place holder in the template
+		$parameters = ["postTruckId" => $postTruckId->getBytes()];
+		$statement->execute($parameters);
+		// build an array of post
+		$post = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$post = new Post($row["postID"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
+				$post[$post->key()] = $post;
+				$post->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($post);
+	}
+
 }
