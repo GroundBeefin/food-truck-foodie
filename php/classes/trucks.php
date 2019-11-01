@@ -377,4 +377,64 @@ public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 
 
 
+
+//get truck by food type
+public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType) : \SplFixedArray {
+	// sanitize the description before searching
+	$truckFoodType = trim($truckFoodType);
+	$truckFoodType = filter_var($truckFoodType, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	if(empty($truckFoodType) === true) {
+		throw(new \PDOException("truck food type is invalid"));
+	}
+	// escape any mySQL wild cards
+	$truckFoodType = str_replace("", "\\", str_replace("%", "\\%", $truckFoodType));
+	// create query template
+	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
+	$statement = $pdo->prepare($query);
+	// bind the truck food type to the place holder in the template
+	$truckFoodType = "%$truckFoodType%";
+	$parameters = ["truckFoodType" => $truckFoodType];
+	$statement->execute($parameters);
+	// build an array of tweets
+	$truck = new \SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	while(($row = $statement->fetch()) !== false) {
+		try {
+			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
+			$truck[$truck->key()] = $truck;
+			$truck->next();
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+	}
+	return($trucks);
+}
+public static function getTruckByUserId(\PDO $pdo, string $truckUserId) : \SplFixedArray {
+	try {
+		$truckUserId = self::validateUuid($truckUserId);
+	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		throw(new \PDOException($exception->getMessage(), 0, $exception));
+	}
+
+	// create query template
+	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
+	$statement = $pdo->prepare($query);
+	// bind the truck food type to the place holder in the template
+	$parameters = ["truckUserId" => $truckUserId];
+	$statement->execute($parameters);
+	// build an array of tweets
+	$truck = new \SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	while(($row = $statement->fetch()) !== false) {
+		try {
+			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
+			$truck[$truck->key()] = $truck;
+			$truck->next();
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+	}
+	return($trucks);
 }
