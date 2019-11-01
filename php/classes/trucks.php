@@ -4,6 +4,8 @@ require_once ("autoload.php");
 
 use http\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
+use RangeException;
+use TypeError;
 
 /**
  * This class if the truck user
@@ -126,12 +128,29 @@ public function setTruckId($newTruckId): void {
 /**
  * accessor method for truck user id
  *
- * @return string|value of truck user id
+ * @return string|  value of truck user id
  */
 
 public function getTruckUserId(): ?string {
 	return ($this->truckUserId);
 }
+	/**
+	 * mutator method for truck user id
+	 *
+	 * @param Uuid | string $newTruckId
+	 * @param RangeException  if new truck id is not a positive
+	 * @throw TypeError if $newTruckId is not a Uuid
+	 **/
+	public function setTruckUserId($newTruckId): void {
+		Try {
+			$uuid = self::validateUuid($newTruckId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw (new $exceptionType($exception->getMessage(), 0, $exception));
+		}
+		//convert and store this truck id
+		$this->truckUserId = $uuid;
+	}
 /**
  * mutator method for truck avatar url
  *
@@ -339,20 +358,23 @@ public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 	/**
 	 * mutator method for truck verify check
 	 *
-	 * @param string $newTruckVerifyCheck new value of truck verify check
-	 * @throws \InvalidArgumentException if $newTruckVerifyCheck is not a tiny int
-	 * @throws \RangeException if $newTruckVerifyCheck is < than 1 or two
-	 * @throws \TypeError if $newTruckVerifyCheck is not an int
+	 * @param string $newTruckVerifyChecked new value of truck verify check
+	 * @throws \InvalidArgumentException if $newTruckVerifyChecked is not a tiny int
+	 * @throws \RangeException if $newTruckVerifyChecked is < than 1 or two
+	 * @throws \TypeError if $newTruckVerifyChecked is not an int
 	 **/
-	public function setTruckVerifyCheck(int $newTruckVerifyCheck)  {
+	public function setTruckVerifyChecked(int $newTruckVerifyChecked)  {
 		// verify check content is secure
-		$newTruckVerifyCheck = filter_var($newTruckVerifyCheck, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
-		if($newTruckVerifyCheck  >1 ) {
+		$newTruckVerifyChecked = filter_var($newTruckVerifyChecked, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
+		if($newTruckVerifyChecked  >1 ) {
 			throw(new \RangeException("verify check content is not valid. "));
 		}
 
 
 		// Convert and store the truck verification content
-		$this->truckVerifyCheck = $newTruckVerifyCheck;
+		$this->truckVerifyChecked = $newTruckVerifyChecked;
 	}
+
+
+
 }
