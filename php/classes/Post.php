@@ -80,7 +80,7 @@ class Post implements \JsonSerializable {
 	 *
 	 * @param Uuid|string $newPostId new post id
 	 * @param \RangeException if $newPostId is not positive
-	 * @Throws \TypeError if $newPostId is not a uuid
+	 * @throws \TypeError if $newPostId is not a uuid
 	 **/
 	public function setPostId($newPostId): void {
 		try {
@@ -106,8 +106,8 @@ class Post implements \JsonSerializable {
 	 * mutator method for post truck id
 	 *
 	 * @param Uuid|string $newPostTruckId new post truck id
-	 * @param \RangeException if $newPostId is not positive
-	 * @Throws \TypeError if $newPostId is not a uuid
+	 * @throws  \RangeException if $newPostId is not positive
+	 * @throws  \TypeError if $newPostId is not a uuid
 	 **/
 	public function setPostTruckId($newPostTruckId): void {
 		try {
@@ -135,7 +135,7 @@ class Post implements \JsonSerializable {
 	 *
 	 * @param Uuid|string $newPostUserId new post user id
 	 * @param \RangeException if $newPostUserId is not positive
-	 * @Throws \TypeError if $newPostUserId is not a uuid
+	 * @throws \TypeError if $newPostUserId is not a uuid
 	 **/
 	public function setPostUserId($newPostUserId): void {
 		try {
@@ -215,22 +215,6 @@ class Post implements \JsonSerializable {
 		$this->postDatetime = $newPostDatetime;
 	}
 
-
-	/**
-	 * Specify data which should be serialized to JSON
-	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
-	 */
-	public function jsonSerialize() {
-		$fields = get_object_vars($this);
-		$fields["postId"] = $this->postId->toString();
-		unset($fields["authorHash"]);
-		return ($fields);
-	}
-
-
 	/**
 	 * gets the Post by PostTruckId
 	 *
@@ -268,6 +252,67 @@ class Post implements \JsonSerializable {
 			}
 		}
 		return ($post);
+	}
+
+	/**
+	 * inserts this Post into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo) : void {
+		// create query template
+		$query = "INSERT INTO post(postId, postTruckId, postUserId, postContent, postDatetime) VALUES(:postId, :postTruckId, :postUserId, :postContent, postDatetime)";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");
+		$parameters = ["postId" => $this->postId->getBytes(), "postTruckId" => $this->postTruckId->getBytes(), "postUserId" => $this->postUserId, "postDatetime" => $formattedDate];
+		$statement->execute($parameters);
+	}
+	/**
+	 * deletes this Post from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo) : void {
+		// create query template
+		$query = "DELETE FROM post WHERE postId = :postId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holder in the template
+		$parameters = ["postId" => $this->postId->getBytes()];
+		$statement->execute($parameters);
+	}
+	/**
+	 * updates this Post in mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function update(\PDO $pdo) : void {
+		// create query template
+		$query = "UPDATE post SET postTruckId = :postTruckId, postContent = :postContent, postDatetime = :postDatetime WHERE postId = :postId";
+		$statement = $pdo->prepare($query);
+		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");
+		$parameters = ["postId" => $this->postId->getBytes(),"postTruckId" => $this->postTruckId->getBytes(), "postContent" => $this->postContent, "postDatetime" => $formattedDate];
+		$statement->execute($parameters);
+	}
+
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		$fields = get_object_vars($this);
+		$fields["postId"] = $this->postId->toString();
+		return ($fields);
 	}
 
 }
