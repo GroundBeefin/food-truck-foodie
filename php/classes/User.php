@@ -1,8 +1,9 @@
 <?php
+
 namespace Groundbeefin\FoodTruckFoodie;
 
-require_once ("autoload.php");
-require_once(dirname(__DIR__, 1) ."/classes/autoload.php");
+require_once("autoload.php");
+require_once(dirname(__DIR__, 1) . "/classes/autoload.php");
 
 use InvalidArgumentException;
 use phpDocumentor\Reflection\Types\Integer;
@@ -14,7 +15,6 @@ use Ramsey\Uuid\Uuid;
  *
  * @User Zachary Sanchez <zacharyesanchez22@gmail.com>
  */
-
 class User {
 	use ValidateUuid;
 	/**
@@ -47,56 +47,58 @@ class User {
 	 * @var $userName
 	 */
 	private $userName;
-/***
- * constructor for this user
- *
- * @param string|Uuid $newUserId id of this user if a new user
- * @param string $newUserActivationToken activation token to sage guard against malicious accounts
- * @param string $newUserAvatarUrl string containing
- * @param string $newUserEmail string containing email
- * @param string $newUserHash string containing password hash
- * @param string $newUserName string containing username
- */
-public function __construct($newUserId, $newUserActivationToken, $newUserAvatarUrl, $newUserEmail, $newUserHash, $newUserName) {
-	try {
-		$this->setUserId($newUserId);
-		$this->setUserActivationToken($newUserActivationToken);
-		$this->setUserAvatarUrl($newUserAvatarUrl);
-		$this->setUserEmail($newUserEmail);
-		$this->setUserProfileHash($newUserHash);
-		$this->setUserName($newUserName);
-	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-		//determine what exception type was thrown
-		$exceptionType = get_class($exception);
-		throw(new $exceptionType($exception->getMessage(), 0, $exception));
-	}
-}
 
-/**
- * accessor method for user id
- *
- *@return Uuid value of this user id (or null if new User)
- */
-public function getUserId(): Uuid {
-	return ($this->userId);
-}
-/**
- * mutator method for user id
- *
- * @param Uuid| string $newUserId value of new user id
- * @throws \RangeException if $newUserId is not positive
- * @throws \TypeError if the user Id is not
- */
-public function setUserId($newUserId): void {
-	try {
-		$uuid = self::validateUuid($newUserId);
-	} catch(InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-		$exceptionType = get_class($exception);
-		throw(new $exceptionType($exception->getMessage(), 0, $exception));
+	/***
+	 * constructor for this user
+	 *
+	 * @param string|Uuid $newUserId id of this user if a new user
+	 * @param string $newUserActivationToken activation token to sage guard against malicious accounts
+	 * @param string $newUserAvatarUrl string containing
+	 * @param string $newUserEmail string containing email
+	 * @param string $newUserHash string containing password hash
+	 * @param string $newUserName string containing username
+	 */
+	public function __construct($newUserId, $newUserActivationToken, $newUserAvatarUrl, $newUserEmail, $newUserHash, $newUserName) {
+		try {
+			$this->setUserId($newUserId);
+			$this->setUserActivationToken($newUserActivationToken);
+			$this->setUserAvatarUrl($newUserAvatarUrl);
+			$this->setUserEmail($newUserEmail);
+			$this->setUserProfileHash($newUserHash);
+			$this->setUserName($newUserName);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			//determine what exception type was thrown
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
 	}
-	//convert and store the user id
-	$this->userId = $uuid;
-}
+
+	/**
+	 * accessor method for user id
+	 *
+	 * @return Uuid value of this user id (or null if new User)
+	 */
+	public function getUserId(): Uuid {
+		return ($this->userId);
+	}
+
+	/**
+	 * mutator method for user id
+	 *
+	 * @param Uuid| string $newUserId value of new user id
+	 * @throws \RangeException if $newUserId is not positive
+	 * @throws \TypeError if the user Id is not
+	 */
+	public function setUserId($newUserId): void {
+		try {
+			$uuid = self::validateUuid($newUserId);
+		} catch(InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
+		//convert and store the user id
+		$this->userId = $uuid;
+	}
 
 	/**
 	 *mutator method for user activation token
@@ -121,11 +123,12 @@ public function setUserId($newUserId): void {
 		}
 		$this->userActivationToken = $newUserActivationTokenActivationToken;
 	}
+
 	/**
 	 * mutator method for user avatar url
 	 * @param string|null $newUserAvatarUrl
 	 * @throws InvalidArgumentException if $newUserAvatarUrl is not a string or insecure
-	 * 
+	 *
 	 */
 	public function setUserAvatarUrl(?string $newUserAvatarUrl): void {
 		if($newUserAvatarUrl === null) {
@@ -153,6 +156,7 @@ public function setUserId($newUserId): void {
 	public function getUserEmail(): string {
 		return $this->userEmail;
 	}
+
 	/**
 	 * mutator method for email
 	 *
@@ -175,6 +179,7 @@ public function setUserId($newUserId): void {
 		}
 		$this->userEmail = $newUserEmail;
 	}
+
 	/**
 	 * accessor method for userHash
 	 *
@@ -183,6 +188,7 @@ public function setUserId($newUserId): void {
 	public function getUserProfileHash(): string {
 		return $this->userHash;
 	}
+
 	/**
 	 * mutator method for user profile hash password
 	 *
@@ -209,12 +215,13 @@ public function setUserId($newUserId): void {
 		//store the hash
 		$this->userHash = $newUserProfileHash;
 	}
+
 	/**
 	 * mutator method for userName
 	 *
 	 * @param string $newUserName new value of userName
 	 * @throw \InvalidArgumentException if $newUserName is not a string or insecure
-	 * @throw \RangeException if $newUserName is > 16 characters
+	 * @throw \RangeException if $newUserName is > 32 characters
 	 * @throws \TypeError if $newUserName is not a string
 	 */
 	public function setUserName(string $newUserName): void {
@@ -227,6 +234,7 @@ public function setUserId($newUserId): void {
 		//store the hash
 		$this->userName = $newUserName;
 	}
+
 	/**
 	 * formats the state variables for JSON serialization
 	 *
@@ -252,6 +260,7 @@ public function setUserId($newUserId): void {
 VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :userUsername)";
 		$statement = $pdo->prepare($query);
 	}
+
 	/**
 	 * deletes this user from mySQL
 	 *
@@ -267,6 +276,7 @@ VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :u
 		$parameters = ["userId" => $this->userId->getBytes()];
 		$statement->execute($parameters);
 	}
+
 	/**
 	 * updates this User in mySQL
 	 *
@@ -293,3 +303,4 @@ VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :u
 		// TODO: Implement jsonSerialize() method.
 	}
 }
+
