@@ -412,13 +412,13 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType,
 	$parameters = ["truckFoodType" => $truckFoodType];
 	$statement->execute($parameters);
 	// build an array of trucks
-	$truck = new \SplFixedArray($statement->rowCount());
+	$trucks = new \SplFixedArray($statement->rowCount());
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
 			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
 			$truck[$truck->$pdo()] = $truck;
-			$truck->next();
+			$trucks->next();
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
@@ -426,7 +426,7 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType,
 	}
 	return($trucks);
 }
-public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $trucks) : \SplFixedArray {
+public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \SplFixedArray {
 	try {
 		$truckUserId = self::validateUuid($truckUserId);
 	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
@@ -440,13 +440,13 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $tr
 	$parameters = ["truckUserId" => $truckUserId];
 	$statement->execute($parameters);
 	// build an array of trucks
-	$truck = new \SplFixedArray($statement->rowCount());
+	$trucks = new \SplFixedArray($statement->rowCount());
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
 			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
-			$truck[$truck->$pdo()] = $truck;
-			$truck->next();
+			$trucks[$truck->$pdo()] = $truck;
+			$trucks->next();
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
@@ -460,7 +460,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $tr
 
 
 //get truck by truck name method
-public function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \SplFixedArray {
+public static function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \SplFixedArray {
 	// sanitize the description before searching
 	$truckName = filter_var($truckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	if(empty($truckName) === true) {
@@ -481,7 +481,7 @@ public function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \Sp
 		try {
 			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
 			$trucks[$truck->$pdo()] = $truck;
-			$truck->next();
+			$trucks->next();
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
