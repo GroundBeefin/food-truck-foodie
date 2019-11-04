@@ -8,7 +8,7 @@ use RangeException;
 use TypeError;
 
 /**
- * This class if the truck user
+ * This class is the truck user
  * @package Groundbeefin\FoodTruckFoodie
  * @author Ian W Foster <ian.foster95@yahoo.com>
  * @version 001.1
@@ -71,15 +71,17 @@ class Truck {
 	 *
 	 * @param string|Uuid $newTruckId id of this user if a new user
 	 * @param string $newTruckUserId activation token to sage guard against malicious accounts
-	 * @param string $newTruckAvatarUrl string containing truck url
+	 * @param string $newTruckAvatarUrl string containing truck url to add to trucks profile
 	 * @param string $newTruckEmail string containing email
-	 * @param string $newTruckFoodType string containing food type of truck
+	 * @param string $newTruckFoodType string containing food type of the truck
 	 * @param string $newTruckMenuUrl string containing Url for truck menu
-	 * @param string $newTruckName string containing truckName
-	 * @param string $newTruckPhoneNumber containing truckPhoneNumber
-	 * @param string $newTruckVerifyImage containing truckVerifyImage
-	 * @param string $newTruckVerifyChecked containing truckVerifyChecked
+	 * @param string $newTruckName string containing the actual name of the truck
+	 * @param string $newTruckPhoneNumber containing the phone number to contact the truck
+	 * @param string $newTruckVerifyImage containing the verify image to see if this is a real food truck
+	 * @param string $newTruckVerifyChecked containing the data that the truck has been checked and verified as a real foo truck.
 	 * */
+
+
 	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, $newTruckVerifyChecked) {
 		try {
 			$this->setTruckId($newTruckId);
@@ -111,76 +113,82 @@ class Truck {
  * mutator method for truck id
  *
  * @param Uuid | string $newTruckId
- * @param RangeException  if new truck id is not a positive
+ * @param RangeException  if new truck id is not a Uuid
  * @throw TypeError if $newTruckId is not a Uuid
  **/
-public function setTruckId($newTruckId): void {
-	Try{
-		$uuid = self::validateUuid($newTruckId);
-	}catch( \InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-		$exceptionType = get_class($exception);
-		throw (new $exceptionType($exception->getMessage(), 0,$exception));
+
+
+	public function setTruckId($newTruckId): void {
+		Try{
+			$uuid = self::validateUuid($newTruckId);
+		}catch( \InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw (new $exceptionType($exception->getMessage(), 0,$exception));
 	}
 	//convert and store this truck id
-	$this->truckId = $uuid;
+		$this->truckId = $uuid;
 }
 
 /**
  * accessor method for truck user id
  *
- * @return string|  value of truck user id
+ * @return string|  Uuid value of truck user id
  */
 
-public function getTruckUserId(): ?string {
-	return ($this->truckUserId);
+	public function getTruckUserId(): ?string {
+		return ($this->truckUserId);
 }
 	/**
 	 * mutator method for truck user id
 	 *
-	 * @param Uuid | string $newTruckId
-	 * @param RangeException  if new truck id is not a positive
-	 * @throw TypeError if $newTruckId is not a Uuid
+	 * @param Uuid | string $newTruckUserId
+	 * @param RangeException  if new truck user id is not a Uuid
+	 * @throw TypeError if $newTruckUserId is not a Uuid
 	 **/
-	public function setTruckUserId($newTruckId): void {
+
+
+	public function setTruckUserId($newTruckUserId): void {
 		Try {
-			$uuid = self::validateUuid($newTruckId);
+			$uuid = self::validateUuid($newTruckUserId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw (new $exceptionType($exception->getMessage(), 0, $exception));
 		}
-		//convert and store this truck id
+		//convert and store this truck user id
 		$this->truckUserId = $uuid;
 	}
 /**
  * mutator method for truck avatar url
  *
- * @param string $newTruckAvatarUrl new value of at truck
- * @throws InvalidArgumentException if $newTruckAvatarUrl is not a string or insecure
- * @throws RangeException if $newTruckAvatarUrl is > 32 characters
- * @throws TypeError if $newTruckAvatarUrl is not a string
+ * @param string $newTruckAvatarUrl new truck
+ * @throws InvalidArgumentException if new truck avatar url is not a string
+ * @throws RangeException if new truck avatar url is > 255 characters
+ * @throws TypeError if new truck avatar url is not a string
  **/
-public function setTruckAvatarUrl(string $newTruckAvatarUrl): void {
-	// verify the at int is secure
-	$newTruckAvatarUrl = trim($newTruckAvatarUrl);
-	$newTruckAvatarUrl = filter_var($newTruckAvatarUrl, FILTER_VALIDATE_URL);
-	if(empty($newTruckAvatarUrl) === true) {
-		throw(new InvalidArgumentException("Truck at handle is empty or insecure"));
+
+
+	public function setTruckAvatarUrl(string $newTruckAvatarUrl): void {
+		// verify the at int is secure
+			$newTruckAvatarUrl = trim($newTruckAvatarUrl);
+			$newTruckAvatarUrl = filter_var($newTruckAvatarUrl, FILTER_VALIDATE_URL);
+		if(empty($newTruckAvatarUrl) === true) {
+			throw(new InvalidArgumentException("Truck at avatar is empty"));
 	}
-	// verify the at handle will fit in the database
-	if(strlen($newTruckAvatarUrl) > 255) {
-		throw(new RangeException("Truck at handle is too large"));
+	// verify the at avatar will fit in the database
+		if(strlen($newTruckAvatarUrl) > 255) {
+			throw(new RangeException("Truck Url is too long"));
 	}
 
 // store the avatar url
-	$this->truckAvatarUrl = $newTruckAvatarUrl;
+		$this->truckAvatarUrl = $newTruckAvatarUrl;
 }
 /**
  * accessor method for email for the truck
  *
  * @return string value of email for the truck
  **/
-public function getTruckEmail(): string {
-	return $this->truckEmail;
+	public function getTruckEmail(): string {
+		return $this->truckEmail;
 }
 /**
  * mutator method for email for the truck
@@ -190,39 +198,43 @@ public function getTruckEmail(): string {
  * @throws RangeException if $newTruckEmail is > 128 characters
  * @throws TypeError if $newTruckEmail is not a string
  **/
-public function setTruckEmail(string $newTruckEmail): void {
-	//verify email is secure
-	$newTruckEmail = trim($newTruckEmail);
-	$newTruckEmail = filter_var($newTruckEmail, FILTER_VALIDATE_EMAIL);
-	if(empty($newTruckEmail) === true) {
-		throw (new \InvalidArgumentException("Truck email is empty or insecure"));
+
+
+	public function setTruckEmail(string $newTruckEmail): void {
+		//verify email is secure
+		$newTruckEmail = trim($newTruckEmail);
+		$newTruckEmail = filter_var($newTruckEmail, FILTER_VALIDATE_EMAIL);
+		if(empty($newTruckEmail) === true) {
+			throw (new \InvalidArgumentException("Truck email is empty or insecure"));
 	}
 	//store trucks email
-	$this->truckEmail = $newTruckEmail;
+		$this->truckEmail = $newTruckEmail;
 }
 /**
- * accessor method for food type
+ * accessor method for the truck food type
  *
  * @return string value of food type
  * */
-public function getTruckFoodType(): string {
-	return $this->truckFoodType;
+
+	public function getTruckFoodType(): string {
+		return $this->truckFoodType;
 }
 	/**
-	 * mutator method for truck food type
+	 * mutator method for the truck food type
 	 *
 	 * @param string $newTruckFoodType
 	 * @throws \InvalidArgumentException if the truck food type is not available
 	 * @throws \RangeException if the food truck type is >128 characters
 	 * @throws \TypeError if truck food type is not a string
 	 */
-	public
-	function setTruckFoodType(string $newTruckFoodType): void {
-		//determines what food type are available
-		$newTruckFoodType = trim($newTruckFoodType);
-		$newTruckFoodType = filter_var($newTruckFoodType, FILTER_FLAG_NO_ENCODE_QUOTES);
-		if(empty($newTruckFoodType) === true) {
-			throw (new \InvalidArgumentException("Truck food type is not available"));
+
+
+	public function setTruckFoodType(string $newTruckFoodType): void {
+		//determines what food type are available for the trucks
+			$newTruckFoodType = trim($newTruckFoodType);
+			$newTruckFoodType = filter_var($newTruckFoodType, FILTER_FLAG_NO_ENCODE_QUOTES);
+			if(empty($newTruckFoodType) === true) {
+			throw (new \InvalidArgumentException("Truck food type is not defined"));
 		}
 		//verify the truck food type will fit database
 		if(strlen($newTruckFoodType) > 128) {
@@ -238,25 +250,27 @@ public function getTruckFoodType(): string {
  *
  * @return string value of the menu url for the truck
  **/
-public function getTruckMenuUrl(): string {
-	return $this->truckMenuUrl;
+	public function getTruckMenuUrl(): string {
+		return $this->truckMenuUrl;
 }
 	/**
 	 * mutator method for truck avatar url
 	 *
 	 * @param string $newTruckAvatarUrl new value of at truck
-	 * @throws \InvalidArgumentException if $newTruckAvatarUrl is not a string or insecure
-	 * @throws \RangeException if $newTruckAvatarUrl is > 32 characters
+	 * @throws \InvalidArgumentException if $newTruckMenuUrl is not a string or insecure
+	 * @throws \RangeException if $newTruckAvatarUrl is > 255 characters
 	 * @throws \TypeError if $newTruckAvatarUrl is not a string
 	 **/
+
+
 	public function setTruckMenuUrl(string $newTruckMenuUrl): void {
 		// verify the at int is secure
-		$newTruckMenuUrl = trim($newTruckMenuUrl);
-		$newTruckMenuUrl = filter_var($newTruckMenuUrl, FILTER_VALIDATE_URL);
+			$newTruckMenuUrl = trim($newTruckMenuUrl);
+			$newTruckMenuUrl = filter_var($newTruckMenuUrl, FILTER_VALIDATE_URL);
 		if(empty($newTruckMenueUrl) === true) {
 			throw(new \InvalidArgumentException("Truck menu url is not available at this time"));
 		}
-		// verify the at handle will fit in the database
+		// verify the tuck menu will fit in the database
 		if(strlen($newTruckMenuUrl) > 255) {
 			throw(new \RangeException("Truck food menu url is too large"));
 
@@ -266,20 +280,22 @@ public function getTruckMenuUrl(): string {
 		$this->truckMenuUrl = $newTruckMenuUrl;
 	}
 	/**
-	 * accessor method for truckName
+	 * accessor method for the name of the truck
 	 *
 	 * @return string value of Name or null
 	 **/
-	public
-	function getTruckUserName(): string {
+	public function getTruckName(): string {
 		return ($this->truckName);
 	}
-	/** mutator method for truck name
-	 *
-	 *@param string| null $newTruckName
+	/** mutator method for the name of the truck
+	 * @throws \InvalidArgumentException when truck name is empty
+	 * @throws RangeException if the truck name is too long
+	 * @param string| null or new truck name
 	 */
+
+
 	public function setTruckName(?string $newTruckName): void {
-		//if $truckname is null return it right away
+		//if $truck name is null return it right away
 		if(empty($newTruckName) === null) {
 			$this->truckName =null;
 			return;
@@ -288,7 +304,7 @@ public function getTruckMenuUrl(): string {
 		$newTruckName = trim($newTruckName);
 		$newTruckName = filter_var($newTruckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($newTruckName) === true) {
-			throw(new \InvalidArgumentException("Truck name is empty or insecure."));
+			throw(new \InvalidArgumentException("Truck name is empty "));
 		}
 		//verify the  truck name will fit in database
 		if(strlen($newTruckName) > 32) {
@@ -306,13 +322,16 @@ public function getTruckMenuUrl(): string {
 	}
 	/** mutator method for truck phone number
 	*
-* @param Integer $newTruckPhoneNumber
+	 * @param Integer the new truck phone number
+	 * @throws RangeException if truck phone number is empty
 	*/
-public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
+
+
+	public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 		//verify the phone number is secure
 		$newTruckPhoneNumber = filter_var($newTruckPhoneNumber, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
 		if($newTruckPhoneNumber < 0||$newTruckPhoneNumber > 10) {
-			throw(new \RangeException("truck phone number is empty or insecure"));
+			throw(new \RangeException("truck phone number is empty "));
 		}
 
 //store the phone number
@@ -322,7 +341,7 @@ public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 	/**
 	 * accessor method for Verify image url
 	 *
-	 * @return int value of the verify image url
+	 * @return string of the verify image url
 	 **/
 	public function getTruckVerifyImage(): string {
 		return ($this->truckVerifyImage);
@@ -331,17 +350,22 @@ public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 	/**
 	 * mutator for truck verify image url
 	 *
-	 * @param string $newTruckVerifyImage new value of the avatar url for image to verify whether truck is valid or not
-	 * @throws \UnexpectedValueException if $newTruckVerifyImage is not a string or insecure
-	 * @throws \RangeException if $newTruckVerifyImage is >32 characters
-	 * @throws \TypeError if $newTruckVerifyImage is not a string
+	 * @param string $newTruckVerifyImage new  url for image to verify whether truck is valid or not valid
+	 * @throws \UnexpectedValueException if new truck verify image is not valid or if is empty.
+	 * @throws \RangeException if new truck verify image is >225 characters
 	 */
+
+
 	public function setTruckVerifyImage($newTruckVerifyImage) {
 		//verify the verify image is secure
 		$newTruckVerifyImage = trim($newTruckVerifyImage);
 		$newTruckVerifyImage = filter_var($newTruckVerifyImage, FILTER_VALIDATE_URL);
 		if($newTruckVerifyImage === false) {
-			throw (new \UnexpectedValueException("verify image url is not valid or empty"));
+			throw (new \UnexpectedValueException("The image url is not valid or empty"));
+		}
+		if(strlen($newTruckVerifyImage) > 255) {
+			throw(new \RangeException("Truck food menu url is too large"));
+
 		}
 		// convert and store the verify truck image url
 		$this->truckVerifyImage = $newTruckVerifyImage;
@@ -358,20 +382,24 @@ public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
 	/**
 	 * mutator method for truck verify check
 	 *
-	 * @param string $newTruckVerifyChecked new value of truck verify check
+	 * @param string new truck verify checked new value of truck verify check
 	 * @throws \InvalidArgumentException if $newTruckVerifyChecked is not a tiny int
 	 * @throws \RangeException if $newTruckVerifyChecked is < than 1 or two
 	 * @throws \TypeError if $newTruckVerifyChecked is not an int
 	 **/
+
+
 	public function setTruckVerifyChecked(int $newTruckVerifyChecked)  {
 		// verify check content is secure
 		$newTruckVerifyChecked = filter_var($newTruckVerifyChecked, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
 		if($newTruckVerifyChecked  >1 ) {
-			throw(new \RangeException("verify check content is not valid. "));
+			throw(new \RangeException("Verify check content is not valid. "));
 		}
 
 
-		// Convert and store the truck verification content
+		/**
+		 *Convert and store the truck verification content
+		 * */
 		$this->truckVerifyChecked = $newTruckVerifyChecked;
 	}
 
