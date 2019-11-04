@@ -373,36 +373,27 @@ class Truck {
 	/**
 	 * accessor method for verify check
 	 *
-	 * @return int value of verify check
+	 * @return boolean value of verify check
 	 **/
-	public function getTruckVerifyChecked(): int {
+	public function getTruckVerifyChecked(): boolean {
 		return($this->truckVerifyChecked);
 	}
-
 	/**
 	 * mutator method for truck verify check
 	 *
-	 * @param string new truck verify checked new value of truck verify check
-	 * @throws \InvalidArgumentException if $newTruckVerifyChecked is not a tiny int
-	 * @throws \RangeException if $newTruckVerifyChecked is < than 1 or two
+	 * @param boolean $newTruckVerifyChecked new value of truck verify check
+	 * @throws \InvalidArgumentException if $newTruckVerifyChecked is not a boolean
+	 * @throws \RangeException if $newTruckVerifyChecked is < than 1
 	 * @throws \TypeError if $newTruckVerifyChecked is not an int
 	 **/
-
-
-	public function setTruckVerifyChecked(int $newTruckVerifyChecked)  {
+	public function setTruckVerifyChecked(boolean $newTruckVerifyChecked) {
 		// verify check content is secure
-		$newTruckVerifyChecked = filter_var($newTruckVerifyChecked, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
-		if($newTruckVerifyChecked  >1 ) {
-			throw(new \RangeException("Verify check content is not valid. "));
+		$newTruckVerifyChecked = filter_var($newTruckVerifyChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
+		if($newTruckVerifyChecked > 1) {
+			throw(new \RangeException("verify check content is not valid. "));
+			throw (new \TypeError("must be an in no greater than 1"));
 		}
-
-
-		/**
-		 *Convert and store the truck verification content
-		 * */
-		$this->truckVerifyChecked = $newTruckVerifyChecked;
 	}
-
 
 
 
@@ -415,7 +406,7 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType,
 	}
 
 	// create query template
-	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
+	$query = "SELECT truckId, truckUserId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
 	$statement = $pdo->prepare($query);
 	// bind the truck food type to the place holder in the template
 	$parameters = ["truckFoodType" => $truckFoodType];
@@ -425,8 +416,8 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType,
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
-			$truck[$truck->key()] = $truck;
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
+			$truck[$truck->$pdo()] = $truck;
 			$truck->next();
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -443,7 +434,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $tr
 	}
 
 	// create query template
-	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckUserId LIKE :truckUserId";
+	$query = "SELECT truckId, truckUserId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckUserId = :truckUserId";
 	$statement = $pdo->prepare($query);
 	// bind the truck food type to the place holder in the template
 	$parameters = ["truckUserId" => $truckUserId];
@@ -453,8 +444,8 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $tr
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
-			$truck[$truck->key()] = $truck;
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
+			$truck[$truck->$pdo()] = $truck;
 			$truck->next();
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -465,5 +456,38 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId, $tr
 	}
 
 
+
+
+
+//get truck by truck name method
+public function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \SplFixedArray {
+	// sanitize the description before searching
+	$truckName = filter_var($truckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	if(empty($truckName) === true) {
+		throw(new \PDOException("truck name is invalid"));
+	}
+
+	// create query template
+	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckName = :truckName";
+	$statement = $pdo->prepare($query);
+	// bind the truck name to the place holder in the template
+
+	$parameters = ["truckName" => $truckName];
+	$statement->execute($parameters);
+	// build an array of trucks
+	$trucks = new \SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	while(($row = $statement->fetch()) !== false) {
+		try {
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
+			$trucks[$truck->$pdo()] = $truck;
+			$truck->next();
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+	}
+	return ($trucks);
+}
 
 }
