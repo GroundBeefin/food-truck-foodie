@@ -102,6 +102,9 @@ public function setUserId($newUserId): void {
 	 *mutator method for user activation token
 	 *
 	 * @param string|null $newUserActivationTokenActivationToken
+	 * @throws \InvalidArgumentException if the token is not a string or insecure
+	 * @throws \RangeException if the token is not exactly 32 characters
+	 * @throws \TypeError if the activation token is not a string
 	 */
 	public function setUserActivationToken(?string $newUserActivationTokenActivationToken): void {
 		if($newUserActivationTokenActivationToken === null) {
