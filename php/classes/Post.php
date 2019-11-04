@@ -215,6 +215,9 @@ class Post implements \JsonSerializable {
 		$this->postDatetime = $newPostDatetime;
 	}
 
+
+
+/** PDOs start here */
 	/**
 	 * gets the Post by PostTruckId
 	 *
@@ -294,7 +297,7 @@ class Post implements \JsonSerializable {
 	 **/
 	public function update(\PDO $pdo) : void {
 		// create query template
-		$query = "UPDATE post SET postTruckId = :postTruckId, postContent = :postContent, postDatetime = :postDatetime FROM post WHERE postId = :postId";
+		$query = "UPDATE post SET postTruckId = :postTruckId, postContent = :postContent, postDatetime = :postDatetime WHERE postId = :postId";
 		$statement = $pdo->prepare($query);
 		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");
 		$parameters = ["postId" => $this->postId->getBytes(),"postTruckId" => $this->postTruckId->getBytes(), "postContent" => $this->postContent, "postDatetime" => $formattedDate];
