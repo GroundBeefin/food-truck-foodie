@@ -3,6 +3,8 @@
 namespace Groundbeefin\FoodTruckFoodie;
 require_once("autoload.php");
 require_once(dirname(__DIR__, 1) ."/vendor/autoload.php");
+
+use phpDocumentor\Reflection\Types\Boolean;
 use Ramsey\Uuid\Uuid;
 use TypeError;
 
@@ -319,4 +321,5 @@ class Post implements \JsonSerializable {
 	}
 
 }
+
 
