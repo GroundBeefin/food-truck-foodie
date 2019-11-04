@@ -17,14 +17,14 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  * @see Post
  * @author LeonelaGutierrez <Leonela_Gutierrez@hotmail.com>
  **/
-class PostTest extends DataDesignTest {
+class PostTest extends FoodTruckFoodieTest {
 	/**
-	 * Profile that created the Tweet; this is for foreign key relations
-	 * @var Profile profile
+	 * Profile that created the Post; this is for foreign key relations
+	 * @var Truck profile
 	 **/
-	protected $profile = null;
+	protected $truck = null;
 	/**
-	 * valid profile hash to create the profile object to own the test
+	 * valid user hash to create the dev object to own the test
 	 * @var $VALID_HASH
 	 */
 	protected $VALID_PROFILE_HASH;
