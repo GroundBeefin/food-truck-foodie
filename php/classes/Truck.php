@@ -383,19 +383,19 @@ class Truck  implements \JsonSerializable {
 	public function getTruckVerifiedChecked(): bool {
 		return($this->truckVerifiedCheck);
 	}
+
+
 	/**
 	 * mutator method for truck verify check
 	 *
 	 * @param boolean $newTruckVerifiedChecked new value of truck verify check
 	 * @throws RangeException if $newTruckVerifiedChecked is < than 1
-	 * @throws TypeError if $newTruckVerifiedChecked is not an int
 	 **/
 	public function setTruckVerifiedChecked(bool $newTruckVerifiedChecked) {
 		// verify check content is secure
 		$newTruckVerifiedChecked = filter_var($newTruckVerifiedChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
 		if($newTruckVerifiedChecked > 1) {
 			throw(new RangeException("verify check content is not valid. "));
-			throw (new TypeError("must be an in no greater than 1"));
 		}
 	}
 
