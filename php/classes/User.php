@@ -190,7 +190,7 @@ class User {
 	}
 
 	/**
-	 * mutator method for user profile hash password
+	 * mutator method for user hash password
 	 *
 	 * @param string $newUserHash
 	 * @throws InvalidArgumentException if the hash is not secure
