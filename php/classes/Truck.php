@@ -452,7 +452,7 @@ public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : Sp
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckVerifiedCheck"], $row["truckName"],  $row["truckVerifiedImage"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(Exception $exception) {
@@ -525,7 +525,7 @@ public static function getTruckByTruckName(PDO $pdo, string $truckName) : SplFix
 	}
 
 	// create query template
-	$query = "SELECT truckId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckName = :truckName";
+	$query = "SELECT truckId, truckUserId, truckActivationToken, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckName = :truckName";
 	$statement = $pdo->prepare($query);
 	// bind the truck name to the place holder in the template
 
@@ -536,7 +536,7 @@ public static function getTruckByTruckName(PDO $pdo, string $truckName) : SplFix
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"], $row["truckName"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(Exception $exception) {
