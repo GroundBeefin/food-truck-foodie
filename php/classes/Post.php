@@ -268,7 +268,7 @@ class Post implements \JsonSerializable {
 	 **/
 	public function insert(\PDO $pdo) : void {
 		// create query template
-		$query = "INSERT INTO post(postId, postTruckId, postUserId, postContent, postDatetime) VALUES(:postId, :postTruckId, :postUserId, :postContent, postDatetime)";
+		$query = "INSERT INTO post(postId, postTruckId, postUserId, postContent, postDatetime) VALUES(:postI0d, :postTruckId, :postUserId, :postContent, postDatetime)";
 		$statement = $pdo->prepare($query);
 		// bind the member variables to the place holders in the template
 		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");

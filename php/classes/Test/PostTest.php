@@ -24,33 +24,25 @@ class PostTest extends FoodTruckFoodieTest {
 	 **/
 	protected $truck = null;
 	/**
-	 * valid user hash to create the dev object to own the test
-	 * @var $VALID_HASH
+	 * valid user hash to create the object to own the test
+	 * @var $VALID_USER_HASH
 	 */
-	protected $VALID_PROFILE_HASH;
+	protected $VALID_USER_HASH;
 	/**
-	 * content of the Tweet
-	 * @var string $VALID_TWEETCONTENT
+	 * content of the Post
+	 * @var string $VALID_POSTCONTENT
 	 **/
-	protected $VALID_TWEETCONTENT = "PHPUnit test passing";
+	protected $VALID_POSTCONTENT = "PHPUnit test passing";
 	/**
-	 * content of the updated Tweet
-	 * @var string $VALID_TWEETCONTENT2
+	 * content of the updated Post
+	 * @var string $VALID_POSTCONTENT2
 	 **/
-	protected $VALID_TWEETCONTENT2 = "PHPUnit test still passing";
+	protected $VALID_POSTCONTENT2 = "PHPUnit test still passing";
 	/**
-	 * timestamp of the Tweet; this starts as null and is assigned later
-	 * @var \DateTime $VALID_TWEETDATE
+	 * timestamp of the Post; this starts as null and is assigned later
+	 * @var \DateTime $VALID_POSTDATE
 	 **/
-	protected $VALID_TWEETDATE = null;
-	/**
-	 * Valid timestamp to use as sunriseTweetDate
-	 */
-	protected $VALID_SUNRISEDATE = null;
-	/**
-	 * Valid timestamp to use as sunsetTweetDate
-	 */
-	protected $VALID_SUNSETDATE = null;
+	protected $VALID_POSTDATE = null;
 	/**
 	 * create dependent objects before running each test
 	 **/
@@ -58,29 +50,23 @@ class PostTest extends FoodTruckFoodieTest {
 		// run the default setUp() method first
 		parent::setUp();
 		$password = "abc123";
-		$this->VALID_PROFILE_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
-		// create and insert a Profile to own the test Tweet
-		$this->profile = new Profile(generateUuidV4(), null,"@handle", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_PROFILE_HASH, "+12125551212");
-		$this->profile->insert($this->getPDO());
+		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
+		// create and insert a Truck to own the test Post
+		$this->user = new User(generateUuidV4(), null,"@handle", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
+		$this->truck->insert($this->getPDO());
 		// calculate the date (just use the time the unit test was setup...)
-		$this->VALID_TWEETDATE = new \DateTime();
-		//format the sunrise date to use for testing
-		$this->VALID_SUNRISEDATE = new \DateTime();
-		$this->VALID_SUNRISEDATE->sub(new \DateInterval("P10D"));
-		//format the sunset date to use for testing
-		$this->VALID_SUNSETDATE = new\DateTime();
-		$this->VALID_SUNSETDATE->add(new \DateInterval("P10D"));
+		$this->VALID_POSTDATETIME = new \DateTime();
 	}
 	/**
-	 * test inserting a valid Tweet and verify that the actual mySQL data matches
+	 * test inserting a valid Post and verify that the actual mySQL data matches
 	 **/
-	public function testInsertValidTweet() : void {
-		// create a new Tweet and insert to into mySQL
-		$tweetId = generateUuidV4();
-		$tweet = new Tweet($tweetId, $this->profile->getProfileId(), $this->VALID_TWEETCONTENT, $this->VALID_TWEETDATE);
-		$tweet->insert($this->getPDO());
+	public function testInsertValidPost() : void {
+		// create a new Post and insert to into mySQL
+		$postId = generateUuidV4();
+		$post = new Post($postId, $this->truck->getTruckId()Id(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post->insert($this->getPDO());
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoTweet = Tweet::getTweetByTweetId($this->getPDO(), $tweet->getTweetId());
+		$pdoPost = Post::getPostByTweetId($this->getPDO(), $tweet->getTweetId());
 		$this->assertEquals($pdoTweet->getTweetId()->toString(), $tweetId->toString());
 		$this->assertEquals($pdoTweet->getTweetProfileId(), $tweet->getTweetId()->toString());
 		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT);
