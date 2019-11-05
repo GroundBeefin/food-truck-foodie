@@ -398,11 +398,35 @@ class Truck  implements \JsonSerializable {
 			throw(new RangeException("verify check content is not valid. "));
 		}
 	}
+	//get truck by truck id
+	public static function getTruckByTruckId(PDO $pdo, string $truckId) : SplFixedArray {
+		try {
+			$truckId = self::validateUuid($truckId);
+		} catch(InvalidArgumentException | RangeException | Exception | TypeError $exception) {
+			throw(new PDOException($exception->getMessage(), 0, $exception));
+		}
 
-
-
-
-
+		// create query template
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckId = :truckId";
+		$statement = $pdo->prepare($query);
+		// bind the truck id to the place holder in the template
+		$parameters = ["truckId" => $truckId];
+		$statement->execute($parameters);
+		// build an array of trucks
+		$trucks = new SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckName"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				$trucks[$truck->$pdo()] = $truck;
+				$trucks->next();
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return($trucks);
+	}
 
 
 //get truck by food type
@@ -434,6 +458,7 @@ public static function getTruckByTruckFoodType(PDO $pdo, string $truckFoodType) 
 	}
 	return($trucks);
 }
+//get truck by truck user id
 public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : SplFixedArray {
 	try {
 		$truckUserId = self::validateUuid($truckUserId);
@@ -462,6 +487,38 @@ public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : Sp
 	}
 	return($trucks);
 	}
+
+
+	//get truck by truck name method
+	public static function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \SplFixedArray {
+		// sanitize the description before searching
+		$truckName = filter_var($truckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($truckName) === true) {
+			throw(new \PDOException("truck name is invalid"));
+		}
+
+		// create query template
+		$query = "SELECT truckId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckName LIKE :truckName";
+	$statement = $pdo->prepare($query);
+	// bind the truck name to the place holder in the template
+	$parameters = ["truckName" => $truckName];
+	$statement->execute($parameters);
+	// build an array of trucks
+	$trucks = new \SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	while(($row = $statement->fetch()) !== false) {
+		try {
+			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
+			$trucks[$truck->$pdo()] = $truck;
+			$trucks->next();
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+	}
+	return($trucks);
+	}
+
 
 	/**
 	 * inserts this truck into mySQL
@@ -511,41 +568,7 @@ public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : Sp
 		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage, truckVerifiedCheck= :truckVerifiedCheck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
 
-
 	}
-
-
-
-//get truck by truck name method
-public static function getTruckByTruckName(PDO $pdo, string $truckName) : SplFixedArray {
-	// sanitize the description before searching
-	$truckName = filter_var($truckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	if(empty($truckName) === true) {
-		throw(new PDOException("truck name is invalid"));
-	}
-
-	// create query template
-	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckName = :truckName";
-	$statement = $pdo->prepare($query);
-	// bind the truck name to the place holder in the template
-
-	$parameters = ["truckName" => $truckName];
-	$statement->execute($parameters);
-	// build an array of trucks
-	$trucks = new SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-	while(($row = $statement->fetch()) !== false) {
-		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"], $row["truckName"]);
-			$trucks[$truck->$pdo()] = $truck;
-			$trucks->next();
-		} catch(Exception $exception) {
-			// if the row couldn't be converted, rethrow it
-			throw(new PDOException($exception->getMessage(), 0, $exception));
-		}
-	}
-	return($trucks);
-}
 
 	/**
 	 * formats the state variables for JSON serialization
