@@ -1,18 +1,21 @@
 <?php
-namespace Groundbeefin\FoodTruckFoodie\Test;
 
+namespace Groundbeefin\FoodTruckFoodie\Test;
 use Groundbeefin\FoodTruckFoodie\{
 	User, Truck, Post
 };
+
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
+
 // grab the uuid generator
 require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
+
 /**
  * Full PHPUnit test for the Post class
  *
  * This is a complete PHPUnit test of the Post class. It is complete because *ALL* mySQL/PDO enabled methods
- * are tested for both invalid and valid inputs.
+ * are tested valid inputs.
  *
  * @see Post
  * @author LeonelaGutierrez <Leonela_Gutierrez@hotmail.com>
@@ -30,7 +33,7 @@ class PostTest extends FoodTruckFoodieTest {
 	protected $VALID_USER_HASH;
 	/**
 	 * truck that created the post; this is a foreign key
-	 * @var $truck profile
+	 * @var $truck
 	 */
 	protected $truck = null;
 	/**
@@ -57,37 +60,45 @@ class PostTest extends FoodTruckFoodieTest {
 	 * create dependent objects before running each test
 	 **/
 	public final function setUp()  : void {
-		// run the default setUp() method first
-		parent::setUp();
+			// run the default setUp() method first
+			parent::setUp();
 
-		//create and salt the hash for the mocked profile
-		$password = "abc123";
-		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
-		$this->
+			//create and salt the hash for the mocked profile
+			$password = "abc123";
+			$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 
+			// create and insert a User to own the test Post
+			$this->user = new User(generateUuidV4(), null,"@handle", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
+			$this->user->insert($this->getPDO());
 
-		// create and insert a User to own the test Post
-		$this->user = new User(generateUuidV4(), null,"@handle", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
-		$this->user->insert($this->getPDO());
-		// calculate the date (just use the time the unit test was setup...)
-		$this->VALID_POSTDATETIME = new \DateTime();
-	}
+			// create and insert the mocked truck profile
+			$this->truck = new Truck(generateUuidV4(), null,"@phpunit", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_HASH, "+12125551212");
+			$this->truck->insert($this->getPDO());
 
+			// create  and insert the mocked post
+			$this->post = new Post(generateUuidV4(), $this->post->getPostId(), "PHPUnit like test passing");
+			$this->post->insert($this->getPDO());
 
-
-
+			// calculate the date (just use the time the unit test was setup...)
+			$this->VALID_POSTDATETIME = new \DateTime();
+		}
 
 
 	/**
 	 * test inserting a valid Post and verify that the actual mySQL data matches
 	 **/
 	public function testInsertValidPost() : void {
+
+
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($postId, $this->truck->getTruckId()Id(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($postId, $this->truck->getTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
+
+
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoPost = Post::getPostByTweetId($this->getPDO(), $tweet->getTweetId());
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
+
 		$this->assertEquals($pdoTweet->getTweetId()->toString(), $tweetId->toString());
 		$this->assertEquals($pdoTweet->getTweetProfileId(), $tweet->getTweetId()->toString());
 		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT);
