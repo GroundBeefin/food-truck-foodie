@@ -16,6 +16,7 @@ create table user(
 
 create table truck(
 	truckId binary(16) not null,
+	truckUserId binary (16) not null,
 	truckActivationToken char(32) not null,
 	truckAvatarUrl varchar(255),
 	truckEmail varchar(128) not null,
