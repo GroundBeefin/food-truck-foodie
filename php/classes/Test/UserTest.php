@@ -135,15 +135,15 @@ class UserTest extends FoodTruckFoodieTest {
 		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
 	/**
-	 * test grabbing a Profile that does not exist
+	 * test grabbing a User that does not exist
 	 **/
-	public function testGetInvalidProfileByProfileId() : void {
-		// grab a profile id that exceeds the maximum allowable profile id
-		$fakeProfileId = generateUuidV4();
-		$profile = Profile::getProfileByProfileId($this->getPDO(), $fakeProfileId );
-		$this->assertNull($profile);
+	public function testGetInvalidUserByUserId() : void {
+		// grab a user id that exceeds the maximum allowable user id
+		$fakeUserId = generateUuidV4();
+		$user = User::getUserByUserId($this->getPDO(), $fakeUserId );
+		$this->assertNull($user);
 	}
-	public function testGetValidProfileByAtHandle() {
+	public function testGetValidUsergit ByAtHandle() {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("profile");
 		$profileId = generateUuidV4();
