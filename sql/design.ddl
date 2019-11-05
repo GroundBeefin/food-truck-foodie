@@ -8,7 +8,7 @@ create table user(
 	userActivationToken char(32) not null,
 	userAvatarUrl varchar(255),
 	userEmail varchar(128) not null,
-	userHash char(97) not null,
+	userHash char(32) not null,
 	userName varchar(16)not null,
 	unique (userEmail),
 	index (userId),
