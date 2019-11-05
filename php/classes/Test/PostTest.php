@@ -51,12 +51,20 @@ class PostTest extends FoodTruckFoodieTest {
 		parent::setUp();
 		$password = "abc123";
 		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
-		// create and insert a Truck to own the test Post
+
+
+		// create and insert a User to own the test Post
 		$this->user = new User(generateUuidV4(), null,"@handle", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
-		$this->truck->insert($this->getPDO());
+		$this->user->insert($this->getPDO());
 		// calculate the date (just use the time the unit test was setup...)
 		$this->VALID_POSTDATETIME = new \DateTime();
 	}
+
+
+
+
+
+
 	/**
 	 * test inserting a valid Post and verify that the actual mySQL data matches
 	 **/

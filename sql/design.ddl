@@ -21,6 +21,7 @@ create table truck(
 	truckEmail varchar(128) not null,
 	truckFoodType varchar(50) not null,
 	truckMenuUrl varchar(255),
+	truckPhoneNumber char (10),
 	truckVerifyImage varchar(255),
 	truckVerifiedCheck tinyint(1) not null,
 	truckName varchar(16),
