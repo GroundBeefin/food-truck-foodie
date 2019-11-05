@@ -1,7 +1,7 @@
 <?php
 namespace Groundbeefin\FoodTruckFoodie;
 use Groundbeefin\FoodTruckFoodie; {
-	User; Trucks; Post;
+	User; Truck; Post;
 };
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
@@ -47,25 +47,29 @@ class UserTest extends FoodTruckFoodieTest {
 	 * @var string $VALID_PHONE
 	 **/
 	protected $VALID_USER_NAME;
+
 	/**
 	 * run the default setup operation to create salt and hash.
 	 */
 	public final function setUp() : void {
 		parent::setUp();
-		//
 		$password = "abc123";
 		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 		$this->VALID_USER_ACTIVATION_TOKEN = bin2hex(random_bytes(16));
 	}
+
 	/**
 	 * test inserting a valid User and verify that the actual mySQL data matches
 	 **/
 	public function testInsertValidUser() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
+
 		$userId = generateUuidV4();
+
 		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
+
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
@@ -76,18 +80,22 @@ class UserTest extends FoodTruckFoodieTest {
 		$this->assertEquals($pdoUser->getUserHash(), $this->VALID_USER_HASH);
 		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
+
 	/**
 	 * test inserting a User, editing it, and then updating it
 	 **/
 	public function testUpdateValidUser() {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
+
 		// create a new User and insert to into mySQL
 		$userId = generateUuidV4();
 		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
+
 		// edit the User and update it in mySQL
 		$user->update($this->getPDO());
+
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoUser = USER::getUserByUserId($this->getPDO(), $user->getUserId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
@@ -121,9 +129,11 @@ class UserTest extends FoodTruckFoodieTest {
 	public function testGetValidUserByUserId() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
+
 		$userId = generateUuidV4();
 		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
+
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
@@ -143,45 +153,17 @@ class UserTest extends FoodTruckFoodieTest {
 		$user = User::getUserByUserId($this->getPDO(), $fakeUserId );
 		$this->assertNull($user);
 	}
-	public function testGetValidUsergit ByAtHandle() {
+	/**
+	 * test grabbing a User by user id
+	 **/
+	public function testGetValidUserByUserId() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("profile");
+
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE, $this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
 		$profile->insert($this->getPDO());
-		//grab the data from MySQL
-		$results = Profile::getProfileByProfileAtHandle($this->getPDO(), $this->VALID_ATHANDLE);
-		$this->assertEquals($numRows +1, $this->getConnection()->getRowCount("profile"));
-		//enforce no other objects are bleeding into profile
-		$this->assertContainsOnlyInstancesOf("Edu\\CNM\\DataDesign\\Profile", $results);
-		//enforce the results meet expectations
-		$pdoProfile = $results[0];
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
-		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
-		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_ACTIVATION);
-		$this->assertEquals($pdoProfile->getProfileAtHandle(), $this->VALID_ATHANDLE);
-		$this->assertEquals($pdoProfile->getProfileAvatarUrl(), $this->VALID_PROFILE_AVATAR_URL);
-		$this->assertEquals($pdoProfile->getProfileEmail(), $this->VALID_EMAIL);
-		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_HASH);
-		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PHONE);
-	}
-	/**
-	 * test grabbing a Profile by at handle that does not exist
-	 **/
-	public function testGetInvalidProfileByAtHandle() : void {
-		// grab an at handle that does not exist
-		$profile = Profile::getProfileByProfileAtHandle($this->getPDO(), "@doesnotexist");
-		$this->assertCount(0, $profile);
-	}
-	/**
-	 * test grabbing a Profile by email
-	 **/
-	public function testGetValidProfileByEmail() : void {
-		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("profile");
-		$profileId = generateUuidV4();
-		$profile = new Profile($profileId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE, $this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
-		$profile->insert($this->getPDO());
+		
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoProfile = Profile::getProfileByProfileEmail($this->getPDO(), $profile->getProfileEmail());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
@@ -201,32 +183,5 @@ class UserTest extends FoodTruckFoodieTest {
 		$profile = Profile::getProfileByProfileEmail($this->getPDO(), "does@not.exist");
 		$this->assertNull($profile);
 	}
-	/**
-	 * test grabbing a profile by its activation
-	 */
-	public function testGetValidProfileByActivationToken() : void {
-		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("profile");
-		$profileId = generateUuidV4();
-		$profile = new Profile($profileId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE, $this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
-		$profile->insert($this->getPDO());
-		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoProfile = Profile::getProfileByProfileActivationToken($this->getPDO(), $profile->getProfileActivationToken());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
-		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
-		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_ACTIVATION);
-		$this->assertEquals($pdoProfile->getProfileAtHandle(), $this->VALID_ATHANDLE);
-		$this->assertEquals($pdoProfile->getProfileAvatarUrl(), $this->VALID_PROFILE_AVATAR_URL);
-		$this->assertEquals($pdoProfile->getProfileEmail(), $this->VALID_EMAIL);
-		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_HASH);
-		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PHONE);
-	}
-	/**
-	 * test grabbing a Profile by an email that does not exists
-	 **/
-	public function testGetInvalidProfileActivation() : void {
-		// grab an email that does not exist
-		$profile = Profile::getProfileByProfileActivationToken($this->getPDO(), "6675636b646f6e616c646472756d7066");
-		$this->assertNull($profile);
-	}
 }
+
