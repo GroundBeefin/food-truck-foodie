@@ -99,38 +99,47 @@ class PostTest extends FoodTruckFoodieTest {
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
 
-		$this->assertEquals($pdoTweet->getTweetId()->toString(), $tweetId->toString());
-		$this->assertEquals($pdoTweet->getTweetProfileId(), $tweet->getTweetId()->toString());
-		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT);
+		$this->assertEquals($pdoPost->getPostId()->toString(), $postId->toString());
+		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
+		$this->assertEquals($pdoPost->getPostUserId(), $post->getPostId()->toString());
+		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoTweet->getTweetDate()->getTimestamp(), $this->VALID_TWEETDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
+
+
 	/**
-	 * test inserting a Tweet, editing it, and then updating it
+	 * test inserting a Post, editing it, and then updating it
 	 **/
-	public function testUpdateValidTweet() : void {
+	public function testUpdateValidPost() : void {
 		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("tweet");
-		// create a new Tweet and insert to into mySQL
-		$tweetId = generateUuidV4();
-		$tweet = new Tweet($tweetId, $this->profile->getProfileId(), $this->VALID_TWEETCONTENT, $this->VALID_TWEETDATE);
-		$tweet->insert($this->getPDO());
-		// edit the Tweet and update it in mySQL
-		$tweet->setTweetContent($this->VALID_TWEETCONTENT2);
-		$tweet->update($this->getPDO());
+		$numRows = $this->getConnection()->getRowCount("post");
+
+		// create a new Post and insert to into mySQL
+		$postId = generateUuidV4();
+		$post = new Post($postId, $this->profile->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post->insert($this->getPDO());
+
+		// edit the Post and update it in mySQL
+		$post->setPostContent($this->VALID_POSTCONTENT2);
+		$post->update($this->getPDO());
+
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoTweet = Tweet::getTweetByTweetId($this->getPDO(), $tweet->getTweetId());
-		$this->assertEquals($pdoTweet->getTweetId(), $tweetId);
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("tweet"));
-		$this->assertEquals($pdoTweet->getTweetProfileId()->toString(), $this->profile->getProfileId()->toString());
-		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT2);
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostId());
+
+		$this->assertEquals($pdoPost->getPostId()->toString(), $postId->toString());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
+		$this->assertEquals($pdoPost->getPostTruckId()->toString(), $this->truck->getTruckId()->toString());
+		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT2);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoTweet->getTweetDate()->getTimestamp(), $this->VALID_TWEETDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
+
+
 	/**
-	 * test creating a Tweet and then deleting it
+	 * test creating a Post and then deleting it
 	 **/
-	public function testDeleteValidTweet() : void {
+	public function testDeleteValidPost() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("tweet");
 		// create a new Tweet and insert to into mySQL
