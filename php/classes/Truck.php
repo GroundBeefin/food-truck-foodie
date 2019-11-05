@@ -83,11 +83,11 @@ class Truck  implements \JsonSerializable {
 	 * @param string $newTruckName string containing the actual name of the truck
 	 * @param string $newTruckPhoneNumber containing the phone number to contact the truck
 	 * @param string $newTruckVerifyImage containing the verify image to see if this is a real food truck
-	 * @param string $newTruckVerifiedChecked containing the data that the truck has been checked and verified as a real foo truck.
+	 * @param string $newTruckVerifiedCheck containing the data that the truck has been checked and verified as a real foo truck.
 	 * */
 
 
-	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, $newTruckVerifiedChecked) {
+	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, $newTruckVerifiedCheck) {
 		try {
 			$this->setTruckId($newTruckId);
 			$this->setTruckUserId($newTruckUserId);
@@ -98,7 +98,7 @@ class Truck  implements \JsonSerializable {
 			$this->setTruckName($newTruckName);
 			$this->setTruckPhoneNumber($newTruckPhoneNumber);
 			$this->setTruckVerifyImage($newTruckVerifyImage);
-			$this->setTruckVerifiedChecked($newTruckVerifiedChecked);
+			$this->setTruckVerifiedCheck($newTruckVerifiedCheck);
 		} catch(InvalidArgumentException | RangeException | Exception|  TypeError $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
@@ -380,7 +380,7 @@ class Truck  implements \JsonSerializable {
 	 *
 	 * @return boolean value of verify check
 	 **/
-	public function getTruckVerifiedChecked(): bool {
+	public function getTruckVerifiedCheck(): bool {
 		return($this->truckVerifiedCheck);
 	}
 
@@ -388,13 +388,13 @@ class Truck  implements \JsonSerializable {
 	/**
 	 * mutator method for truck verify check
 	 *
-	 * @param boolean $newTruckVerifiedChecked new value of truck verify check
-	 * @throws RangeException if $newTruckVerifiedChecked is < than 1
+	 * @param boolean $newTruckVerifiedCheck new value of truck verify check
+	 * @throws RangeException if $newTruckVerifiedCheck is < than 1
 	 **/
-	public function setTruckVerifiedChecked(bool $newTruckVerifiedChecked) {
+	public function setTruckVerifiedCheck(bool $newTruckVerifiedCheck) {
 		// verify check content is secure
-		$newTruckVerifiedChecked = filter_var($newTruckVerifiedChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
-		if($newTruckVerifiedChecked > 1) {
+		$newTruckVerifiedCheck = filter_var($newTruckVerifiedCheck, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
+		if($newTruckVerifiedCheck > 1) {
 			throw(new RangeException("verify check content is not valid. "));
 		}
 	}
@@ -424,7 +424,7 @@ public static function getTruckByTruckFoodType(PDO $pdo, string $truckFoodType) 
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(Exception $exception) {
@@ -452,7 +452,7 @@ public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : Sp
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckVerifiedCheck"], $row["truckName"],  $row["truckVerifiedImage"]);
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckName"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(Exception $exception) {
