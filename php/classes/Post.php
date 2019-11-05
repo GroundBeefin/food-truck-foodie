@@ -218,47 +218,6 @@ class Post implements \JsonSerializable {
 	}
 
 
-
-/** PDOs start here */
-	/**
-	 * gets the Post by PostTruckId
-	 *
-	 * @param \PDO $pdo PDO connection object
-	 * @param Uuid|string $postTruckId truck id to search by
-	 * @return \SplFixedArray SplFixedArray of posts found
-	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError when variables are not the correct data type
-	 **/
-	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId): \SplFixedArray {
-
-		try {
-			$postTruckId = self::validateUuid($postTruckId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
-			throw(new \PDOException($exception->getMessage(), 0, $exception));
-		}
-
-		// create query template
-		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime WHERE postTruckId = :postTruckId";
-		$statement = $pdo->prepare($query);
-		// bind the post truck id to the place holder in the template
-		$parameters = ["postTruckId" => $postTruckId->getBytes()];
-		$statement->execute($parameters);
-		// build an array of post
-		$posts = new \SplFixedArray($statement->rowCount());
-		$statement->setFetchMode(\PDO::FETCH_ASSOC);
-		while(($row = $statement->fetch()) !== false) {
-			try {
-				$post = new Post($row["postID"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
-				$posts[$posts->key()] = $post;
-				$posts->next();
-			} catch(\Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new \PDOException($exception->getMessage(), 0, $exception));
-			}
-		}
-		return ($post);
-	}
-
 	/**
 	 * inserts this Post into mySQL
 	 *
@@ -306,6 +265,47 @@ class Post implements \JsonSerializable {
 		$statement->execute($parameters);
 	}
 
+
+
+
+	/**
+	 * gets the Post by PostTruckId
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid|string $postTruckId truck id to search by
+	 * @return \SplFixedArray SplFixedArray of posts found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId): \SplFixedArray {
+
+		try {
+			$postTruckId = self::validateUuid($postTruckId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+
+		// create query template
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime WHERE postTruckId = :postTruckId";
+		$statement = $pdo->prepare($query);
+		// bind the post truck id to the place holder in the template
+		$parameters = ["postTruckId" => $postTruckId->getBytes()];
+		$statement->execute($parameters);
+		// build an array of post
+		$posts = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$post = new Post($row["postID"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
+				$posts[$posts->key()] = $post;
+				$posts->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($posts);
+	}
 
 	/**
 	 * Specify data which should be serialized to JSON

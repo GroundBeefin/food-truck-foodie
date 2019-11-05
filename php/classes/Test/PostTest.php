@@ -20,19 +20,24 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
 class PostTest extends FoodTruckFoodieTest {
 	/**
 	 * User with registered truck ; this is for foreign key relations
-	 * @var User profile
+	 * @var User
 	 **/
 	protected $user = null;
 	/**
-	 * valid user hash to create the object to own the test
+	 * valid $user hash
 	 * @var $VALID_USER_HASH
 	 */
 	protected $VALID_USER_HASH;
 	/**
 	 * truck that created the post; this is a foreign key
-	 * @var Truck profile
+	 * @var $truck profile
 	 */
 	protected $truck = null;
+	/**
+	 * valid truckId to create the object to own the test
+	 * @var $VALID_TRUCK_ID
+	 */
+	protected $VALID_TRUCK_ID;
 	/**
 	 * content of the Post
 	 * @var string $VALID_POSTCONTENT
@@ -54,8 +59,11 @@ class PostTest extends FoodTruckFoodieTest {
 	public final function setUp()  : void {
 		// run the default setUp() method first
 		parent::setUp();
+
+		//create and salt the hash for the mocked profile
 		$password = "abc123";
 		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
+		$this->
 
 
 		// create and insert a User to own the test Post

@@ -24,7 +24,7 @@ create table truck(
 	truckMenuUrl varchar(255),
 	truckPhoneNumber char (10),
 	truckVerifyImage varchar(255),
-	truckVerifiedCheck tinyint(1) not null,
+	truckVerifiedCheck boolean,
 	truckName varchar(16),
 	index (truckUserId),
 	foreign key (truckUserId) references truck(truckId),
