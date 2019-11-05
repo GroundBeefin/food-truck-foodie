@@ -11,6 +11,7 @@ create table user(
 	userHash char(97) not null,
 	userName varchar(16)not null,
 	unique (userEmail),
+	index (userId),
 	primary key(userId)
 );
 
@@ -25,6 +26,8 @@ create table truck(
 	truckVerifyImage varchar(255),
 	truckVerifiedCheck tinyint(1) not null,
 	truckName varchar(16),
+	index (truckUserId),
+	foreign key (truckUserId) references truck(truckId),
 	primary key (truckId)
 );
 
@@ -35,5 +38,9 @@ create table post(
 	postUserId binary(16),
 	postContent varchar(144) null,
 	postDatetime datetime(6) not null,
+	index (postTruckId),
+	index (postUserId),
+	foreign key(postTruckId) references truck(truckId),
+	foreign key(postUserId) references user(userId),
 	primary key (postId)
 );

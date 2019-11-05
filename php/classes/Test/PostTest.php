@@ -19,15 +19,20 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  **/
 class PostTest extends FoodTruckFoodieTest {
 	/**
-	 * Profile that created the Post; this is for foreign key relations
-	 * @var Truck profile
+	 * User with registered truck ; this is for foreign key relations
+	 * @var User profile
 	 **/
-	protected $truck = null;
+	protected $user = null;
 	/**
 	 * valid user hash to create the object to own the test
 	 * @var $VALID_USER_HASH
 	 */
 	protected $VALID_USER_HASH;
+	/**
+	 * truck that created the post; this is a foreign key
+	 * @var Truck profile
+	 */
+	protected $truck = null;
 	/**
 	 * content of the Post
 	 * @var string $VALID_POSTCONTENT

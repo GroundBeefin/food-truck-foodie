@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 use TypeError;
 
 /**
- * Cloass for Post
+ * Class for Post
  *
  * @author Leonela Guteirrez <leonela_gutierrez@hotmail.com>
  **/
