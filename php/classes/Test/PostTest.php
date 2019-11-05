@@ -72,7 +72,7 @@ class PostTest extends FoodTruckFoodieTest {
 			$this->user->insert($this->getPDO());
 
 			// create and insert the mocked truck profile
-			$this->truck = new Truck(generateUuidV4(), generateUuidV4() null,"@phpunit", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_HASH, "+12125551212");
+			$this->truck = new Truck(generateUuidV4(), generateUuidV4(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTrucOne", "5055554463", "image.url", "1");
 			$this->truck->insert($this->getPDO());
 
 
@@ -154,101 +154,61 @@ class PostTest extends FoodTruckFoodieTest {
 		$this->assertNull($pdoPost);
 		$this->assertEquals($numRows, $this->getConnection()->getRowCount("post"));
 	}
-	/**
-	 * test grabbing a Post that does not exist
-	 **/
-	public function testGetInvalidTweetByTweetId() : void {
-		// grab a profile id that exceeds the maximum allowable profile id
-		$tweet = Tweet::getTweetByTweetId($this->getPDO(), generateUuidV4());
-		$this->assertNull($tweet);
-	}
-	/**
-	 * test inserting a Tweet and regrabbing it from mySQL
-	 *
-	 *
-	 **/
-	public function testGetValidTweetByTweetProfileId() {
-		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("tweet");
-		// create a new Tweet and insert to into mySQL
-		$tweetId = generateUuidV4();
-		$tweet = new Tweet($tweetId, $this->profile->getProfileId(), $this->VALID_TWEETCONTENT, $this->VALID_TWEETDATE);
-		$tweet->insert($this->getPDO());
-		// grab the data from mySQL and enforce the fields match our expectations
-		$results = Tweet::getTweetByTweetProfileId($this->getPDO(), $tweet->getTweetProfileId());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("tweet"));
-		$this->assertCount(1, $results);
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\DataDesign\\Tweet", $results);
-		// grab the result from the array and validate it
-		$pdoTweet = $results[0];
 
-		$this->assertEquals($pdoTweet->getTweetId(), $tweetId);
-		$this->assertEquals($pdoTweet->getTweetProfileId(), $this->profile->getProfileId());
-		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT);
-		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoTweet->getTweetDate()->getTimestamp(), $this->VALID_TWEETDATE->getTimestamp());
-	}
 	/**
-	 * test grabbing a Tweet that does not exist
+	 * test inserting a Post and regrabbing it from mySQL
+	 *
+	 *
 	 **/
-	public function testGetInvalidTweetByTweetProfileId() : void {
-		// grab a profile id that exceeds the maximum allowable profile id
-		$tweet = Tweet::getTweetByTweetProfileId($this->getPDO(), generateUuidV4());
-		$this->assertCount(0, $tweet);
-	}
-	/**
-	 * test grabbing a Tweet by tweet content
-	 **/
-	public function testGetValidTweetByTweetContent() : void {
+	public function testGetValidPostByPostTruckId() {
 		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("tweet");
-		// create a new Tweet and insert to into mySQL
-		$tweetId = generateUuidV4();
-		$tweet = new Tweet($tweetId, $this->profile->getProfileId(), $this->VALID_TWEETCONTENT, $this->VALID_TWEETDATE);
-		$tweet->insert($this->getPDO());
+		$numRows = $this->getConnection()->getRowCount("post");
+
+		// create a new Post and insert to into mySQL
+		$postId = generateUuidV4();
+		$post = new Post($postId, $this->truck->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post->insert($this->getPDO());
+
 		// grab the data from mySQL and enforce the fields match our expectations
-		$results = Tweet::getTweetByTweetContent($this->getPDO(), $tweet->getTweetContent());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("tweet"));
+		$results = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
 		$this->assertCount(1, $results);
-		// enforce no other objects are bleeding into the test
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\DataDesign\\Tweet", $results);
+		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Post", $results);
+
 		// grab the result from the array and validate it
-		$pdoTweet = $results[0];
-		$this->assertEquals($pdoTweet->getTweetId(), $tweetId);
-		$this->assertEquals($pdoTweet->getTweetProfileId(), $this->profile->getProfileId());
-		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT);
+		$pdoPost = $results[0];
+
+		$this->assertEquals($pdoPost->getPostId(), $postId);
+		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getPostTruckId());
+		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoTweet->getTweetDate()->getTimestamp(), $this->VALID_TWEETDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
+
 	/**
-	 * test grabbing a Tweet by content that does not exist
+	 * test grabbing all Posts
 	 **/
-	public function testGetInvalidTweetByTweetContent() : void {
-		// grab a tweet by content that does not exist
-		$tweet = Tweet::getTweetByTweetContent($this->getPDO(), "Comcast has the best service EVER #comcastLove");
-		$this->assertCount(0, $tweet);
-	}
-	/**
-	 * test grabbing all Tweets
-	 **/
-	public function testGetAllValidTweets() : void {
+	public function testGetAllValidPosts() : void {
 		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("tweet");
-		// create a new Tweet and insert to into mySQL
-		$tweetId = generateUuidV4();
-		$tweet = new Tweet($tweetId, $this->profile->getProfileId(), $this->VALID_TWEETCONTENT, $this->VALID_TWEETDATE);
-		$tweet->insert($this->getPDO());
+		$numRows = $this->getConnection()->getRowCount("post");
+
+		// create a new Post and insert to into mySQL
+		$postId = generateUuidV4();
+		$post = new Post($postId, $this->truck->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post->insert($this->getPDO());
+
 		// grab the data from mySQL and enforce the fields match our expectations
-		$results = Tweet::getAllTweets($this->getPDO());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("tweet"));
+		$results = Post::getAllPosts($this->getPDO());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
 		$this->assertCount(1, $results);
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\DataDesign\\Tweet", $results);
+		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Post", $results);
+
 		// grab the result from the array and validate it
-		$pdoTweet = $results[0];
-		$this->assertEquals($pdoTweet->getTweetId(), $tweetId);
-		$this->assertEquals($pdoTweet->getTweetProfileId(), $this->profile->getProfileId());
-		$this->assertEquals($pdoTweet->getTweetContent(), $this->VALID_TWEETCONTENT);
+		$pdoPost = $results[0];
+		$this->assertEquals($pdoPost->getPostId(), $postId);
+		$this->assertEquals($pdoPost->getTruckPostId(), $this->truck->getPostTruckId());
+		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoTweet->getTweetDate()->getTimestamp(), $this->VALID_TWEETDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
 }

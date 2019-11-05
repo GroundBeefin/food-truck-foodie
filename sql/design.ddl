@@ -22,10 +22,10 @@ create table truck(
 	truckEmail varchar(128) not null,
 	truckFoodType varchar(50) not null,
 	truckMenuUrl varchar(255),
+	truckName varchar(144),
 	truckPhoneNumber char (10),
 	truckVerifyImage varchar(255),
 	truckVerifiedCheck boolean,
-	truckName varchar(16),
 	index (truckUserId),
 	foreign key (truckUserId) references truck(truckId),
 	primary key (truckId)
