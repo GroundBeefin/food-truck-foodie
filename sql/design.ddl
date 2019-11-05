@@ -8,7 +8,7 @@ create table user(
 	userActivationToken char(32) not null,
 	userAvatarUrl varchar(255),
 	userEmail varchar(128) not null,
-	userProfileHash char(97) not null,
+	userHash char(97) not null,
 	userName varchar(16)not null,
 	unique (userEmail),
 	primary key(userId)
@@ -17,7 +17,6 @@ create table user(
 create table truck(
 	truckId binary(16) not null,
 	truckUserId binary (16) not null,
-	truckActivationToken char(32) not null,
 	truckAvatarUrl varchar(255),
 	truckEmail varchar(128) not null,
 	truckFoodType varchar(50) not null,
