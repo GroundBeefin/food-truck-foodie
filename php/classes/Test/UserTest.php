@@ -16,7 +16,7 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  * @see User
  * @author Dylan McDonald <dmcdonald21@cnm.edu>
  **/
-class UserTest extends FoodTruckFoodieTest {
+class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 	/**
 	 * valid user Id to user
 	 * @var string $USER_ID
