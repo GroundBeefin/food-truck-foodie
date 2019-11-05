@@ -1,12 +1,19 @@
 <?php
+
 namespace Groundbeefin\FoodTruckFoodie;
-use Groundbeefin\FoodTruckFoodie; {
-	User; Truck; Post;
+
+use Groundbeefin\FoodTruckFoodie;
+
+{
+	User;
+	Truck;
+	Post;
 };
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
 // grab the uuid generator
 require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
+
 /**
  * Full PHPUnit test for the User class
  *
@@ -14,7 +21,7 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  * are tested for both invalid and valid inputs.
  *
  * @see User
- * @author Dylan McDonald <dmcdonald21@cnm.edu>
+ * @author Zachary Sanchez <zacharyesanchez22@gmail.com>
  **/
 class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 	/**
@@ -51,7 +58,7 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 	/**
 	 * run the default setup operation to create salt and hash.
 	 */
-	public final function setUp() : void {
+	public final function setUp(): void {
 		parent::setUp();
 		$password = "abc123";
 		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
@@ -61,13 +68,13 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 	/**
 	 * test inserting a valid User and verify that the actual mySQL data matches
 	 **/
-	public function testInsertValidUser() : void {
+	public function testInsertValidUser(): void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
 
 		$userId = generateUuidV4();
 
-		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
+		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -90,7 +97,7 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 
 		// create a new User and insert to into mySQL
 		$userId = generateUuidV4();
-		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
+		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
 
 		// edit the User and update it in mySQL
@@ -106,14 +113,15 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 		$this->assertEquals($pdoUser->getUserHash(), $this->VALID_USER_HASH);
 		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
+
 	/**
 	 * test creating a User and then deleting it
 	 **/
-	public function testDeleteValidUser() : void {
+	public function testDeleteValidUser(): void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
 		$userId = generateUuidV4();
-		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
+		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
 		// delete the User from mySQL
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
@@ -123,15 +131,16 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 		$this->assertNull($pdoUser);
 		$this->assertEquals($numRows, $this->getConnection()->getRowCount("user"));
 	}
+
 	/**
 	 * test inserting a User and regrabbing it from mySQL
 	 **/
-	public function testGetValidUserByUserId() : void {
+	public function testGetValidUserByUserId(): void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
 
 		$userId = generateUuidV4();
-		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
+		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -144,26 +153,28 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 		$this->assertEquals($pdoUser->getUserHash(), $this->VALID_USER_HASH);
 		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
+
 	/**
 	 * test grabbing a User that does not exist
 	 **/
-	public function testGetInvalidUserByUserId() : void {
+	public function testGetInvalidUserByUserId(): void {
 		// grab a user id that exceeds the maximum allowable user id
 		$fakeUserId = generateUuidV4();
-		$user = User::getUserByUserId($this->getPDO(), $fakeUserId );
+		$user = User::getUserByUserId($this->getPDO(), $fakeUserId);
 		$this->assertNull($user);
 	}
+
 	/**
 	 * test grabbing a User by user id
 	 **/
-	public function testGetUserByUserId() : void {
+	public function testGetUserByUserId(): void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("profile");
 
 		$userId = generateUuidV4();
-		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
+		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
-		
+
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUser());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
@@ -174,10 +185,11 @@ class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
 		$this->assertEquals($pdoUser->getUserHash(), $this->VALID_USER_HASH);
 		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
+
 	/**
 	 * test grabbing a User by an user id that does not exists
 	 **/
-	public function testGetInvalidProfileByEmail() : void {
+	public function testGetInvalidProfileByEmail(): void {
 		// grab an email that does not exist
 		$user = User::getUserByUserId($this->getPDO(), "does@not.exist");
 		$this->assertNull($user);
