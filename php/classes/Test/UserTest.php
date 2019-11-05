@@ -23,10 +23,10 @@ class UserTest extends FoodTruckFoodieTest {
 	 */
 	protected $VALID_USER_ID;
 	/*
-	 * valid activation
-	 * @var int @VALID_ACTIVATION
+	 * valid user activation token
+	 * @var int @VALID_USER_ACTIVATION_TOKEN
 	 */
-	protected $VALID_ACTIVATION;
+	protected $VALID_USER_ACTIVATION_TOKEN;
 	/**
 	 * valid at user avatar url to use
 	 * @var string $VALID_USER_AVATAR_URL
@@ -58,73 +58,71 @@ class UserTest extends FoodTruckFoodieTest {
 		$this->VALID_ACTIVATION = bin2hex(random_bytes(16));
 	}
 	/**
-	 * test inserting a valid Profile and verify that the actual mySQL data matches
+	 * test inserting a valid User and verify that the actual mySQL data matches
 	 **/
-	public function testInsertValidProfile() : void {
+	public function testInsertValidUser() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
 		$userId = generateUuidV4();
-		$user = new User($UserId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_PROFILE_HASH, $this->VALID_USER_NAME);
+		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_PROFILE_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
-		$this->assertEquals($pdoUser->getUserId(), $profileId); $this->VALID_USER_ID
-		$this->assertEquals($pdoUser->getUserActivationToken(), $this->VALID_ACTIVATION);
-		$this->assertEquals($pdoUser->getUserAvatarUrl(), $this->VALID_PROFILE_AVATAR_URL);
-		$this->assertEquals($pdoUser->getUserEmail(), $this->VALID_EMAIL);
-		$this->assertEquals($pdoUser->getUserProfileHash(), $this->VALID_HASH);
-		$this->assertEquals($pdoUser->getUserName(), $this->VALID_PHONE);
+		$this->assertEquals($pdoUser->getUserId(), $userId); $this->VALID_USER_ID);
+		$this->assertEquals($pdoUser->getUserActivationToken(), $this->VALID_USER_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoUser->getUserAvatarUrl(), $this->VALID_USER_AVATAR_URL);
+		$this->assertEquals($pdoUser->getUserEmail(), $this->VALID_USER_EMAIL);
+		$this->assertEquals($pdoUser->getUserProfileHash(), $this->VALID_USER_PROFILE_HASH);
+		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
 	/**
-	 * test inserting a Profile, editing it, and then updating it
+	 * test inserting a User, editing it, and then updating it
 	 **/
-	public function testUpdateValidProfile() {
+	public function testUpdateValidUser() {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("profile");
 		// create a new Profile and insert to into mySQL
-		$profileId = generateUuidV4();
-		$profile = new Profile($profileId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE,$this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
-		$profile->insert($this->getPDO());
-		// edit the Profile and update it in mySQL
-		$profile->setProfileAtHandle($this->VALID_ATHANDLE2);
-		$profile->update($this->getPDO());
+		$userId = generateUuidV4();
+		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_PROFILE_HASH, $this->VALID_USER_NAME);
+		$user->insert($this->getPDO());
+		// edit the User and update it in mySQL
+		$user->update($this->getPDO());
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoProfile = Profile::getProfileByProfileId($this->getPDO(), $profile->getProfileId());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
-		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
-		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_ACTIVATION);
-		$this->assertEquals($pdoProfile->getProfileAtHandle(), $this->VALID_ATHANDLE2);
-		$this->assertEquals($pdoProfile->getProfileAvatarUrl(), $this->VALID_PROFILE_AVATAR_URL);
-		$this->assertEquals($pdoProfile->getProfileEmail(), $this->VALID_EMAIL);
-		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_HASH);
-		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PHONE);
+		$pdoUser = USER::getUserByUserId($this->getPDO(), $user->getUserId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
+		$this->assertEquals($pdoUser->getUserId(), $userId); $this->VALID_USER_ID);
+		$this->assertEquals($pdoUser->getUserActivationToken(), $this->VALID_USER_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoUser->getUserAvatarUrl(), $this->VALID_USER_AVATAR_URL);
+		$this->assertEquals($pdoUser->getUserEmail(), $this->VALID_USER_EMAIL);
+		$this->assertEquals($pdoUser->getUserProfileHash(), $this->VALID_USER_PROFILE_HASH);
+		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
 	/**
-	 * test creating a Profile and then deleting it
+	 * test creating a User and then deleting it
 	 **/
-	public function testDeleteValidProfile() : void {
+	public function testDeleteValidUser() : void {
 		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("profile");
-		$profileId = generateUuidV4();
-		$profile = new Profile($profileId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE, $this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
-		$profile->insert($this->getPDO());
-		// delete the Profile from mySQL
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
-		$profile->delete($this->getPDO());
-		// grab the data from mySQL and enforce the Profile does not exist
-		$pdoProfile = Profile::getProfileByProfileId($this->getPDO(), $profile->getProfileId());
-		$this->assertNull($pdoProfile);
-		$this->assertEquals($numRows, $this->getConnection()->getRowCount("profile"));
+		$numRows = $this->getConnection()->getRowCount("user");
+		$userId = generateUuidV4();
+		$user = new User($userId, $this->VALID_USER_ID, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_PROFILE_HASH, $this->VALID_USER_NAME);
+		$user->insert($this->getPDO());
+		// delete the User from mySQL
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
+		$user->delete($this->getPDO());
+		// grab the data from mySQL and enforce the User does not exist
+		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
+		$this->assertNull($pdoUser);
+		$this->assertEquals($numRows, $this->getConnection()->getRowCount("user"));
 	}
 	/**
-	 * test inserting a Profile and regrabbing it from mySQL
+	 * test inserting a User and regrabbing it from mySQL
 	 **/
-	public function testGetValidProfileByProfileId() : void {
+	public function testGetValidUserByUserId() : void {
 		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("profile");
-		$profileId = generateUuidV4();
-		$profile = new Profile($profileId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE, $this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
+		$numRows = $this->getConnection()->getRowCount("user");
+		$userId = generateUuidV4();
+		$user = new User($UserId, $this->VALID_ACTIVATION, $this->VALID_ATHANDLE, $this->VALID_PROFILE_AVATAR_URL, $this->VALID_EMAIL, $this->VALID_HASH, $this->VALID_PHONE);
 		$profile->insert($this->getPDO());
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoProfile = Profile::getProfileByProfileId($this->getPDO(), $profile->getProfileId());
