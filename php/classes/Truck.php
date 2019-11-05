@@ -18,7 +18,7 @@ use TypeError;
  * @author Ian W Foster <ian.foster95@yahoo.com>
  * @version 001.1
  */
-class Truck {
+class Truck  implements \JsonSerializable {
 	use ValidateUuid;
 	/**
 	 * This is the id for this profile; this is the primary key
@@ -140,7 +140,7 @@ class Truck {
  * @return string|  Uuid value of truck user id
  */
 
-	public function getTruckUserId(): ?string {
+	public function getTruckUserId(): Uuid {
 		return ($this->truckUserId);
 }
 	/**
@@ -380,7 +380,7 @@ class Truck {
 	 *
 	 * @return boolean value of verify check
 	 **/
-	public function getTruckVerifiedChecked(): boolean {
+	public function getTruckVerifiedChecked(): bool {
 		return($this->truckVerifiedCheck);
 	}
 	/**
@@ -390,7 +390,7 @@ class Truck {
 	 * @throws RangeException if $newTruckVerifiedChecked is < than 1
 	 * @throws TypeError if $newTruckVerifiedChecked is not an int
 	 **/
-	public function setTruckVerifiedChecked(boolean $newTruckVerifiedChecked) {
+	public function setTruckVerifiedChecked(bool $newTruckVerifiedChecked) {
 		// verify check content is secure
 		$newTruckVerifiedChecked = filter_var($newTruckVerifiedChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
 		if($newTruckVerifiedChecked > 1) {
@@ -552,7 +552,7 @@ public static function getTruckByTruckName(PDO $pdo, string $truckName) : SplFix
 	 *
 	 * @return array resulting state variables to serialize
 	 **/
-	public function jsonSerialize() : array {
+	public function JsonSerialize() : array {
 		$fields = get_object_vars($this);
 
 		$fields["truckId"] = $this->truckId->toString();
