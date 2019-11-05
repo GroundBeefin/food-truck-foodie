@@ -2,9 +2,14 @@
 namespace Groundbeefin\FoodTruckFoodie;
 require_once ("autoload.php");
 
+use UnexpectedValueException;
+use Exception;
 use http\Exception\InvalidArgumentException;
+use PDO;
+use PDOException;
 use Ramsey\Uuid\Uuid;
 use RangeException;
+use SplFixedArray;
 use TypeError;
 
 /**
@@ -94,7 +99,7 @@ class Truck {
 			$this->setTruckPhoneNumber($newTruckPhoneNumber);
 			$this->setTruckVerifyImage($newTruckVerifyImage);
 			$this->setTruckVerifyChecked($newTruckVerifyChecked);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \ TypeError $exception) {
+		} catch(InvalidArgumentException | RangeException | Exception|  TypeError $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -121,7 +126,7 @@ class Truck {
 	public function setTruckId($newTruckId): void {
 		Try{
 			$uuid = self::validateUuid($newTruckId);
-		}catch( \InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		}catch( InvalidArgumentException | RangeException | Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw (new $exceptionType($exception->getMessage(), 0,$exception));
 	}
@@ -150,7 +155,7 @@ class Truck {
 	public function setTruckUserId($newTruckUserId): void {
 		Try {
 			$uuid = self::validateUuid($newTruckUserId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(InvalidArgumentException | RangeException | Exception | TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw (new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -223,9 +228,9 @@ class Truck {
 	 * mutator method for the truck food type
 	 *
 	 * @param string $newTruckFoodType
-	 * @throws \InvalidArgumentException if the truck food type is not available
-	 * @throws \RangeException if the food truck type is >128 characters
-	 * @throws \TypeError if truck food type is not a string
+	 * @throws InvalidArgumentException if the truck food type is not available
+	 * @throws RangeException if the food truck type is >128 characters
+	 * @throws TypeError if truck food type is not a string
 	 */
 
 
@@ -234,11 +239,11 @@ class Truck {
 			$newTruckFoodType = trim($newTruckFoodType);
 			$newTruckFoodType = filter_var($newTruckFoodType, FILTER_FLAG_NO_ENCODE_QUOTES);
 			if(empty($newTruckFoodType) === true) {
-			throw (new \InvalidArgumentException("Truck food type is not defined"));
+			throw (new InvalidArgumentException("Truck food type is not defined"));
 		}
 		//verify the truck food type will fit database
 		if(strlen($newTruckFoodType) > 128) {
-			throw(new \RangeException("Truck food type is too long"));
+			throw(new RangeException("Truck food type is too long"));
 		}
 		//truck food type
 		$this->truckFoodType = $newTruckFoodType;
@@ -256,10 +261,10 @@ class Truck {
 	/**
 	 * mutator method for truck avatar url
 	 *
-	 * @param string $newTruckAvatarUrl new value of at truck
-	 * @throws \InvalidArgumentException if $newTruckMenuUrl is not a string or insecure
-	 * @throws \RangeException if $newTruckAvatarUrl is > 255 characters
-	 * @throws \TypeError if $newTruckAvatarUrl is not a string
+	 * @param string $newTruckMenurUrl new value of at truck
+	 * @throws InvalidArgumentException if $newTruckMenuUrl is not a string or insecure
+	 * @throws RangeException if $newTruckAvatarUrl is > 255 characters
+	 * @throws TypeError if $newTruckAvatarUrl is not a string
 	 **/
 
 
@@ -268,11 +273,11 @@ class Truck {
 			$newTruckMenuUrl = trim($newTruckMenuUrl);
 			$newTruckMenuUrl = filter_var($newTruckMenuUrl, FILTER_VALIDATE_URL);
 		if(empty($newTruckMenueUrl) === true) {
-			throw(new \InvalidArgumentException("Truck menu url is not available at this time"));
+			throw(new InvalidArgumentException("Truck menu url is not available at this time"));
 		}
 		// verify the tuck menu will fit in the database
 		if(strlen($newTruckMenuUrl) > 255) {
-			throw(new \RangeException("Truck food menu url is too large"));
+			throw(new RangeException("Truck food menu url is too large"));
 
 		}
 
@@ -288,7 +293,7 @@ class Truck {
 		return ($this->truckName);
 	}
 	/** mutator method for the name of the truck
-	 * @throws \InvalidArgumentException when truck name is empty
+	 * @throws InvalidArgumentException when truck name is empty
 	 * @throws RangeException if the truck name is too long
 	 * @param string| null or new truck name
 	 */
@@ -304,11 +309,11 @@ class Truck {
 		$newTruckName = trim($newTruckName);
 		$newTruckName = filter_var($newTruckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($newTruckName) === true) {
-			throw(new \InvalidArgumentException("Truck name is empty "));
+			throw(new InvalidArgumentException("Truck name is empty "));
 		}
 		//verify the  truck name will fit in database
 		if(strlen($newTruckName) > 32) {
-			throw(new \RangeException( "Truck name is too large."));
+			throw(new RangeException( "Truck name is too large."));
 		}
 	//store truck name
 		$this->truckName =$newTruckName;
@@ -331,7 +336,7 @@ class Truck {
 		//verify the phone number is secure
 		$newTruckPhoneNumber = filter_var($newTruckPhoneNumber, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
 		if($newTruckPhoneNumber < 0||$newTruckPhoneNumber > 10) {
-			throw(new \RangeException("truck phone number is empty "));
+			throw(new RangeException("truck phone number is empty "));
 		}
 
 //store the phone number
@@ -351,8 +356,8 @@ class Truck {
 	 * mutator for truck verify image url
 	 *
 	 * @param string $newTruckVerifyImage new  url for image to verify whether truck is valid or not valid
-	 * @throws \UnexpectedValueException if new truck verify image is not valid or if is empty.
-	 * @throws \RangeException if new truck verify image is >225 characters
+	 * @throws UnexpectedValueException if new truck verify image is not valid or if is empty.
+	 * @throws RangeException if new truck verify image is >225 characters
 	 */
 
 
@@ -361,10 +366,10 @@ class Truck {
 		$newTruckVerifyImage = trim($newTruckVerifyImage);
 		$newTruckVerifyImage = filter_var($newTruckVerifyImage, FILTER_VALIDATE_URL);
 		if($newTruckVerifyImage === false) {
-			throw (new \UnexpectedValueException("The image url is not valid or empty"));
+			throw (new UnexpectedValueException("The image url is not valid or empty"));
 		}
 		if(strlen($newTruckVerifyImage) > 255) {
-			throw(new \RangeException("Truck food menu url is too large"));
+			throw(new RangeException("Truck food menu url is too large"));
 
 		}
 		// convert and store the verify truck image url
@@ -382,27 +387,26 @@ class Truck {
 	 * mutator method for truck verify check
 	 *
 	 * @param boolean $newTruckVerifyChecked new value of truck verify check
-	 * @throws \InvalidArgumentException if $newTruckVerifyChecked is not a boolean
-	 * @throws \RangeException if $newTruckVerifyChecked is < than 1
-	 * @throws \TypeError if $newTruckVerifyChecked is not an int
+	 * @throws RangeException if $newTruckVerifyChecked is < than 1
+	 * @throws TypeError if $newTruckVerifyChecked is not an int
 	 **/
 	public function setTruckVerifyChecked(boolean $newTruckVerifyChecked) {
 		// verify check content is secure
 		$newTruckVerifyChecked = filter_var($newTruckVerifyChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
 		if($newTruckVerifyChecked > 1) {
-			throw(new \RangeException("verify check content is not valid. "));
-			throw (new \TypeError("must be an in no greater than 1"));
+			throw(new RangeException("verify check content is not valid. "));
+			throw (new TypeError("must be an in no greater than 1"));
 		}
 	}
 
 
 
 //get truck by food type
-public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType, $trucks) : \SplFixedArray {
+public static function getTruckByTruckFoodType(PDO $pdo, string $truckFoodType) : SplFixedArray {
 	// sanitize the description before searching
 	$truckFoodType = filter_var($truckFoodType, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	if(empty($truckFoodType) === true) {
-		throw(new \PDOException("truck food type is invalid"));
+		throw(new PDOException("truck food type is invalid"));
 	}
 
 	// create query template
@@ -412,25 +416,25 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType,
 	$parameters = ["truckFoodType" => $truckFoodType];
 	$statement->execute($parameters);
 	// build an array of trucks
-	$trucks = new \SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	$trucks = new SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
-			$truck[$truck->$pdo()] = $truck;
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
+			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
-		} catch(\Exception $exception) {
+		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new \PDOException($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 	}
 	return($trucks);
 }
-public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \SplFixedArray {
+public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : SplFixedArray {
 	try {
 		$truckUserId = self::validateUuid($truckUserId);
-	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-		throw(new \PDOException($exception->getMessage(), 0, $exception));
+	} catch(InvalidArgumentException | RangeException | Exception | TypeError $exception) {
+		throw(new PDOException($exception->getMessage(), 0, $exception));
 	}
 
 	// create query template
@@ -440,16 +444,16 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 	$parameters = ["truckUserId" => $truckUserId];
 	$statement->execute($parameters);
 	// build an array of trucks
-	$trucks = new \SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	$trucks = new SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]););
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
-		} catch(\Exception $exception) {
+		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new \PDOException($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 	}
 	return($trucks);
@@ -460,11 +464,11 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 
 
 //get truck by truck name method
-public static function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \SplFixedArray {
+public static function getTruckByTruckName(PDO $pdo, string $truckName) : SplFixedArray {
 	// sanitize the description before searching
 	$truckName = filter_var($truckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	if(empty($truckName) === true) {
-		throw(new \PDOException("truck name is invalid"));
+		throw(new PDOException("truck name is invalid"));
 	}
 
 	// create query template
@@ -475,19 +479,19 @@ public static function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks
 	$parameters = ["truckName" => $truckName];
 	$statement->execute($parameters);
 	// build an array of trucks
-	$trucks = new \SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(\PDO::FETCH_ASSOC);
+	$trucks = new SplFixedArray($statement->rowCount());
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
 			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
-		} catch(\Exception $exception) {
+		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new \PDOException($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 	}
-	return ($trucks);
+	return($trucks);
 }
 
 }
