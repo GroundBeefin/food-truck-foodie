@@ -68,16 +68,13 @@ class PostTest extends FoodTruckFoodieTest {
 			$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 
 			// create and insert a User to own the test Post
-			$this->user = new User(generateUuidV4(), null,"@handle", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
+			$this->user = new User(generateUuidV4(), null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
 			$this->user->insert($this->getPDO());
 
 			// create and insert the mocked truck profile
-			$this->truck = new Truck(generateUuidV4(), null,"@phpunit", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_HASH, "+12125551212");
+			$this->truck = new Truck(generateUuidV4(), generateUuidV4() null,"@phpunit", "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de",$this->VALID_HASH, "+12125551212");
 			$this->truck->insert($this->getPDO());
 
-			// create  and insert the mocked post
-			$this->post = new Post(generateUuidV4(), $this->post->getPostId(), "PHPUnit like test passing");
-			$this->post->insert($this->getPDO());
 
 			// calculate the date (just use the time the unit test was setup...)
 			$this->VALID_POSTDATETIME = new \DateTime();
@@ -141,21 +138,24 @@ class PostTest extends FoodTruckFoodieTest {
 	 **/
 	public function testDeleteValidPost() : void {
 		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("tweet");
-		// create a new Tweet and insert to into mySQL
-		$tweetId = generateUuidV4();
-		$tweet = new Tweet($tweetId, $this->profile->getProfileId(), $this->VALID_TWEETCONTENT, $this->VALID_TWEETDATE);
-		$tweet->insert($this->getPDO());
-		// delete the Tweet from mySQL
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("tweet"));
-		$tweet->delete($this->getPDO());
-		// grab the data from mySQL and enforce the Tweet does not exist
-		$pdoTweet = Tweet::getTweetByTweetId($this->getPDO(), $tweet->getTweetId());
-		$this->assertNull($pdoTweet);
-		$this->assertEquals($numRows, $this->getConnection()->getRowCount("tweet"));
+		$numRows = $this->getConnection()->getRowCount("post");
+
+		// create a new Post and insert to into mySQL
+		$postId = generateUuidV4();
+		$post = new Post($postId, $this->truck->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post->insert($this->getPDO());
+
+		// delete the Post from mySQL
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
+		$post->delete($this->getPDO());
+
+		// grab the data from mySQL and enforce the Post does not exist
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostId());
+		$this->assertNull($pdoPost);
+		$this->assertEquals($numRows, $this->getConnection()->getRowCount("post"));
 	}
 	/**
-	 * test grabbing a Tweet that does not exist
+	 * test grabbing a Post that does not exist
 	 **/
 	public function testGetInvalidTweetByTweetId() : void {
 		// grab a profile id that exceeds the maximum allowable profile id
