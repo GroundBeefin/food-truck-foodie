@@ -244,13 +244,13 @@ class Post implements \JsonSerializable {
 		$parameters = ["postTruckId" => $postTruckId->getBytes()];
 		$statement->execute($parameters);
 		// build an array of post
-		$post = new \SplFixedArray($statement->rowCount());
+		$posts = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
 				$post = new Post($row["postID"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
-				$post[$post->key()] = $post;
-				$post->next();
+				$posts[$posts->key()] = $post;
+				$posts->next();
 			} catch(\Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new \PDOException($exception->getMessage(), 0, $exception));
