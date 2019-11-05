@@ -67,9 +67,9 @@ class Truck {
 	private $truckVerifyImage;
 	/**
 	 * this is the truck verify checked
-	 * @var $truckVerifyChecked
+	 * @var $truckVerifiedCheck
 	 * */
-	private $truckVerifyChecked;
+	private $truckVerifiedCheck;
 
 	/**
 	 * constructor for this truck
@@ -83,11 +83,11 @@ class Truck {
 	 * @param string $newTruckName string containing the actual name of the truck
 	 * @param string $newTruckPhoneNumber containing the phone number to contact the truck
 	 * @param string $newTruckVerifyImage containing the verify image to see if this is a real food truck
-	 * @param string $newTruckVerifyChecked containing the data that the truck has been checked and verified as a real foo truck.
+	 * @param string $newTruckVerifiedChecked containing the data that the truck has been checked and verified as a real foo truck.
 	 * */
 
 
-	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, $newTruckVerifyChecked) {
+	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, $newTruckVerifiedChecked) {
 		try {
 			$this->setTruckId($newTruckId);
 			$this->setTruckUserId($newTruckUserId);
@@ -98,7 +98,7 @@ class Truck {
 			$this->setTruckName($newTruckName);
 			$this->setTruckPhoneNumber($newTruckPhoneNumber);
 			$this->setTruckVerifyImage($newTruckVerifyImage);
-			$this->setTruckVerifyChecked($newTruckVerifyChecked);
+			$this->setTruckVerifiedChecked($newTruckVerifiedChecked);
 		} catch(InvalidArgumentException | RangeException | Exception|  TypeError $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
@@ -380,24 +380,28 @@ class Truck {
 	 *
 	 * @return boolean value of verify check
 	 **/
-	public function getTruckVerifyChecked(): boolean {
-		return($this->truckVerifyChecked);
+	public function getTruckVerifiedChecked(): boolean {
+		return($this->truckVerifiedCheck);
 	}
 	/**
 	 * mutator method for truck verify check
 	 *
-	 * @param boolean $newTruckVerifyChecked new value of truck verify check
-	 * @throws RangeException if $newTruckVerifyChecked is < than 1
-	 * @throws TypeError if $newTruckVerifyChecked is not an int
+	 * @param boolean $newTruckVerifiedChecked new value of truck verify check
+	 * @throws RangeException if $newTruckVerifiedChecked is < than 1
+	 * @throws TypeError if $newTruckVerifiedChecked is not an int
 	 **/
-	public function setTruckVerifyChecked(boolean $newTruckVerifyChecked) {
+	public function setTruckVerifiedChecked(boolean $newTruckVerifiedChecked) {
 		// verify check content is secure
-		$newTruckVerifyChecked = filter_var($newTruckVerifyChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
-		if($newTruckVerifyChecked > 1) {
+		$newTruckVerifiedChecked = filter_var($newTruckVerifiedChecked, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
+		if($newTruckVerifiedChecked > 1) {
 			throw(new RangeException("verify check content is not valid. "));
 			throw (new TypeError("must be an in no greater than 1"));
 		}
 	}
+
+
+
+
 
 
 
@@ -459,7 +463,56 @@ public static function getTruckByTruckUserId(PDO $pdo, string $truckUserId) : Sp
 	return($trucks);
 	}
 
+	/**
+	 * inserts this truck into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo) : void {
 
+		// create query template
+		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
+		$statement = $pdo->prepare($query);
+
+
+	}
+
+
+	/**
+	 * deletes this truck from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo) : void {
+
+		// create query template
+		$query = "DELETE FROM truck WHERE truckId = :truckId";
+		$statement = $pdo->prepare($query);
+
+		// bind the member variables to the place holder in the template
+		$parameters = ["truckId" => $this->truckId->getBytes()];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * updates this truck in mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function update(\PDO $pdo) : void {
+
+		// create query template
+		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage, truckVerifiedCheck= :truckVerifiedCheck WHERE truckId = :truckId";
+		$statement = $pdo->prepare($query);
+
+
+	}
 
 
 
@@ -493,5 +546,20 @@ public static function getTruckByTruckName(PDO $pdo, string $truckName) : SplFix
 	}
 	return($trucks);
 }
+
+	/**
+	 * formats the state variables for JSON serialization
+	 *
+	 * @return array resulting state variables to serialize
+	 **/
+	public function jsonSerialize() : array {
+		$fields = get_object_vars($this);
+
+		$fields["truckId"] = $this->truckId->toString();
+		$fields["truckUserId"] = $this->truckUserId->toString();
+
+		return($fields);
+
+	}
 
 }
