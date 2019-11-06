@@ -80,14 +80,19 @@ class TruckTest extends FoodTruckFoodieTest {
 
 	protected $VALID_TRUCK_VERIFIED_CHECK = "verified";
 
-	public final function setUp()  : void {
-		// run the default setUp() method first
+	/**
+	 * run the default setup operation to create salt and hash.
+	 */
+	public final function setUp(): void {
 		parent::setUp();
 		$password = "abc123";
 		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
-		// create and insert a Profile to own the test Tweet
-		$this->truck = new User(generateUuidV4(),);
-		$this->truck->insert($this->getPDO());
+		$this->VALID_USER_ACTIVATION_TOKEN = bin2hex(random_bytes(16));
+
+
+		// create and insert a User to own the test Truck
+		$this->user = new User();
+		$this->user->insert($this->getPDO());
 	}
 
 
