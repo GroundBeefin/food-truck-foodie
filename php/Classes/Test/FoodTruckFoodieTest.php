@@ -1,5 +1,5 @@
 <?php
-namespace Groundbeefin\FoodTruckFoodie\Test;
+namespace GroundBeefin\FoodTruckFoodie\Test;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\DbUnit\DataSet\QueryDataSet;

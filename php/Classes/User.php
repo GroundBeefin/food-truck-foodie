@@ -103,25 +103,25 @@ class User {
 	/**
 	 *mutator method for user activation token
 	 *
-	 * @param string|null $newUserActivationTokenActivationToken
+	 * @param string|null $newUserActivationToken
 	 * @throws \InvalidArgumentException if the token is not a string or insecure
 	 * @throws \RangeException if the token is not exactly 32 characters
 	 * @throws \TypeError if the activation token is not a string
 	 */
-	public function setUserActivationToken(?string $newUserActivationTokenActivationToken): void {
-		if($newUserActivationTokenActivationToken === null) {
+	public function setUserActivationToken(?string $newUserActivationToken): void {
+		if($newUserActivationToken === null) {
 			$this->userActivationToken = null;
 			return;
 		}
-		$newUserActivationTokenActivationToken = strtolower(trim($newUserActivationTokenActivationToken));
-		if(ctype_xdigit($newUserActivationTokenActivationToken) === false) {
+		$newUserActivationToken = strtolower(trim($newUserActivationToken));
+		if(ctype_xdigit($newUserActivationToken) === false) {
 			throw(new\RangeException("user activation is not valid"));
 		}
 		//make sure user activation token is only 32 characters
-		if(strlen($newUserActivationTokenActivationToken) !== 32) {
+		if(strlen($newUserActivationToken) !== 32) {
 			throw(new\RangeException("user activation token has to be 32"));
 		}
-		$this->userActivationToken = $newUserActivationTokenActivationToken;
+		$this->userActivationToken = $newUserActivationToken;
 	}
 
 	/**

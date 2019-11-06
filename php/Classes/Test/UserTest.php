@@ -23,7 +23,7 @@ class UserTest extends FoodTruckFoodieTest {
 	 * valid user Id to user
 	 * @var string $USER_ID
 	 */
-	protected $VALID_USER_ID;
+	protected $VALID_USER_ID = "generateUuidV4()";
 	/*
 	 * valid user activation token
 	 * @var int @VALID_USER_ACTIVATION_TOKEN
@@ -48,7 +48,7 @@ class UserTest extends FoodTruckFoodieTest {
 	 * valid user name
 	 * @var string $VALID_USER_NAME
 	 **/
-	protected $VALID_USER_NAME;
+	protected $VALID_USER_NAME = "test user";
 
 	/**
 	 * run the default setup operation to create salt and hash.
@@ -115,12 +115,15 @@ class UserTest extends FoodTruckFoodieTest {
 	public function testDeleteValidUser(): void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("user");
+
 		$userId = generateUuidV4();
 		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
 		$user->insert($this->getPDO());
+
 		// delete the User from mySQL
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
 		$user->delete($this->getPDO());
+		
 		// grab the data from mySQL and enforce the User does not exist
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
 		$this->assertNull($pdoUser);
