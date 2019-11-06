@@ -1,8 +1,8 @@
 <?php
 
-namespace Groundbeefin\FoodTruckFoodie\Test;
+namespace GroundBeefin\FoodTruckFoodie\Test;
 
-use Groundbeefin\FoodTruckFoodie\ {User, Truck, Post};
+use GroundBeefin\FoodTruckFoodie\ {User};
 
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
