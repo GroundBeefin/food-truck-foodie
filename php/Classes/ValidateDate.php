@@ -1,5 +1,5 @@
 <?php
-namespace Groundbeefin\FoodTruckFoodie;
+namespace GroundBeefin\FoodTruckFoodie;
 /**
  * Trait to Validate a mySQL Date
  *

@@ -1,7 +1,7 @@
 <?php
 
-namespace Groundbeefin\FoodTruckFoodie\Test;
-use Groundbeefin\FoodTruckFoodie\{
+namespace GroundBeefin\FoodTruckFoodie\Test;
+use GroundBeefin\FoodTruckFoodie\{
 	User, Truck, Post
 };
 
