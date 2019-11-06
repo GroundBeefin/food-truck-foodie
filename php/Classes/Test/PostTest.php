@@ -68,7 +68,7 @@ class PostTest extends FoodTruckFoodieTest {
 			$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 
 			// create and insert a User to own the test Post
-			$this->user = new User(generateUuidV4(), null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", "test@phpunit.de",$this->VALID_USER_HASH, "+12125551212");
+			$this->user = new User(generateUuidV4(), null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", "e99a18c428cb38d5f260853678922e03", "test name");
 			$this->user->insert($this->getPDO());
 
 			// create and insert the mocked truck profile
