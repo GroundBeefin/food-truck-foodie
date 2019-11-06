@@ -86,16 +86,9 @@ class TruckTest extends FoodTruckFoodieTest {
 		$password = "abc123";
 		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 		// create and insert a Profile to own the test Tweet
-		$this->profile = new User(generateUuidV4(),);
-		$this->profile->insert($this->getPDO());
-		// calculate the date (just use the time the unit test was setup...)
-		$this->VALID_TWEETDATE = new \DateTime();
-		//format the sunrise date to use for testing
-		$this->VALID_SUNRISEDATE = new \DateTime();
-		$this->VALID_SUNRISEDATE->sub(new \DateInterval("P10D"));
-		//format the sunset date to use for testing
-		$this->VALID_SUNSETDATE = new\DateTime();
-		$this->VALID_SUNSETDATE->add(new \DateInterval("P10D"));
+		$this->truck = new User(generateUuidV4(),);
+		$this->truck->insert($this->getPDO());
+	}
 
 
 	/**
