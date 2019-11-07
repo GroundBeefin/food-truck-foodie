@@ -1,14 +1,9 @@
 <?php
 
-namespace Groundbeefin\FoodTruckFoodie;
+namespace Groundbeefin\FoodTruckFoodie\Test;
 
-use Groundbeefin\FoodTruckFoodie;
+use Groundbeefin\FoodTruckFoodie\ {User, Truck, Post};
 
-{
-	User;
-	Truck;
-	Post;
-};
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
 // grab the uuid generator
@@ -23,7 +18,7 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  * @see User
  * @author Zachary Sanchez <zacharyesanchez22@gmail.com>
  **/
-class UserTest extends FoodTruckFoodie\Test\FoodTruckFoodieTest {
+class UserTest extends FoodTruckFoodieTest {
 	/**
 	 * valid user Id to user
 	 * @var string $USER_ID
