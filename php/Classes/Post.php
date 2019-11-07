@@ -15,6 +15,7 @@ use TypeError;
  **/
 class Post implements \JsonSerializable {
 	use ValidateUuid;
+	use ValidateDate;
 	/**
 	 * Id for post; this is the primary key
 	 * @var Uuid/ $postId
@@ -277,7 +278,7 @@ class Post implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId): \SplFixedArray {
+	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId,): \SplFixedArray {
 
 		try {
 			$postTruckId = self::validateUuid($postTruckId);
@@ -308,15 +309,18 @@ class Post implements \JsonSerializable {
 	}
 
 	/**
-	 * Specify data which should be serialized to JSON
-	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
-	 */
+	 * formats the state variables for JSON serialization
+	 *
+	 * @return array resulting state variables to serialize
+	 **/
 	public function jsonSerialize() {
 		$fields = get_object_vars($this);
-		$fields["postId"] = $this->postId->toString();
+		//format the date so that the front end can consume it
+		$fields["postId"] = $this->postId;
+		$fields["postTruckId"] = $this->postTruckId;
+		$fields["postUserId"] = $this->postUserId;
+		$fields["postContent"] = $this->postContent;
+		$fields["postDatetime"] = round(floatval($this->postDatetime->format("U.u")) * 1000);
 		return ($fields);
 	}
 

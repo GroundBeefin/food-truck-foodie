@@ -22,25 +22,20 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  **/
 class PostTest extends FoodTruckFoodieTest {
 	/**
-	 * User with registered truck ; this is for foreign key relations
+	 * User  ; this is for foreign key relations
 	 * @var User
 	 **/
-	protected $user = null;
+	protected $user;
+	/**
+	 * truck that created the post; this is a foreign key
+	 * @var $truck
+	 */
+	protected $truck;
 	/**
 	 * valid $user hash
 	 * @var $VALID_USER_HASH
 	 */
 	protected $VALID_USER_HASH;
-	/**
-	 * truck that created the post; this is a foreign key
-	 * @var $truck
-	 */
-	protected $truck = null;
-	/**
-	 * valid truckId to create the object to own the test
-	 * @var $VALID_TRUCK_ID
-	 */
-	protected $VALID_TRUCK_ID;
 	/**
 	 * content of the Post
 	 * @var string $VALID_POSTCONTENT
@@ -55,7 +50,7 @@ class PostTest extends FoodTruckFoodieTest {
 	 * timestamp of the Post; this starts as null and is assigned later
 	 * @var \DateTime $VALID_POSTDATE
 	 **/
-	protected $VALID_POSTDATE = null;
+	protected $VALID_POSTDATE;
 	/**
 	 * create dependent objects before running each test
 	 **/
@@ -68,7 +63,7 @@ class PostTest extends FoodTruckFoodieTest {
 			$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 
 			// create and insert a User to own the test Post
-			$this->user = new User(generateUuidV4(), null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", "e99a18c428cb38d5f260853678922e03", "test name");
+			$this->user = new User(generateUuidV4(), null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
 			$this->user->insert($this->getPDO());
 
 			// create and insert the mocked truck profile
@@ -77,7 +72,7 @@ class PostTest extends FoodTruckFoodieTest {
 
 
 			// calculate the date (just use the time the unit test was setup...)
-			$this->VALID_POSTDATETIME = new \DateTime();
+			$this->VALID_POSTDATE = new \DateTime();
 		}
 
 
@@ -85,23 +80,22 @@ class PostTest extends FoodTruckFoodieTest {
 	 * test inserting a valid Post and verify that the actual mySQL data matches
 	 **/
 	public function testInsertValidPost() : void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("post");
 
 
 		// create a new Post and insert to into mySQL
-		$postId = generateUuidV4();
-		$post = new Post($postId, $this->truck->getTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $this->post->postTruckId);
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
+		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
 
-		$this->assertEquals($pdoPost->getPostId()->toString(), $postId->toString());
-		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
-		$this->assertEquals($pdoPost->getPostUserId(), $post->getPostId()->toString());
-		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDate()->getTimeStamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
 
 
@@ -114,7 +108,7 @@ class PostTest extends FoodTruckFoodieTest {
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($postId, $this->profile->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// edit the Post and update it in mySQL
@@ -142,7 +136,7 @@ class PostTest extends FoodTruckFoodieTest {
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($postId, $this->truck->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// delete the Post from mySQL
@@ -166,7 +160,7 @@ class PostTest extends FoodTruckFoodieTest {
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($postId, $this->truck->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -194,7 +188,7 @@ class PostTest extends FoodTruckFoodieTest {
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($postId, $this->truck->getPostTruckId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
