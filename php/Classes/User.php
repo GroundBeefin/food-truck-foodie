@@ -1,6 +1,6 @@
 <?php
 
-namespace Groundbeefin\FoodTruckFoodie;
+namespace GroundBeefin\FoodTruckFoodie;
 
 require_once("autoload.php");
 require_once(dirname(__DIR__, 1) . "/Classes/autoload.php");
@@ -38,7 +38,7 @@ class User {
 	 */
 	private $userEmail;
 	/**
-	 * hash for profile password
+	 * hash for user password
 	 * @var $userHash
 	 */
 	private $userHash;
@@ -103,25 +103,25 @@ class User {
 	/**
 	 *mutator method for user activation token
 	 *
-	 * @param string|null $newUserActivationTokenActivationToken
+	 * @param string|null $newUserActivationToken
 	 * @throws \InvalidArgumentException if the token is not a string or insecure
 	 * @throws \RangeException if the token is not exactly 32 characters
 	 * @throws \TypeError if the activation token is not a string
 	 */
-	public function setUserActivationToken(?string $newUserActivationTokenActivationToken): void {
-		if($newUserActivationTokenActivationToken === null) {
+	public function setUserActivationToken(?string $newUserActivationToken): void {
+		if($newUserActivationToken === null) {
 			$this->userActivationToken = null;
 			return;
 		}
-		$newUserActivationTokenActivationToken = strtolower(trim($newUserActivationTokenActivationToken));
-		if(ctype_xdigit($newUserActivationTokenActivationToken) === false) {
+		$newUserActivationToken = strtolower(trim($newUserActivationToken));
+		if(ctype_xdigit($newUserActivationToken) === false) {
 			throw(new\RangeException("user activation is not valid"));
 		}
 		//make sure user activation token is only 32 characters
-		if(strlen($newUserActivationTokenActivationToken) !== 32) {
+		if(strlen($newUserActivationToken) !== 32) {
 			throw(new\RangeException("user activation token has to be 32"));
 		}
-		$this->userActivationToken = $newUserActivationTokenActivationToken;
+		$this->userActivationToken = $newUserActivationToken;
 	}
 
 	/**
@@ -193,22 +193,22 @@ class User {
 	 * mutator method for user hash password
 	 *
 	 * @param string $newUserHash
-	 * @throws InvalidArgumentException if the hash is not secure
-	 * @throws \RangeException if the hash is not 97 characters
-	 * @throws \TypeError if profile hash is not a string
+	 * @throws InvalidArgumentException if the user hash is not secure
+	 * @throws \RangeException if the user hash is not 97 characters
+	 * @throws \TypeError if user hash is not a string
 	 */
 	public function setUserHash(string $newUserHash): void {
-		//enforce that the has is properly formatted
+		//enforce that the hash is properly formatted
 		$newUserHash = trim($newUserHash);
-		$newUserHash = strtolower($newUserHash);
 		if(empty($newUserHash) === true) {
-			throw(new InvalidArgumentException("user password hash is empty or insecure"));
+			throw(new \InvalidArgumentException("user password hash empty or insecure"));
 		}
-		//enforce hash is really an Argon hash
-		if(!ctype_xdigit($newUserHash)) {
-			throw(new InvalidArgumentException("user password hash is empty or insecure"));
+		//enforce the hash is really an Argon hash
+		$userHashInfo = password_get_info($newUserHash);
+		if($userHashInfo["algoName"] !== "argon2i") {
+			throw(new \InvalidArgumentException("user hash is not a valid hash"));
 		}
-		//enforce that the has is exactly 97 characters.
+		//enforce that the hash is exactly 97 characters.
 		if(strlen($newUserHash) !== 97) {
 			throw(new \RangeException("user hash must be 97 characters"));
 		}
@@ -276,7 +276,7 @@ VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :u
 		//create query template
 		$query = "UPDATE user SET userId = :userId, userActivationToken = :userActivationToken, userAvatarUrl = :userAvatarUrl, userEmail = :userEmail, userHash = :userHash, userName = :userName";
 		$statement = $pdo->prepare($query);
-		$parameters = ["userId" => $this->userId->getBytes(), "userActivationToken" => $this->userActivationToken->getBytes(), "userAvatarUrl" => $this->userAvatarUrl->getBytes(), "userEmail" => $this->userEmail->getBytes(), "userHash" => $this->userHash->getBytes(), "userName" => $this->userName->getBytes()];
+		$parameters = ["userId" => $this->userId->getBytes(), "userActivationToken" => $this->userActivationToken, "userAvatarUrl" => $this->userAvatarUrl, "userEmail" => $this->userEmail, "userHash" => $this->userHash, "userName" => $this->userName];
 		$statement->execute($parameters);
 	}
 
