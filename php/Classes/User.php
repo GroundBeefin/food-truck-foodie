@@ -38,7 +38,7 @@ class User {
 	 */
 	private $userEmail;
 	/**
-	 * hash for profile password
+	 * hash for user password
 	 * @var $userHash
 	 */
 	private $userHash;
@@ -193,22 +193,22 @@ class User {
 	 * mutator method for user hash password
 	 *
 	 * @param string $newUserHash
-	 * @throws InvalidArgumentException if the hash is not secure
-	 * @throws \RangeException if the hash is not 97 characters
-	 * @throws \TypeError if profile hash is not a string
+	 * @throws InvalidArgumentException if the user hash is not secure
+	 * @throws \RangeException if the user hash is not 97 characters
+	 * @throws \TypeError if user hash is not a string
 	 */
 	public function setUserHash(string $newUserHash): void {
-		//enforce that the has is properly formatted
+		//enforce that the hash is properly formatted
 		$newUserHash = trim($newUserHash);
-		$newUserHash = strtolower($newUserHash);
 		if(empty($newUserHash) === true) {
-			throw(new InvalidArgumentException("user password hash is empty or insecure"));
+			throw(new \InvalidArgumentException("user password hash empty or insecure"));
 		}
-		//enforce hash is really an Argon hash
-		if(!ctype_xdigit($newUserHash)) {
-			throw(new InvalidArgumentException("user password hash is empty or insecure"));
+		//enforce the hash is really an Argon hash
+		$userHashInfo = password_get_info($newUserHash);
+		if($userHashInfo["algoName"] !== "argon2i") {
+			throw(new \InvalidArgumentException("user hash is not a valid hash"));
 		}
-		//enforce that the has is exactly 97 characters.
+		//enforce that the hash is exactly 97 characters.
 		if(strlen($newUserHash) !== 97) {
 			throw(new \RangeException("user hash must be 97 characters"));
 		}
@@ -276,7 +276,7 @@ VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :u
 		//create query template
 		$query = "UPDATE user SET userId = :userId, userActivationToken = :userActivationToken, userAvatarUrl = :userAvatarUrl, userEmail = :userEmail, userHash = :userHash, userName = :userName";
 		$statement = $pdo->prepare($query);
-		$parameters = ["userId" => $this->userId->getBytes(), "userActivationToken" => $this->userActivationToken->getBytes(), "userAvatarUrl" => $this->userAvatarUrl->getBytes(), "userEmail" => $this->userEmail->getBytes(), "userHash" => $this->userHash->getBytes(), "userName" => $this->userName->getBytes()];
+		$parameters = ["userId" => $this->userId->getBytes(), "userActivationToken" => $this->userActivationToken, "userAvatarUrl" => $this->userAvatarUrl, "userEmail" => $this->userEmail, "userHash" => $this->userHash, "userName" => $this->userName];
 		$statement->execute($parameters);
 	}
 
