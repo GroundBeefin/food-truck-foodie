@@ -7,13 +7,14 @@ require_once(dirname(__DIR__, 1) ."/vendor/autoload.php");
 use phpDocumentor\Reflection\Types\Boolean;
 use Ramsey\Uuid\Uuid;
 use TypeError;
+use GroundBeefin\FoodTruckFoodie\ValidateDate;
 
 /**
  * Class for Post
  *
  * @author Leonela Guteirrez <leonela_gutierrez@hotmail.com>
  **/
-class Post implements \JsonSerializable {
+class Post implements jsonSerializable {
 	use ValidateUuid;
 	use ValidateDate;
 	/**
@@ -267,37 +268,32 @@ class Post implements \JsonSerializable {
 	}
 
 
-
-
 	/**
-	 * gets the Post by PostTruckId
+	 * gets the Post by truck id
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @param Uuid|string $postTruckId truck id to search by
-	 * @return \SplFixedArray SplFixedArray of posts found
+	 * @param string $postTruckId truck id to search for
+	 * @return \SplFixedArray SplFixedArray of Post found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId,): \SplFixedArray {
-
+	public static function getPostByPostTruckId(\PDO $pdo, string $postTruckId) : \SPLFixedArray {
 		try {
 			$postTruckId = self::validateUuid($postTruckId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-
 		// create query template
-		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime WHERE postTruckId = :postTruckId";
+		$query = "SELECT postId, postTruckId, postUserID, postContent, postDatetime FROM `post` WHERE postTruckId = :postTruckId";
 		$statement = $pdo->prepare($query);
-		// bind the post truck id to the place holder in the template
+		// bind the member variables to the place holders in the template
 		$parameters = ["postTruckId" => $postTruckId->getBytes()];
 		$statement->execute($parameters);
-		// build an array of post
+		// build an array of posts
 		$posts = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$post = new Post($row["postID"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
+				$post = new Post($row["postId"],$row["postTruckId"],$row["postUserId"], $row["postContent"], $row["postDatetime"]);
 				$posts[$posts->key()] = $post;
 				$posts->next();
 			} catch(\Exception $exception) {

@@ -78,16 +78,16 @@ class PostTest extends FoodTruckFoodieTest {
 
 	/**
 	 * test inserting a valid Post and verify that the actual mySQL data matches
-	 **/
+	 *
+	 * @throws \Exception
+	 */
 	public function testInsertValidPost() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("post");
 
-
 		// create a new Post and insert to into mySQL
-		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post(generateUuidV4(), $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
-
 
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $this->post->postTruckId);
@@ -153,14 +153,16 @@ class PostTest extends FoodTruckFoodieTest {
 	 * test inserting a Post and regrabbing it from mySQL
 	 *
 	 *
-	 **/
+	 *
+	 * @throws \Exception
+	 */
 	public function testGetValidPostByPostTruckId() {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("post");
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post(generateUuidV4(), $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
