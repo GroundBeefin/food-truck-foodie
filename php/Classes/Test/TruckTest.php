@@ -102,13 +102,14 @@ class TruckTest extends FoodTruckFoodieTest {
 	public function testInsertValidTruck(): void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("truck");
+
 		$truckId = generateUuidV4();
 
 
 		$truck = new Truck($truckId, $this->user->getUserId(),"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif","test@phpunit.de","japanese","https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif","Street Hibachi","5055555555","img...","verified");
 		$truck->insert($this->getPDO());
 
-		// grab the data from mySQL and enforce the fields match our expectations
+		// grab the data from MySQL and enforce the fields match expectations
 		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
