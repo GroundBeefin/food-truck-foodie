@@ -118,4 +118,3 @@ class TruckTest extends FoodTruckFoodieTest {
 
 
 
- 		
