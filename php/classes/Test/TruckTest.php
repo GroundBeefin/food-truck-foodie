@@ -106,7 +106,7 @@ class TruckTest extends FoodTruckFoodieTest {
 		$truckId = generateUuidV4();
 
 
-		$truck = new Truck($truckId, $this->user->getUserId(),"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif","test@phpunit.de","japanese","https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif","Street Hibachi","5055555555","img...","verified");
+		$truck = new Truck($truckId, $this->user->getUserId(),$this->VALID_TRUCK_AVATAR_URL,$this->VALID_TRUCK_EMAIL,$this->VALID_TRUCK_FOOD_TYPE,$this->VALID_TRUCK_MENU_URL,,"Street Hibachi","5055555555","img...","verified");
 		$truck->insert($this->getPDO());
 
 		// grab the data from MySQL and enforce the fields match expectations
