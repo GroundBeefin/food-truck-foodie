@@ -398,7 +398,7 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckId = :truckId";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
 		// bind the truck id to the place holder in the template
 		$parameters = ["truckId" => $truckId];
@@ -408,7 +408,7 @@ class Truck  implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"], $row["truckName"]);
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
 				$trucks[$truck->$pdo()] = $truck;
 				$trucks->next();
 			} catch(\Exception $exception) {
@@ -429,7 +429,7 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType)
 	}
 
 	// create query template
-	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckFoodType LIKE :truckFoodType";
+	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName,  truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckFoodType LIKE :truckFoodType";
 	$statement = $pdo->prepare($query);
 	// bind the truck food type to the place holder in the template
 	$parameters = ["truckFoodType" => $truckFoodType];
@@ -439,7 +439,7 @@ public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType)
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"], $row["truckName"]);
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(\Exception $exception) {
@@ -458,7 +458,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 	}
 
 	// create query template
-	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckUserId = :truckUserId";
+	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckUserId = :truckUserId";
 	$statement = $pdo->prepare($query);
 	// bind the truck food type to the place holder in the template
 	$parameters = ["truckUserId" => $truckUserId];
@@ -468,7 +468,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"], $row["truckName"]);
+			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(\Exception $exception) {
@@ -489,7 +489,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckVerifyImage, truckVerifiedCheck, truckName FROM truck WHERE truckName LIKE :truckName";
+		$query = "SELECT truckId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckName LIKE :truckName";
 	$statement = $pdo->prepare($query);
 	// bind the truck name to the place holder in the template
 	$parameters = ["truckName" => $truckName];
@@ -499,7 +499,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 	$statement->setFetchMode(\PDO::FETCH_ASSOC);
 	while(($row = $statement->fetch()) !== false) {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckVerifiedCheck"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckName"]);
+			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckVerifiedCheck"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
 			$trucks[$truck->$pdo()] = $truck;
 			$trucks->next();
 		} catch(\Exception $exception) {
@@ -521,7 +521,7 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 	public function insert(\PDO $pdo) : void {
 
 		// create query template
-		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck, truckName) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
+		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
 		$statement = $pdo->prepare($query);
 
 
