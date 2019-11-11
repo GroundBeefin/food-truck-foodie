@@ -69,7 +69,6 @@ class UserTest extends FoodTruckFoodieTest {
 
 		// grab the data from mySQL and enforce the fields match our expectations
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
-		var_dump($user);
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
 		$this->assertEquals($pdoUser->getUserId(), $userId);
 		$this->assertEquals($pdoUser->getUserActivationToken(), $this->VALID_USER_ACTIVATION_TOKEN);
@@ -99,7 +98,7 @@ class UserTest extends FoodTruckFoodieTest {
 		$pdoUser = User::getUserByUserId($this->getPDO(), $user->getUserId());
 
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
-		$this->assertEquals($pdoUser->getUserId(), generateUuidV4());
+		$this->assertEquals($pdoUser->getUserId(), $userId);
 		$this->assertEquals($pdoUser->getUserActivationToken(), $this->VALID_USER_ACTIVATION_TOKEN);
 		$this->assertEquals($pdoUser->getUserAvatarUrl(), $this->VALID_USER_AVATAR_URL);
 		$this->assertEquals($pdoUser->getUserEmail(), $this->VALID_USER_EMAIL);
