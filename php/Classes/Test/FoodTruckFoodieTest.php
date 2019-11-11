@@ -1,5 +1,5 @@
 <?php
-namespace Groundbeefin\FoodTruckFoodie\Test;
+namespace GroundBeefin\FoodTruckFoodie\Test;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\DbUnit\DataSet\QueryDataSet;
@@ -80,7 +80,7 @@ abstract class FoodTruckFoodieTest extends TestCase {
 		// if the connection hasn't been established, create it
 		if($this->connection === null) {
 			// connect to mySQL and provide the interface to PHPUnit
-			$secrets =  new \Secrets("/etc/apache2/capstone-mysql/ddctwitter.ini");
+			$secrets =  new \Secrets("/etc/apache2/capstone-mysql/foodie.ini");
 			$pdo = $secrets->getPdoObject();
 			$this->connection = $this->createDefaultDBConnection($pdo, $secrets->getDatabase());
 		}
