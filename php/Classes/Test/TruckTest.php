@@ -1,12 +1,16 @@
 <?php
+
 namespace GroundBeefin\FoodTruckFoodie\Test;
+
 use GroundBeefin\FoodTruckFoodie\{
 	Post, Truck, User
 };
+
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
 // grab the uuid generator
 require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
+
 /**
  * Full PHPUnit test for the Truck class
  *
@@ -79,6 +83,9 @@ class TruckTest extends FoodTruckFoodieTest {
 	 **/
 
 	protected $VALID_TRUCK_VERIFIED_CHECK = "verified";
+	/**
+	 * create decedent objects before running test
+	 */
 
 	/**
 	 * run the default setup operation to create salt and hash.
@@ -91,7 +98,7 @@ class TruckTest extends FoodTruckFoodieTest {
 
 
 		// create and insert a User to own the test Truck
-		$this->user = new User();
+		$this->user = new User(generateUuidV4(), $this->VALID_USER_ACTIVATION_TOKEN, "www.google.com", "johndoe@gmail.com", $this->VALID_USER_HASH, "TOM");
 		$this->user->insert($this->getPDO());
 	}
 
@@ -106,15 +113,21 @@ class TruckTest extends FoodTruckFoodieTest {
 		$truckId = generateUuidV4();
 
 
-		$truck = new Truck($truckId, $this->user->getUserId(),$this->VALID_TRUCK_AVATAR_URL,$this->VALID_TRUCK_EMAIL,$this->VALID_TRUCK_FOOD_TYPE,$this->VALID_TRUCK_MENU_URL,,"Street Hibachi","5055555555","img...","verified");
+		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
 		$truck->insert($this->getPDO());
 
 		// grab the data from MySQL and enforce the fields match expectations
 		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
-		$this->assertEquals($pdoTruck->getTruckUserId(), $this->VALID_TR)
-
-
-
-
+		$this->assertEquals($pdoTruck->getTruckUserId(), $this->TRUCK_USER_ID);
+		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->TRUCK_AVATAR_URL);
+		$this->assertEquals($pdoTruck->getTruckEmail(), $this->TRUCK_EMAIL);
+		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->TRUCK_FOOD_TYPE);
+		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->TRUCK_MENU_URL);
+		$this->assertEquals($pdoTruck->getTruckName(), $this->TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->TRUCK_PHONE_NUMBER);
+		$this->assertEquals($pdoTruck->getTrukVerifyImage(), $this->TRUCK_VERIFY_IMAGE);
+		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->TRUCK_VERIFIED_CHECK);
+	}
+}
