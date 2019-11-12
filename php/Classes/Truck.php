@@ -481,33 +481,41 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 
 
 	//get truck by truck name method
-	public static function getTruckByTruckName(\PDO $pdo, string $truckName, $trucks) : \SplFixedArray {
-		// sanitize the description before searching
-		$truckName = filter_var($truckName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	/**
+	 * gets the Truck by Truck name
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $profileEmail email to search for
+	 * @return Profile|null Profile or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getTruckByTruckName(\PDO $pdo, string $truckName): ?Truck {
+		// sanitize the email before searching
+		$truckName = trim($truckName);
+		$tuckName = filter_var($truckName, FILTER_VALIDATE_TRUCK_NAME);
 		if(empty($truckName) === true) {
-			throw(new \PDOException("truck name is invalid"));
+			throw(new \PDOException("no truck name entered"));
 		}
-
 		// create query template
-		$query = "SELECT truckId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckName LIKE :truckName";
-	$statement = $pdo->prepare($query);
-	// bind the truck name to the place holder in the template
-	$parameters = ["truckName" => $truckName];
-	$statement->execute($parameters);
-	// build an array of trucks
-	$trucks = new \SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(\PDO::FETCH_ASSOC);
-	while(($row = $statement->fetch()) !== false) {
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckName = :truckName";
+		$statement = $pdo->prepare($query);
+		// bind the profile id to the place holder in the template
+		$parameters = ["profileEmail" => $truckName];
+		$statement->execute($parameters);
+		// grab the Profile from mySQL
 		try {
-			$truck = new Truck($row["truckId"], $row["truckActivationToken"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckVerifiedCheck"], $row["truckPhoneNumber"], $row["truckVerifiedImage"]);
-			$trucks[$truck->$pdo()] = $truck;
-			$trucks->next();
+			$truck = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-	}
-	return($trucks);
+		return ($truck);
 	}
 
 
