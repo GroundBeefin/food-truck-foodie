@@ -1,7 +1,7 @@
 <phpunit>
 	<testsuites>
 		<testsuite name="Food Truck Foodie Test">
-			<file>UserTest.php</file>
+			<!--file>UserTest.php</file-->
 			<file>TruckTest.php</file>
 			<!--<file>PostTest.php</file>-->
 		</testsuite>

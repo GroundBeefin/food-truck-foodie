@@ -41,7 +41,7 @@ class TruckTest extends FoodTruckFoodieTest {
 	 * valid truck user id
 	 */
 
-protected $VALID_TRUCK_USER_ID;
+	protected $VALID_TRUCK_USER_ID;
 
 
 	/**
@@ -122,7 +122,7 @@ protected $VALID_TRUCK_USER_ID;
 		$numRows = $this->getConnection()->getRowCount("truck");
 		// create a new Truck and insert to into mySQL
 		$truckId = generateUuidV4();
-		$truck = new Truck($truckId, $this->user->getTruckUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
+		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
 		$truck->insert($this->getPDO());
 		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));

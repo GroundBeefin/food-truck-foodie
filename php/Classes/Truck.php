@@ -404,6 +404,10 @@ class Truck  implements \JsonSerializable {
 		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
 		$statement = $pdo->prepare($query);
 
+		//bind the truck variables to placeholder template
+		$parameters = ["truckId" => $this->truckId->getBytes(), "truckUserId" => $this->truckUserId->getBytes(), "truckAvatarUrl" => $this->truckAvatarUrl, "truckEmail" => $this->truckEmail, "truckFoodType" => $this->truckFoodType, "truckMenuUrl"=> $this->truckMenuUrl, "truckName" => $this->truckName, "truckPhoneNumber" => $this->truckPhoneNumber, "truckVerifyImage" => $this->truckVerifyImage, "truckVerifiedCheck" => $this->truckVerifiedCheck];
+		$statement->execute($parameters);
+
 
 	}
 
@@ -419,6 +423,8 @@ class Truck  implements \JsonSerializable {
 		// create query template
 		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage, truckVerifiedCheck= :truckVerifiedCheck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
+		$parameters = ["truckId" => $this->truckId->getBytes(), "truckUserId" => $this->truckUserId->getBytes(), "truckAvatarUrl" => $this->truckAvatarUrl, "truckEmail" => $this->truckEmail, "truckFoodType" => $this->truckFoodType, "truckMenuUrl"=> $this->truckMenuUrl, "truckName" => $this->truckName, "truckPhoneNumber" => $this->truckPhoneNumber, "truckVerifyImage" => $this->truckVerifyImage, "truckVerifiedCheck" => $this->truckVerifiedCheck];
+		$statement->execute($parameters);
 
 	}
 
@@ -441,7 +447,7 @@ class Truck  implements \JsonSerializable {
 	}
 
 	//get truck by truck id
-	public static function getTruckByTruckId(\PDO $pdo, string $truckId) : \SplFixedArray {
+	public static function getTruckByTruckId(\PDO $pdo, string $truckId) : ?Truck {
 		try {
 			$truckId = self::validateUuid($truckId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
@@ -449,25 +455,25 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM Truck WHERE truckId = :truckId";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
 		// bind the truck id to the place holder in the template
 		$parameters = ["truckId" => $truckId];
 		$statement->execute($parameters);
-		// build an array of trucks
-		$trucks = new \SplFixedArray($statement->rowCount());
-		$statement->setFetchMode(\PDO::FETCH_ASSOC);
-		while(($row = $statement->fetch()) !== false) {
+
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
-				$trucks[$truck->$pdo()] = $truck;
-				$trucks->next();
-			} catch(\Exception $exception) {
+				$truck = null;
+				$statement->setFetchMode(\PDO::FETCH_ASSOC);
+				$row = $statement->fetch();
+				if($row !== false) {
+					$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				}
+			}catch(\Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new \PDOException($exception->getMessage(), 0, $exception));
 			}
-		}
-		return($trucks);
+
+		return($truck);
 	}
 
 
