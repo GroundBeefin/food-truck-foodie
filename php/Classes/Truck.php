@@ -389,6 +389,57 @@ class Truck  implements \JsonSerializable {
 			throw(new \RangeException("verify check content is not valid. "));
 		}
 	}
+
+
+	/**
+	 * inserts this truck into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \\TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo) : void {
+
+		// create query template
+		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
+		$statement = $pdo->prepare($query);
+
+
+	}
+
+	/**
+	 * updates this truck in mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \\TypeError if $pdo is not a PDO connection object
+	 **/
+	public function update(\PDO $pdo) : void {
+
+		// create query template
+		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage, truckVerifiedCheck= :truckVerifiedCheck WHERE truckId = :truckId";
+		$statement = $pdo->prepare($query);
+
+	}
+
+	/**
+	 * deletes this truck from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo) : void {
+
+		// create query template
+		$query = "DELETE FROM truck WHERE truckId = :truckId";
+		$statement = $pdo->prepare($query);
+
+		// bind the member variables to the place holder in the template
+		$parameters = ["truckId" => $this->truckId->getBytes()];
+		$statement->execute($parameters);
+	}
+
 	//get truck by truck id
 	public static function getTruckByTruckId(\PDO $pdo, string $truckId) : \SplFixedArray {
 		try {
@@ -398,7 +449,7 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckId = :truckId";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM Truck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
 		// bind the truck id to the place holder in the template
 		$parameters = ["truckId" => $truckId];
@@ -421,62 +472,62 @@ class Truck  implements \JsonSerializable {
 
 
 //get truck by food type
-public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType) : \SplFixedArray {
-	// sanitize the description before searching
-	$truckFoodType = filter_var($truckFoodType, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	if(empty($truckFoodType) === true) {
-		throw(new \PDOException("truck food type is invalid"));
-	}
-
-	// create query template
-	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName,  truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckFoodType LIKE :truckFoodType";
-	$statement = $pdo->prepare($query);
-	// bind the truck food type to the place holder in the template
-	$parameters = ["truckFoodType" => $truckFoodType];
-	$statement->execute($parameters);
-	// build an array of trucks
-	$trucks = new \SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(\PDO::FETCH_ASSOC);
-	while(($row = $statement->fetch()) !== false) {
-		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
-			$trucks[$truck->$pdo()] = $truck;
-			$trucks->next();
-		} catch(\Exception $exception) {
-			// if the row couldn't be converted, rethrow it
-			throw(new \PDOException($exception->getMessage(), 0, $exception));
+	public static function getTruckByTruckFoodType(\PDO $pdo, string $truckFoodType) : \SplFixedArray {
+		// sanitize the description before searching
+		$truckFoodType = filter_var($truckFoodType, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($truckFoodType) === true) {
+			throw(new \PDOException("truck food type is invalid"));
 		}
+
+		// create query template
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName,  truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckFoodType LIKE :truckFoodType";
+		$statement = $pdo->prepare($query);
+		// bind the truck food type to the place holder in the template
+		$parameters = ["truckFoodType" => $truckFoodType];
+		$statement->execute($parameters);
+		// build an array of trucks
+		$trucks = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				$trucks[$truck->$pdo()] = $truck;
+				$trucks->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return($trucks);
 	}
-	return($trucks);
-}
 //get truck by truck user id
-public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \SplFixedArray {
-	try {
-		$truckUserId = self::validateUuid($truckUserId);
-	} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-		throw(new \PDOException($exception->getMessage(), 0, $exception));
-	}
-
-	// create query template
-	$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckUserId = :truckUserId";
-	$statement = $pdo->prepare($query);
-	// bind the truck food type to the place holder in the template
-	$parameters = ["truckUserId" => $truckUserId];
-	$statement->execute($parameters);
-	// build an array of trucks
-	$trucks = new \SplFixedArray($statement->rowCount());
-	$statement->setFetchMode(\PDO::FETCH_ASSOC);
-	while(($row = $statement->fetch()) !== false) {
+	public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \SplFixedArray {
 		try {
-			$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
-			$trucks[$truck->$pdo()] = $truck;
-			$trucks->next();
-		} catch(\Exception $exception) {
-			// if the row couldn't be converted, rethrow it
+			$truckUserId = self::validateUuid($truckUserId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-	}
-	return($trucks);
+
+		// create query template
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckUserId = :truckUserId";
+		$statement = $pdo->prepare($query);
+		// bind the truck food type to the place holder in the template
+		$parameters = ["truckUserId" => $truckUserId];
+		$statement->execute($parameters);
+		// build an array of trucks
+		$trucks = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				$trucks[$truck->$pdo()] = $truck;
+				$trucks->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return($trucks);
 	}
 
 
@@ -518,56 +569,6 @@ public static function getTruckByTruckUserId(\PDO $pdo, string $truckUserId) : \
 		return ($truck);
 	}
 
-
-	/**
-	 * inserts this truck into mySQL
-	 *
-	 * @param \PDO $pdo PDO connection object
-	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \\TypeError if $pdo is not a PDO connection object
-	 **/
-	public function insert(\PDO $pdo) : void {
-
-		// create query template
-		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
-		$statement = $pdo->prepare($query);
-
-
-	}
-
-
-	/**
-	 * deletes this truck from mySQL
-	 *
-	 * @param \PDO $pdo PDO connection object
-	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError if $pdo is not a PDO connection object
-	 **/
-	public function delete(\PDO $pdo) : void {
-
-		// create query template
-		$query = "DELETE FROM truck WHERE truckId = :truckId";
-		$statement = $pdo->prepare($query);
-
-		// bind the member variables to the place holder in the template
-		$parameters = ["truckId" => $this->truckId->getBytes()];
-		$statement->execute($parameters);
-	}
-
-	/**
-	 * updates this truck in mySQL
-	 *
-	 * @param \PDO $pdo PDO connection object
-	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \\TypeError if $pdo is not a PDO connection object
-	 **/
-	public function update(\PDO $pdo) : void {
-
-		// create query template
-		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage, truckVerifiedCheck= :truckVerifiedCheck WHERE truckId = :truckId";
-		$statement = $pdo->prepare($query);
-
-	}
 
 	/**
 	 * formats the state variables for JSON serialization

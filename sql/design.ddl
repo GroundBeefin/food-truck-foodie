@@ -27,7 +27,7 @@ create table truck(
 	truckVerifyImage varchar(255),
 	truckVerifiedCheck boolean,
 	index (truckUserId),
-	foreign key (truckUserId) references truck(truckId),
+	foreign key (truckUserId) references user(userId),
 	primary key (truckId)
 );
 
