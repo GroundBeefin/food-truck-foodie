@@ -153,6 +153,17 @@ class Truck  implements \JsonSerializable {
 		//convert and store this truck user id
 		$this->truckUserId = $uuid;
 	}
+
+
+	/**
+	 * accessor method for email for the truck
+	 *
+	 * @return string for avatar url  for the truck
+	 **/
+	public function getTruckAvatarUrl(): string {
+		return ($this->truckAvatarUrl);
+	}
+
 /**
  * mutator method for truck avatar url
  *
