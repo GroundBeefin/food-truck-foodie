@@ -182,3 +182,4 @@ class UserTest extends FoodTruckFoodieTest {
 	}
 
 }
+
