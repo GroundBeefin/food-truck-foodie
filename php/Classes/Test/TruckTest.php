@@ -25,12 +25,12 @@ class TruckTest extends FoodTruckFoodieTest {
 	/** user who created the truck
 	 *@var string $VALID_USER_ID
 	 */
-	protected $user;
+	protected $user = null;
 
 		/** user  who set up truck activation token
 		 *@var user activation token
 		 */
-	protected $VALID_USER_ACTIVATION_TOKEN;
+	protected $VALID_USER_ACTIVATION_TOKEN = null;
 
 	/**
 	 * users hash
@@ -115,37 +115,11 @@ class TruckTest extends FoodTruckFoodieTest {
 
 
 		// create and insert a User to own the test Truck
-//		$userId = generateUuidV4();
-		$user = new User(generateUuidV4(), $this->VALID_USER_ACTIVATION_TOKEN, "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de", $this->VALID_USER_HASH, "Street Hibachi");
-		$user->insert($this->getPDO());
+		$userId = generateUuidV4();
+		$this->user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de", 	$this->VALID_USER_HASH, "Street Hibachi");
+		$this->user->insert($this->getPDO());
 	}
 
-	/**
-	 * test inserting a Tuck, editing it, and then updating it
-	 **/
-	public function testUpdateValidTruck(): void {
-		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("truck");
-		// create a new Truck and insert to into mySQL
-		$truckId = generateUuidV4();
-		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
-		$truck->insert($this->getPDO());
-		// edit the Truck and update it in mySQL
-		$truck->setTruckName($this->VALID_TRUCK_NAME_2);
-		$truck->update($this->getPDO());
-		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
-		$this->assertEquals($pdoTruck->getTruckUserId()->toString(), $this->user->getUserId()->toString());
-		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
-		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
-		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
-		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
-		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
-		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
-		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
-		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
-		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
-	}
 
 	/**
 	 * test inserting a valid Tuck  and verify that the actual mySQL data matches
@@ -155,8 +129,6 @@ class TruckTest extends FoodTruckFoodieTest {
 		$numRows = $this->getConnection()->getRowCount("truck");
 
 		$truckId = generateUuidV4();
-
-
 
 		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
 		$truck->insert($this->getPDO());
@@ -175,6 +147,36 @@ class TruckTest extends FoodTruckFoodieTest {
 		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
 		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
 	}
+
+
+	/**
+	 * test inserting a Tuck, editing it, and then updating it
+	 **/
+	public function testUpdateValidTruck(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("truck");
+		// create a new Truck and insert to into mySQL
+		$truckId = generateUuidV4();
+		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
+		$truck->insert($this->getPDO());
+		// edit the Truck and update it in mySQL
+		$truck->setTruckName($this->VALID_TRUCK_NAME_2);
+		$truck->update($this->getPDO());
+		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
+		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
+		$this->assertEquals($pdoTruck->getTruckUserId()->toString(), $this->user->getUserId()->toString());
+		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
+		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
+		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
+		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
+		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
+		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
+		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
+	}
+
+
 
 
 	/**
