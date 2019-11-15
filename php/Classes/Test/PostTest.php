@@ -1,6 +1,7 @@
 <?php
 
 namespace GroundBeefin\FoodTruckFoodie\Test;
+use phpDocumentor\Reflection\Types\This;
 use GroundBeefin\FoodTruckFoodie\{
 	User, Truck, Post
 };
@@ -36,6 +37,7 @@ class PostTest extends FoodTruckFoodieTest {
 	 * @var $VALID_USER_HASH
 	 */
 	protected $VALID_USER_HASH;
+
 	/**
 	 * content of the Post
 	 * @var string $VALID_POSTCONTENT
@@ -50,7 +52,12 @@ class PostTest extends FoodTruckFoodieTest {
 	 * timestamp of the Post; this starts as null and is assigned later
 	 * @var \DateTime $VALID_POSTDATE
 	 **/
-	protected $VALID_POSTDATE;
+	protected $VALID_POSTDATE = null;
+	/**
+	 * valid activationToken to create the profile object to own the test
+	 * @var string $VALID_ACTIVATION
+	 */
+	protected $VALID_USER_ACTIVATION_TOKEN;
 	/**
 	 * create dependent objects before running each test
 	 **/
@@ -61,13 +68,15 @@ class PostTest extends FoodTruckFoodieTest {
 			//create and salt the hash for the mocked profile
 			$password = "abc123";
 			$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
+			$this->VALID_ACTIVATION = bin2hex(random_bytes(16));
 
 			// create and insert a User to own the test Post
-			$this->user = new User(generateUuidV4(), null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
+			$userId = generateUuidV4()
+			$this->user = new User($userId, null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
 			$this->user->insert($this->getPDO());
 
 			// create and insert the mocked truck profile
-			$this->truck = new Truck(generateUuidV4(), generateUuidV4(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTrucOne", "5055554463", "image.url", "1");
+			$this->truck = new Truck(generateUuidV4(), $this->user->getUserId(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTrucOne", "5055554463", "image.url", "1");
 			$this->truck->insert($this->getPDO());
 
 
@@ -85,8 +94,9 @@ class PostTest extends FoodTruckFoodieTest {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("post");
 
+		$postId = generateUuidV4()
 		// create a new Post and insert to into mySQL
-		$post = new Post(generateUuidV4(), $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($postId, $this->truck->getTrunckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -190,7 +200,7 @@ class PostTest extends FoodTruckFoodieTest {
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post($this->post->getPostId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($postId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -208,3 +218,5 @@ class PostTest extends FoodTruckFoodieTest {
 		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
 }
+
+
