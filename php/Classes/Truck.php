@@ -18,7 +18,7 @@ class Truck  implements \JsonSerializable {
 	private $truckId;
 	/**
 	 * This is the trucks user id; this is a foreign key
-	 * @var string $truckUserId
+	 * @var Uuid $truckUserId
 	 */
 	private $truckUserId;
 	/**
@@ -32,7 +32,7 @@ class Truck  implements \JsonSerializable {
 	 */
 	private $truckEmail;
 	/**
-	 * This is the tuck food type
+	 * This is the truck food type
 	 * @var string $truckFoodType
 	 */
 	private $truckFoodType;
@@ -65,16 +65,16 @@ class Truck  implements \JsonSerializable {
 	/**
 	 * constructor for this truck
 	 *
-	 * @param string|Uuid $newTruckId id of this user if a new user
-	 * @param string $newTruckUserId activation token to sage guard against malicious accounts
-	 * @param string $newTruckAvatarUrl string containing truck url to add to trucks profile
+	 * @param Uuid | string $newTruckId id of this user if a new user
+	 * @param Uuid | string $newTruckUserId  of the truck
+	 * @param string $newTruckAvatarUrl string containing truck url to add to trucks Avatar
 	 * @param string $newTruckEmail string containing email
 	 * @param string $newTruckFoodType string containing food type of the truck
 	 * @param string $newTruckMenuUrl string containing Url for truck menu
 	 * @param string $newTruckName string containing the actual name of the truck
 	 * @param string $newTruckPhoneNumber containing the phone number to contact the truck
 	 * @param string $newTruckVerifyImage containing the verify image to see if this is a real food truck
-	 * @param string $newTruckVerifiedCheck containing the data that the truck has been checked and verified as a real foo truck.
+	 * @param string $newTruckVerifiedCheck containing the data that the truck has been checked and verified as a real food truck.
 	 * */
 
 
@@ -98,7 +98,7 @@ class Truck  implements \JsonSerializable {
 	}
 
 	/**
- 	* *accessor method for tuck id
+ 	* *accessor method for truck id
  	*
  	* @retun Uuid value of truck id (or null if ne Truck)
  	*/
@@ -128,7 +128,7 @@ class Truck  implements \JsonSerializable {
 /**
  * accessor method for truck user id
  *
- * @return string|  Uuid value of truck user id
+ * @return  string| Uuid value of truck user id
  */
 
 	public function getTruckUserId(): Uuid {
@@ -137,7 +137,7 @@ class Truck  implements \JsonSerializable {
 	/**
 	 * mutator method for truck user id
 	 *
-	 * @param Uuid | string $newTruckUserId
+	 * @param Uuid $newTruckUserId
 	 * @param \RangeException  if new truck user id is not a Uuid
 	 * @throw \TypeError if $newTruckUserId is not a Uuid
 	 **/
@@ -210,7 +210,7 @@ class Truck  implements \JsonSerializable {
 	public function setTruckEmail(string $newTruckEmail): void {
 		//verify email is secure
 		$newTruckEmail = trim($newTruckEmail);
-		$newTruckEmail = filter_var($newTruckEmail, FILTER_VALIDATE_EMAIL);
+		$newTruckEmail = filter_var($newTruckEmail, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($newTruckEmail) === true) {
 			throw (new \InvalidArgumentException("Truck email is empty or insecure"));
 	}
@@ -236,10 +236,10 @@ class Truck  implements \JsonSerializable {
 	 */
 
 
-	public function setTruckFoodType(string $newTruckFoodType): void {
+	public function setTruckFoodType($newTruckFoodType): void {
 		//determines what food type are available for the trucks
 			$newTruckFoodType = trim($newTruckFoodType);
-			$newTruckFoodType = filter_var($newTruckFoodType, FILTER_FLAG_NO_ENCODE_QUOTES);
+			$newTruckFoodType = filter_var($newTruckFoodType, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 			if(empty($newTruckFoodType) === true) {
 			throw (new \InvalidArgumentException("Truck food type is not defined"));
 		}
@@ -263,21 +263,21 @@ class Truck  implements \JsonSerializable {
 	/**
 	 * mutator method for truck avatar url
 	 *
-	 * @param string $newTruckMenurUrl new value of at truck
+	 * @param string $newTruckMenuUrl new menu of at truck
 	 * @throws \InvalidArgumentException if $newTruckMenuUrl is not a string or insecure
 	 * @throws \RangeException if $newTruckAvatarUrl is > 255 characters
 	 * @throws \\TypeError if $newTruckAvatarUrl is not a string
 	 **/
 
 
-	public function setTruckMenuUrl(string $newTruckMenuUrl): void {
+	public function setTruckMenuUrl( $newTruckMenuUrl): void {
 		// verify the at int is secure
 			$newTruckMenuUrl = trim($newTruckMenuUrl);
-			$newTruckMenuUrl = filter_var($newTruckMenuUrl, FILTER_VALIDATE_URL);
-		if(empty($newTruckMenueUrl) === true) {
+			$newTruckMenuUrl = filter_var($newTruckMenuUrl, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newTruckMenuUrl) === true) {
 			throw(new \InvalidArgumentException("Truck menu url is not available at this time"));
 		}
-		// verify the tuck menu will fit in the database
+		// verify the truck menu will fit in the database
 		if(strlen($newTruckMenuUrl) > 255) {
 			throw(new \RangeException("Truck food menu url is too large"));
 
@@ -322,23 +322,28 @@ class Truck  implements \JsonSerializable {
 }
 	/** accessor method for truck phone number
 	*
-     * @return int value of the truck phone number
+     * @return string value of the truck phone number
 	*/
-    public function getTruckPhoneNumber(): int {
+    public function getTruckPhoneNumber(): string {
 		return ($this->truckPhoneNumber);
 	}
 	/** mutator method for truck phone number
 	*
-	 * @param Integer the new truck phone number
+	 * @param string the new truck phone number
+	 * @throws \InvalidArgumentException if truck name is not there
 	 * @throws \RangeException if truck phone number is empty
 	*/
 
 
-	public function setTruckPhoneNumber(Int $newTruckPhoneNumber)  {
+	public function setTruckPhoneNumber( $newTruckPhoneNumber) :void  {
 		//verify the phone number is secure
-		$newTruckPhoneNumber = filter_var($newTruckPhoneNumber, FILTER_VALIDATE_INT, FILTER_SANITIZE_NUMBER_INT);
-		if($newTruckPhoneNumber < 0||$newTruckPhoneNumber > 10) {
-			throw(new \RangeException("truck phone number is empty "));
+		$newTruckPhoneNumber = trim($newTruckPhoneNumber);
+		$newTruckPhoneNumber = filter_var($newTruckPhoneNumber, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newTruckPhoneNumber) === true){
+			throw(new \InvalidArgumentException("truck phone number is empty"));
+		}
+		if(strlen($newTruckPhoneNumber)  > 32) {
+			throw(new \RangeException("truck phone number too long "));
 		}
 
 //store the phone number
@@ -366,7 +371,7 @@ class Truck  implements \JsonSerializable {
 	public function setTruckVerifyImage($newTruckVerifyImage) {
 		//verify the verify image is secure
 		$newTruckVerifyImage = trim($newTruckVerifyImage);
-		$newTruckVerifyImage = filter_var($newTruckVerifyImage, FILTER_VALIDATE_URL);
+		$newTruckVerifyImage = filter_var($newTruckVerifyImage, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if($newTruckVerifyImage === false) {
 			throw (new \UnexpectedValueException("The image url is not valid or empty"));
 		}
@@ -395,7 +400,7 @@ class Truck  implements \JsonSerializable {
 	 **/
 	public function setTruckVerifiedCheck(bool $newTruckVerifiedCheck) {
 		// verify check content is secure
-		$newTruckVerifiedCheck = filter_var($newTruckVerifiedCheck, FILTER_VALIDATE_BOOLEAN, FILTER_SANITIZE_NUMBER_INT);
+		$newTruckVerifiedCheck = filter_var($newTruckVerifiedCheck, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if($newTruckVerifiedCheck > 1) {
 			throw(new \RangeException("verify check content is not valid. "));
 		}
@@ -412,7 +417,7 @@ class Truck  implements \JsonSerializable {
 	public function insert(\PDO $pdo) : void {
 
 		// create query template
-		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedChecked)";
+		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedCheck)";
 		$statement = $pdo->prepare($query);
 
 		//bind the truck variables to placeholder template
@@ -456,9 +461,13 @@ class Truck  implements \JsonSerializable {
 		$parameters = ["truckId" => $this->truckId->getBytes()];
 		$statement->execute($parameters);
 	}
-
+	/**
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid $truckId
+	 * @return truck
+	 */
 	//get truck by truck id
-	public static function getTruckByTruckId(\PDO $pdo, string $truckId) : ?Truck {
+	public static function getTruckByTruckId(\PDO $pdo, $truckId) : ?Truck {
 		try {
 			$truckId = self::validateUuid($truckId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
@@ -466,10 +475,10 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckId = :truckId";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
 		// bind the truck id to the place holder in the template
-		$parameters = ["truckId" => $truckId];
+		$parameters = ["truckId" => $truckId->getBytes()];
 		$statement->execute($parameters);
 
 			try {
@@ -477,7 +486,7 @@ class Truck  implements \JsonSerializable {
 				$statement->setFetchMode(\PDO::FETCH_ASSOC);
 				$row = $statement->fetch();
 				if($row !== false) {
-					$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+					$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
 				}
 			}catch(\Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -507,7 +516,7 @@ class Truck  implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
 				$trucks[$truck->$pdo()] = $truck;
 				$trucks->next();
 			} catch(\Exception $exception) {
@@ -536,7 +545,7 @@ class Truck  implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
 				$trucks[$truck->$pdo()] = $truck;
 				$trucks->next();
 			} catch(\Exception $exception) {
@@ -553,37 +562,37 @@ class Truck  implements \JsonSerializable {
 	 * gets the Truck by Truck name
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @param string $profileEmail email to search for
-	 * @return Profile|null Profile or null if not found
+	 * @param string
+	 * @return truck|null user or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	public static function getTruckByTruckName(\PDO $pdo, string $truckName): ?Truck {
+	public static function getTruckByTruckName(\PDO $pdo, $truckName): Truck {
 		// sanitize the email before searching
-		$truckName = trim($truckName);
-		$tuckName = filter_var($truckName, FILTER_VALIDATE_TRUCK_NAME);
-		if(empty($truckName) === true) {
-			throw(new \PDOException("no truck name entered"));
-		}
+//		$truckName = trim($truckName);
+//		$truckName = filter_var($truckName, FILTER_SANITIZE_STRING);
+//		if(empty($truckName) === true) {
+//			throw(new \PDOException("no truck name entered"));
+//		}
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckName = :truckName";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage,truckVerifiedCheck FROM truck WHERE truckName = :truckName";
 		$statement = $pdo->prepare($query);
-		// bind the profile id to the place holder in the template
-		$parameters = ["profileEmail" => $truckName];
+		// bind the user id to the place holder in the template
+		$parameters = ["truckName" => $truckName];
 		$statement->execute($parameters);
-		// grab the Profile from mySQL
+		// grab the Truck from mySQL
 		try {
-			$truck = null;
+			$truckName = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifiedImage"], $row["truckVerifiedCheck"]);
+				$truckName = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-		return ($truck);
+		return ($truckName);
 	}
 
 

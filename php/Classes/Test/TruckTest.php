@@ -2,6 +2,7 @@
 
 namespace GroundBeefin\FoodTruckFoodie\Test;
 
+use Cassandra\Uuid;
 use GroundBeefin\FoodTruckFoodie\{
 	Post, Truck, User
 };
@@ -23,7 +24,7 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
 class TruckTest extends FoodTruckFoodieTest {
 
 	/** user who created the truck
-	 *@var string $VALID_USER_ID
+	 *@var Uuid | string  $VALID_USER_ID
 	 */
 	protected $user = null;
 
@@ -99,7 +100,7 @@ class TruckTest extends FoodTruckFoodieTest {
 	 * @var
 	 **/
 
-	protected $VALID_TRUCK_VERIFIED_CHECK = "verified";
+	protected $VALID_TRUCK_VERIFIED_CHECK = 1;
 	/**
 	 * create decedent objects before running test
 	 */
@@ -137,7 +138,7 @@ class TruckTest extends FoodTruckFoodieTest {
 		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
-		$this->assertEquals($pdoTruck->getTruckUserId(), $this->VALID_TRUCK_USER_ID);
+		$this->assertEquals($pdoTruck->getTruckUserId(), $this->user->getUserId());
 		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
 		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
 		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
@@ -165,7 +166,7 @@ class TruckTest extends FoodTruckFoodieTest {
 		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
-		$this->assertEquals($pdoTruck->getTruckUserId()->toString(), $this->user->getUserId()->toString());
+		$this->assertEquals($pdoTruck->getTruckUserId(), $this->user->getUserId());
 		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
 		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
 		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
