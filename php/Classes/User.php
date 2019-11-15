@@ -3,7 +3,7 @@
 namespace GroundBeefin\FoodTruckFoodie;
 
 require_once("autoload.php");
-require_once(dirname(__DIR__, 1) . "/Classes/autoload.php");
+require_once(dirname(__DIR__, 1) . "/vendor/autoload.php");
 
 use InvalidArgumentException;
 use phpDocumentor\Reflection\Types\Integer;
@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @User Zachary Sanchez <zacharyesanchez22@gmail.com>
  */
-class User {
+class User implements \JsonSerializable {
 	use ValidateUuid;
 	/**
 	 * Id for this profile; this is the primary key
@@ -58,7 +58,7 @@ class User {
 	 * @param string $newUserHash string containing password hash
 	 * @param string $newUserName string containing username
 	 */
-	public function __construct($newUserId, $newUserActivationToken, $newUserAvatarUrl, $newUserEmail, $newUserHash, $newUserName) {
+	public function __construct($newUserId, string $newUserActivationToken, string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
 		try {
 			$this->setUserId($newUserId);
 			$this->setUserActivationToken($newUserActivationToken);
@@ -101,6 +101,14 @@ class User {
 	}
 
 	/**
+	 * accessor for user activation token
+	 *
+	 * @return string value of the activation token
+	 */
+	public function getUserActivationToken() : ?string {
+		return ($this->userActivationToken);
+	}
+	/**
 	 *mutator method for user activation token
 	 *
 	 * @param string|null $newUserActivationToken
@@ -124,6 +132,14 @@ class User {
 		$this->userActivationToken = $newUserActivationToken;
 	}
 
+	/**
+	 * accessor method for user avatar url
+	 *
+	 * @return string value of the user avatar url
+	 */
+	public function getUserAvatarUrl() : string {
+		return($this->userAvatarUrl);
+	}
 	/**
 	 * mutator method for user avatar url
 	 * @param string|null $newUserAvatarUrl
@@ -217,6 +233,14 @@ class User {
 	}
 
 	/**
+	 * accessor method for user name
+	 *
+	 * @return string value of userName
+	 */
+	public function getUserName() : string {
+		return($this->userName);
+	}
+	/**
 	 * mutator method for userName
 	 *
 	 * @param string $newUserName new value of userName
@@ -244,9 +268,11 @@ class User {
 	 */
 	public function insert(\PDO $pdo): void {
 		//create query template
-		$query = "INSERT INTO user(userId, userActivationToken, userAvatarUrl, userEmail, userHash, userName)
-VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :userUsername)";
+		$query = "INSERT INTO user(userId, userActivationToken, userAvatarUrl, userEmail, userHash, userName) VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :userName)";
 		$statement = $pdo->prepare($query);
+
+		$parameters = ["userId" => $this->userId->getBytes(), "userActivationToken" => $this->userActivationToken, "userAvatarUrl" => $this->userAvatarUrl, "userEmail" => $this->userEmail, "userHash" => $this->userHash, "userName" => $this->userName];
+		$statement->execute($parameters);
 	}
 
 	/**
@@ -326,6 +352,7 @@ VALUES (:userId, :userActivationToken, :userAvatarUrl, :userEmail, :userHash, :u
 		$fields = get_object_vars($this);
 		$fields["userId"] = $this->userId->toString();
 		unset($fields["userHash"]);
+		unset($fields["userActivationToken"]);
 		return ($fields);
 	}
 }
