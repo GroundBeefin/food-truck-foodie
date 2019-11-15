@@ -585,7 +585,7 @@ class Truck  implements \JsonSerializable {
 		$statement = $pdo->prepare($query);
 
 		// bind the truck food type to the place holder in the template
-		$truckName = "%truckName%";
+		$truckName = "%$truckName%";
 		$parameters = ["truckName" => $truckName];
 		$statement->execute($parameters);
 
