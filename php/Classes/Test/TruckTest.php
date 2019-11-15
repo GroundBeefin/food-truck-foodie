@@ -40,6 +40,7 @@ class TruckTest extends FoodTruckFoodieTest {
 
 	/**
 	 * valid truck user id
+	 * @var Uuid | string VALID_TRUCK_USER_ID
 	 */
 
 	protected $VALID_TRUCK_USER_ID;
@@ -100,7 +101,7 @@ class TruckTest extends FoodTruckFoodieTest {
 	 * @var
 	 **/
 
-	protected $VALID_TRUCK_VERIFIED_CHECK = 1;
+	protected $VALID_TRUCK_VERIFIED_CHECK = true;
 	/**
 	 * create decedent objects before running test
 	 */
@@ -171,7 +172,7 @@ class TruckTest extends FoodTruckFoodieTest {
 		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
 		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
 		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
-		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME_2);
 		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
 		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
 		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
@@ -206,18 +207,22 @@ class TruckTest extends FoodTruckFoodieTest {
 		$numRows = $this->getConnection()->getRowCount("truck");
 		// create a new Truck and insert to into mySQL
 		$truckId = generateUuidV4();
-		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK = "verified");
+		$truck = new Truck($truckId, $this->user->getUserId(), $this->VALID_TRUCK_AVATAR_URL, $this->VALID_TRUCK_EMAIL, $this->VALID_TRUCK_FOOD_TYPE, $this->VALID_TRUCK_MENU_URL, $this->VALID_TRUCK_NAME, $this->VALID_TRUCK_PHONE_NUMBER, $this->VALID_TRUCK_VERIFY_IMAGE, $this->VALID_TRUCK_VERIFIED_CHECK);
 		$truck->insert($this->getPDO());
 		// grab the data from mySQL and enforce the fields match our expectations
-		$results = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
-		$this->assertCount(1, $results);
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Truck", $results);
-		// grab the result from the array and validate it
-		$pdoTruck = $results[0];
-		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
-		$this->assertEquals($pdoTruck->getTruckId(), $this->user->getUserId());
+		$pdoTruck = Truck::getTruckByTruckId($this->getPDO(), $truck->getTruckId());
 
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
+		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
+		$this->assertEquals($pdoTruck->getTruckUserId(), $this->user->getUserId());
+		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
+		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
+		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
+		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
+		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
+		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
+		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
 	}
 
 	/**
@@ -235,12 +240,20 @@ class TruckTest extends FoodTruckFoodieTest {
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertCount(1, $results);
 		// enforce no other objects are bleeding into the test
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Truck", $results);
+		$this->assertContainsOnlyInstancesOf("GroundBeefin\\FoodTruckFoodie\\Truck", $results);
 		// grab the result from the array and validate it
 		$pdoTruck = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
 		$this->assertEquals($pdoTruck->getTruckUserId(), $this->user->getUserId());
+		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
+		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
 		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
+		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
+		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
+		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
+		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
 	}
 
 	public function testGetValidTruckByTruckUserId() {
@@ -254,12 +267,20 @@ class TruckTest extends FoodTruckFoodieTest {
 		$results = Truck::getTruckByTruckUserId($this->getPDO(), $truck->getTruckUserId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertCount(1, $results);
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Truck", $results);
+		$this->assertContainsOnlyInstancesOf("GroundBeefin\\FoodTruckFoodie\\Truck", $results);
 		// grab the result from the array and validate it
 		$pdoTruck = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
 		$this->assertEquals($pdoTruck->getTruckUserId(), $this->user->getUserId());
-
+		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
+		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
+		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
+		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
+		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
+		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
+		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
 	}
 
 	/**
@@ -276,13 +297,19 @@ class TruckTest extends FoodTruckFoodieTest {
 		$results = Truck::getTruckByTruckName($this->getPDO(), $truck->getTruckName());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("truck"));
 		$this->assertCount(1, $results);
-		// enforce no other objects are bleeding into the test
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Truck", $results);
+		$this->assertContainsOnlyInstancesOf("GroundBeefin\\FoodTruckFoodie\\Truck", $results);
 		// grab the result from the array and validate it
 		$pdoTruck = $results[0];
 		$this->assertEquals($pdoTruck->getTruckId(), $truckId);
 		$this->assertEquals($pdoTruck->getTruckUserId(), $this->user->getUserId());
+		$this->assertEquals($pdoTruck->getTruckAvatarUrl(), $this->VALID_TRUCK_AVATAR_URL);
+		$this->assertEquals($pdoTruck->getTruckEmail(), $this->VALID_TRUCK_EMAIL);
+		$this->assertEquals($pdoTruck->getTruckFoodType(), $this->VALID_TRUCK_FOOD_TYPE);
+		$this->assertEquals($pdoTruck->getTruckMenuUrl(), $this->VALID_TRUCK_MENU_URL);
 		$this->assertEquals($pdoTruck->getTruckName(), $this->VALID_TRUCK_NAME);
+		$this->assertEquals($pdoTruck->getTruckPhoneNumber(), $this->VALID_TRUCK_PHONE_NUMBER);
+		$this->assertEquals($pdoTruck->getTruckVerifyImage(), $this->VALID_TRUCK_VERIFY_IMAGE);
+		$this->assertEquals($pdoTruck->getTruckVerifiedCheck(), $this->VALID_TRUCK_VERIFIED_CHECK);
 	}
 }
 
