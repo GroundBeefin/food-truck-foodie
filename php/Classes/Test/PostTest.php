@@ -89,37 +89,13 @@ class PostTest extends FoodTruckFoodieTest {
 		}
 
 
-	/**
-	 * test inserting a valid Post and verify that the actual mySQL data matches
-	 *
-	 * @throws \Exception
-	 */
-//	public function testInsertValidPost() : void {
-//		// count the number of rows and save it for later
-//		$numRows = $this->getConnection()->getRowCount("post");
-//
-//		$postId = generateUuidV4();
-//		// create a new Post and insert to into mySQL
-//		$post = new Post($postId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
-//		$post->insert($this->getPDO());
-//
-//		// grab the data from mySQL and enforce the fields match our expectations
-//		$pdoPost = Post::getPostByPostTruckIdAndPostUserId($this->getPDO(), $this->truck->postTruckId(), $this->post->getPostId());
-//		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
-//		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
-//		$this->assertEquals($pdoPost->getPostUserId(),$this->post->getPostId());
-//
-//		//format the date too seconds since the beginning of time to avoid round off error
-//		$this->assertEquals($pdoPost->getPostDate()->getTimeStamp(), $this->VALID_POSTDATE->getTimestamp());
-//	}
-
-
 
 	/**
 	 * test inserting a valid Post and verify that the actual mySQL data matches
 	 **/
 	public function testInsertValidPost() : void {
-
+// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("post");
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
@@ -127,10 +103,10 @@ class PostTest extends FoodTruckFoodieTest {
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostId());
-
-		$this->assertEquals($pdoPost->getPostId()->toString(), $PostId->toString());
-		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
+		$this->assertEquals($pdoPost->getPostId(), $postId[0]);
+		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
 		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
 		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
@@ -195,27 +171,25 @@ class PostTest extends FoodTruckFoodieTest {
 	 *
 	 * @throws \Exception
 	 */
-	public function testGetValidPostByPostTruckId() {
+	public function testGetValidPostByPostTruckId() : void {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("post");
 
 		// create a new Post and insert to into mySQL
 		$postId = generateUuidV4();
-		$post = new Post(generateUuidV4(), $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$post = new Post($postId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$results = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
+		$results = Post::getPostByPostTruckId($this->getPDO(), $this->post->getPostId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
 		$this->assertCount(1, $results);
-		$this->assertContainsOnlyInstancesOf("Edu\\Cnm\\Foodie\\Post", $results);
+		$this->assertContainsOnlyInstancesOf("GroundBeefin\\FoodTruckFoodie\\Post", $results);
 
 		// grab the result from the array and validate it
 		$pdoPost = $results[0];
-
-		$this->assertEquals($pdoPost->getPostId(), $postId);
-		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getPostTruckId());
-		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
+		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
+		$this->assertEquals($pdoPost->getPostUserId(), $this->user->getUserId());
 		//format the date too seconds since the beginning of time to avoid round off error
 		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}

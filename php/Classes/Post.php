@@ -78,7 +78,7 @@ class Post implements \JsonSerializable {
 	 * @return Uuid value of the post id
 	 **/
 	public function getPostId(): Uuid {
-		return ($this->postId);
+		return ($this->postId[0]);
 	}
 
 	/**
@@ -271,25 +271,28 @@ class Post implements \JsonSerializable {
 
 
 	/**
-	 * gets the Post by truck id
+	 * gets the Post by post truck id
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @param string $postTruckId truck id to search for
 	 * @return \SplFixedArray SplFixedArray of Post found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 **/
-	public static function getPostByPostTruckId(\PDO $pdo, string $postTruckId) : \SPLFixedArray {
+	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId) : \SPLFixedArray {
 		try {
 			$postTruckId = self::validateUuid($postTruckId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
+
 		// create query template
-		$query = "SELECT postId, postTruckId, postUserID, postContent, postDatetime FROM `post` WHERE postTruckId = :postTruckId";
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime FROM post WHERE postTruckId = :postTruckId";
 		$statement = $pdo->prepare($query);
+
 		// bind the member variables to the place holders in the template
 		$parameters = ["postTruckId" => $postTruckId->getBytes()];
 		$statement->execute($parameters);
+
 		// build an array of posts
 		$posts = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
