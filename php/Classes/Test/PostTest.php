@@ -1,7 +1,9 @@
 <?php
 
 namespace GroundBeefin\FoodTruckFoodie\Test;
+
 use phpDocumentor\Reflection\Types\This;
+
 use GroundBeefin\FoodTruckFoodie\{
 	User, Truck, Post
 };
@@ -57,7 +59,9 @@ class PostTest extends FoodTruckFoodieTest {
 	 * valid activationToken to create the profile object to own the test
 	 * @var string $VALID_ACTIVATION
 	 */
-	protected $VALID_USER_ACTIVATION_TOKEN;
+	protected $VALID_ACTIVATION;
+
+
 	/**
 	 * create dependent objects before running each test
 	 **/
@@ -65,18 +69,18 @@ class PostTest extends FoodTruckFoodieTest {
 			// run the default setUp() method first
 			parent::setUp();
 
-			//create and salt the hash for the mocked profile
+			//create and salt the hash for the mocked user
 			$password = "abc123";
 			$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
 			$this->VALID_ACTIVATION = bin2hex(random_bytes(16));
 
-			// create and insert a User to own the test Post
-			$userId = generateUuidV4()
-			$this->user = new User($userId, null,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
+			// create and insert the mocked user
+			$userId = generateUuidV4();
+			$this->user = new User($userId, $this->VALID_ACTIVATION,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
 			$this->user->insert($this->getPDO());
 
-			// create and insert the mocked truck profile
-			$this->truck = new Truck(generateUuidV4(), $this->user->getUserId(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTrucOne", "5055554463", "image.url", "1");
+			// create and insert the mocked truck
+			$this->truck = new Truck(generateUuidV4(), $this->user->getUserId(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTrucOne", "5055554463", "image.url", "true");
 			$this->truck->insert($this->getPDO());
 
 
@@ -90,23 +94,48 @@ class PostTest extends FoodTruckFoodieTest {
 	 *
 	 * @throws \Exception
 	 */
-	public function testInsertValidPost() : void {
-		// count the number of rows and save it for later
-		$numRows = $this->getConnection()->getRowCount("post");
+//	public function testInsertValidPost() : void {
+//		// count the number of rows and save it for later
+//		$numRows = $this->getConnection()->getRowCount("post");
+//
+//		$postId = generateUuidV4();
+//		// create a new Post and insert to into mySQL
+//		$post = new Post($postId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+//		$post->insert($this->getPDO());
+//
+//		// grab the data from mySQL and enforce the fields match our expectations
+//		$pdoPost = Post::getPostByPostTruckIdAndPostUserId($this->getPDO(), $this->truck->postTruckId(), $this->post->getPostId());
+//		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
+//		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
+//		$this->assertEquals($pdoPost->getPostUserId(),$this->post->getPostId());
+//
+//		//format the date too seconds since the beginning of time to avoid round off error
+//		$this->assertEquals($pdoPost->getPostDate()->getTimeStamp(), $this->VALID_POSTDATE->getTimestamp());
+//	}
 
-		$postId = generateUuidV4()
+
+
+	/**
+	 * test inserting a valid Post and verify that the actual mySQL data matches
+	 **/
+	public function testInsertValidPost() : void {
+
+
 		// create a new Post and insert to into mySQL
-		$post = new Post($postId, $this->truck->getTrunckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
+		$postId = generateUuidV4();
+		$post = new Post($postId, $this->truck->getTruckId(), $this->user->getUserId(), $this->VALID_POSTCONTENT, $this->VALID_POSTDATE);
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $this->post->postTruckId);
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
-		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostId());
 
+		$this->assertEquals($pdoPost->getPostId()->toString(), $PostId->toString());
+		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
+		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoPost->getPostDate()->getTimeStamp(), $this->VALID_POSTDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
+
 
 
 	/**

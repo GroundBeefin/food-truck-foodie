@@ -14,7 +14,7 @@ use GroundBeefin\FoodTruckFoodie\ValidateDate;
  *
  * @author Leonela Guteirrez <leonela_gutierrez@hotmail.com>
  **/
-class Post implements jsonSerializable {
+class Post implements \JsonSerializable {
 	use ValidateUuid;
 	use ValidateDate;
 	/**
@@ -65,6 +65,8 @@ class Post implements jsonSerializable {
 			$this->setPostDatetime($newPostDatetime);
 		} //determine what exception type was thrown
 		catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+
+			//determine what exception was thrown
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -73,7 +75,7 @@ class Post implements jsonSerializable {
 	/**
 	 * accessor method for post id
 	 *
-	 * @return int value of the post id
+	 * @return Uuid value of the post id
 	 **/
 	public function getPostId(): Uuid {
 		return ($this->postId);
@@ -82,11 +84,11 @@ class Post implements jsonSerializable {
 	/**
 	 * mutator method for post id
 	 *
-	 * @param Uuid|string $newPostId new post id
-	 * @param \RangeException if $newPostId is not positive
+	 * @param Uuid/string $newPostId new value of post id
+	 * @param \RangeException if $newPostId is not a uuid
 	 * @throws \TypeError if $newPostId is not a uuid
 	 **/
-	public function setPostId($newPostId): void {
+	public function setPostId($newPostId) : void {
 		try {
 			$uuid = self::validateUuid($newPostId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
@@ -98,9 +100,9 @@ class Post implements jsonSerializable {
 	}
 
 	/**
-	 * accessor method for Truck post id
+	 * accessor method for post truck id
 	 *
-	 * @return int value of the post truck id
+	 * @return Uuid of the post tuck id
 	 **/
 	public function getPostTruckId(): Uuid {
 		return ($this->postTruckId);
@@ -110,7 +112,7 @@ class Post implements jsonSerializable {
 	 * mutator method for post truck id
 	 *
 	 * @param Uuid|string $newPostTruckId new post truck id
-	 * @throws  \RangeException if $newPostId is not positive
+	 * @throws  \RangeException if $newPostId is no a uuid
 	 * @throws  \TypeError if $newPostId is not a uuid
 	 **/
 	public function setPostTruckId($newPostTruckId): void {
@@ -233,7 +235,7 @@ class Post implements jsonSerializable {
 		$statement = $pdo->prepare($query);
 		// bind the member variables to the place holders in the template
 		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");
-		$parameters = ["postId" => $this->postId->getBytes(), "postTruckId" => $this->postTruckId->getBytes(), "postUserId" => $this->postUserId, "postDatetime" => $formattedDate];
+		$parameters = ["postId" => $this->postId->getBytes(), "postTruckId" => $this->postTruckId->getBytes(), "postUserId" => $this->postUserId->getBytes(), "postContent" =>$this->postContent, "postDatetime" => $formattedDate];
 		$statement->execute($parameters);
 	}
 	/**
