@@ -109,6 +109,47 @@ class Post implements \JsonSerializable {
 		return ($this->postTruckId);
 	}
 
+
+	/**
+	 * gets the Tweet by tweetId
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string|Uuid $tweetId tweet id to search for
+	 * @return Tweet|null Tweet found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 **/
+	public static function getPostByPostId(\PDO $pdo, $postId) : ?Post {
+		// sanitize the postId before searching
+		try {
+			$postId = self::validateUuid($postId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		// create query template
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime FROM post WHERE postId = :postId";
+		$statement = $pdo->prepare($query);
+		// bind the post id to the place holder in the template
+		$parameters = ["postId" => $postId->getBytes()];
+		$statement->execute($parameters);
+		// grab the post from mySQL
+		try {
+			$post = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$post = new Post($row["postId"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($post);
+	}
+
+
+
+
 	/**
 	 * mutator method for post truck id
 	 *
