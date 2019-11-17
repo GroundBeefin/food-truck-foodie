@@ -114,8 +114,8 @@ class Post implements \JsonSerializable {
 	 * gets the Tweet by tweetId
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @param string|Uuid $tweetId tweet id to search for
-	 * @return Tweet|null Tweet found or null if not found
+	 * @param string|Uuid $postId post id to search for
+	 * @return Post|null Post found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
