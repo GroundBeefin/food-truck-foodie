@@ -103,7 +103,8 @@ class PostTest extends FoodTruckFoodieTest {
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $this->truck->getTruckId());
+		$pdoPost = Post::getPostByPostId($this->getPDO(), $this->getPostId());
+
 		$this->assertEquals($pdoPost->getPostId()->toString(), $postId->toString());
 		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
 		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);

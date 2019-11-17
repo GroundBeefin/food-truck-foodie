@@ -148,8 +148,6 @@ class Post implements \JsonSerializable {
 	}
 
 
-
-
 	/**
 	 * mutator method for post truck id
 	 *
