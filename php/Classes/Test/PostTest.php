@@ -2,11 +2,11 @@
 
 namespace GroundBeefin\FoodTruckFoodie\Test;
 
-use phpDocumentor\Reflection\Types\This;
-
 use GroundBeefin\FoodTruckFoodie\{
 	User, Truck, Post
 };
+
+//use phpDocumentor\Reflection\Types\This;
 
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
@@ -28,12 +28,12 @@ class PostTest extends FoodTruckFoodieTest {
 	 * User  ; this is for foreign key relations
 	 * @var User
 	 **/
-	protected $user;
+	protected $user = null;
 	/**
 	 * truck that created the post; this is a foreign key
 	 * @var $truck
 	 */
-	protected $truck;
+	protected $truck = null;
 	/**
 	 * valid $user hash
 	 * @var $VALID_USER_HASH
@@ -75,12 +75,12 @@ class PostTest extends FoodTruckFoodieTest {
 			$this->VALID_ACTIVATION = bin2hex(random_bytes(16));
 
 			// create and insert the mocked user
-			$userId = generateUuidV4();
-			$this->user = new User($userId, $this->VALID_ACTIVATION,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
+//			$userId = generateUuidV4();
+			$this->user = new User(generateUuidV4(), $this->VALID_ACTIVATION,"https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "boo@boo.com", $this->VALID_USER_HASH, "test name");
 			$this->user->insert($this->getPDO());
 
 			// create and insert the mocked truck
-			$this->truck = new Truck(generateUuidV4(), $this->user->getUserId(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTrucOne", "5055554463", "image.url", "true");
+			$this->truck = new Truck(generateUuidV4(), $this->user->getUserId(), "https://media.giphy.com/media/3og0INyCmHlNylks9O/giphy.gif", "test@phpunit.de","mexican", "https://image.com/media", "FoodTruckOne", "5055554463", "image.url", "true");
 			$this->truck->insert($this->getPDO());
 
 
@@ -94,7 +94,7 @@ class PostTest extends FoodTruckFoodieTest {
 	 * test inserting a valid Post and verify that the actual mySQL data matches
 	 **/
 	public function testInsertValidPost() : void {
-// count the number of rows and save it for later
+		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("post");
 
 		// create a new Post and insert to into mySQL
@@ -103,14 +103,14 @@ class PostTest extends FoodTruckFoodieTest {
 		$post->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostTruckId());
-		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("post"));
-		$this->assertEquals($pdoPost->getPostId(), $postId[0]);
-		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
+		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $this->truck->getTruckId());
+		$this->assertEquals($pdoPost->getPostId()->toString(), $postId->toString());
+		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
 		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
 		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
+
 
 
 

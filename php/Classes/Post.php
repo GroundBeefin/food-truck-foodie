@@ -56,13 +56,14 @@ class Post implements \JsonSerializable {
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 * */
 
-	public function __construct($newPostId, $newPostTruckId, $newPostUserId, $newPostContent, $newPostDatetime) {
+	public function __construct($newPostId, $newPostTruckId, $newPostUserId, string $newPostContent, $newPostDatetime = null) {
 		try {
 			$this->setPostId($newPostId);
 			$this->setPostTruckId($newPostTruckId);
 			$this->setPostUserId($newPostUserId);
 			$this->setPostContent($newPostContent);
 			$this->setPostDatetime($newPostDatetime);
+
 		} //determine what exception type was thrown
 		catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
 
@@ -78,7 +79,7 @@ class Post implements \JsonSerializable {
 	 * @return Uuid value of the post id
 	 **/
 	public function getPostId(): Uuid {
-		return ($this->postId[0]);
+		return ($this->postId);
 	}
 
 	/**
@@ -233,6 +234,7 @@ class Post implements \JsonSerializable {
 		// create query template
 		$query = "INSERT INTO post(postId, postTruckId, postUserId, postContent, postDatetime) VALUES(:postId, :postTruckId, :postUserId, :postContent, :postDatetime)";
 		$statement = $pdo->prepare($query);
+
 		// bind the member variables to the place holders in the template
 		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");
 		$parameters = ["postId" => $this->postId->getBytes(), "postTruckId" => $this->postTruckId->getBytes(), "postUserId" => $this->postUserId->getBytes(), "postContent" =>$this->postContent, "postDatetime" => $formattedDate];
