@@ -106,10 +106,10 @@ class PostTest extends FoodTruckFoodieTest {
 		$pdoPost = Post::getPostByPostId($this->getPDO(), $post->getPostId());
 
 		$this->assertEquals($pdoPost->getPostId()->toString(), $postId->toString());
-		$this->assertEquals($pdoPost->getPostTruckId(), $post->getPostId()->toString());
+		$this->assertEquals($pdoPost->getPostTruckId(), $this->truck->getTruckId());
 		$this->assertEquals($pdoPost->getPostContent(), $this->VALID_POSTCONTENT);
 		//format the date too seconds since the beginning of time to avoid round off error
-		$this->assertEquals($pdoPost->getPostDate()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
+		$this->assertEquals($pdoPost->getPostDatetime()->getTimestamp(), $this->VALID_POSTDATE->getTimestamp());
 	}
 
 
@@ -160,7 +160,7 @@ class PostTest extends FoodTruckFoodieTest {
 		$post->delete($this->getPDO());
 
 		// grab the data from mySQL and enforce the Post does not exist
-		$pdoPost = Post::getPostByPostTruckId($this->getPDO(), $post->getPostId());
+		$pdoPost = Post::getPostByPostId($this->getPDO(), $post->getPostId());
 		$this->assertNull($pdoPost);
 		$this->assertEquals($numRows, $this->getConnection()->getRowCount("post"));
 	}
