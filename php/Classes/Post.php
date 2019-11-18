@@ -7,6 +7,7 @@ require_once(dirname(__DIR__, 1) ."/vendor/autoload.php");
 use phpDocumentor\Reflection\Types\Boolean;
 use Ramsey\Uuid\Uuid;
 use TypeError;
+use GroundBeefin\FoodTruckFoodie\ValidateDate;
 
 /**
  * Class for Post
@@ -15,6 +16,7 @@ use TypeError;
  **/
 class Post implements \JsonSerializable {
 	use ValidateUuid;
+	use ValidateDate;
 	/**
 	 * Id for post; this is the primary key
 	 * @var Uuid/ $postId
@@ -54,15 +56,18 @@ class Post implements \JsonSerializable {
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 * */
 
-	public function __construct($newPostId, $newPostTruckId, $newPostUserId, $newPostContent, $newPostDatetime) {
+	public function __construct($newPostId, $newPostTruckId, $newPostUserId, string $newPostContent, $newPostDatetime = null) {
 		try {
 			$this->setPostId($newPostId);
 			$this->setPostTruckId($newPostTruckId);
 			$this->setPostUserId($newPostUserId);
 			$this->setPostContent($newPostContent);
 			$this->setPostDatetime($newPostDatetime);
+
 		} //determine what exception type was thrown
 		catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+
+			//determine what exception was thrown
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
@@ -71,7 +76,7 @@ class Post implements \JsonSerializable {
 	/**
 	 * accessor method for post id
 	 *
-	 * @return int value of the post id
+	 * @return Uuid value of the post id
 	 **/
 	public function getPostId(): Uuid {
 		return ($this->postId);
@@ -80,11 +85,11 @@ class Post implements \JsonSerializable {
 	/**
 	 * mutator method for post id
 	 *
-	 * @param Uuid|string $newPostId new post id
-	 * @param \RangeException if $newPostId is not positive
+	 * @param Uuid/string $newPostId new value of post id
+	 * @param \RangeException if $newPostId is not a uuid
 	 * @throws \TypeError if $newPostId is not a uuid
 	 **/
-	public function setPostId($newPostId): void {
+	public function setPostId($newPostId) : void {
 		try {
 			$uuid = self::validateUuid($newPostId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
@@ -96,19 +101,58 @@ class Post implements \JsonSerializable {
 	}
 
 	/**
-	 * accessor method for Truck post id
+	 * accessor method for post truck id
 	 *
-	 * @return int value of the post truck id
+	 * @return Uuid of the post tuck id
 	 **/
 	public function getPostTruckId(): Uuid {
 		return ($this->postTruckId);
 	}
 
+
+	/**
+	 * gets the Tweet by tweetId
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string|Uuid $postId post id to search for
+	 * @return Post|null Post found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 **/
+	public static function getPostByPostId(\PDO $pdo, $postId) : ?Post {
+		// sanitize the postId before searching
+		try {
+			$postId = self::validateUuid($postId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		// create query template
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime FROM post WHERE postId = :postId";
+		$statement = $pdo->prepare($query);
+		// bind the post id to the place holder in the template
+		$parameters = ["postId" => $postId->getBytes()];
+		$statement->execute($parameters);
+		// grab the post from mySQL
+		try {
+			$post = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$post = new Post($row["postId"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($post);
+	}
+
+
 	/**
 	 * mutator method for post truck id
 	 *
 	 * @param Uuid|string $newPostTruckId new post truck id
-	 * @throws  \RangeException if $newPostId is not positive
+	 * @throws  \RangeException if $newPostId is no a uuid
 	 * @throws  \TypeError if $newPostId is not a uuid
 	 **/
 	public function setPostTruckId($newPostTruckId): void {
@@ -229,9 +273,10 @@ class Post implements \JsonSerializable {
 		// create query template
 		$query = "INSERT INTO post(postId, postTruckId, postUserId, postContent, postDatetime) VALUES(:postId, :postTruckId, :postUserId, :postContent, :postDatetime)";
 		$statement = $pdo->prepare($query);
+
 		// bind the member variables to the place holders in the template
 		$formattedDate = $this->postDatetime->format("Y-m-d H:i:s.u");
-		$parameters = ["postId" => $this->postId->getBytes(), "postTruckId" => $this->postTruckId->getBytes(), "postUserId" => $this->postUserId, "postDatetime" => $formattedDate];
+		$parameters = ["postId" => $this->postId->getBytes(), "postTruckId" => $this->postTruckId->getBytes(), "postUserId" => $this->postUserId->getBytes(), "postContent" =>$this->postContent, "postDatetime" => $formattedDate];
 		$statement->execute($parameters);
 	}
 	/**
@@ -266,37 +311,35 @@ class Post implements \JsonSerializable {
 	}
 
 
-
-
 	/**
-	 * gets the Post by PostTruckId
+	 * gets the Post by post truck id
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @param Uuid|string $postTruckId truck id to search by
-	 * @return \SplFixedArray SplFixedArray of posts found
+	 * @param string $postTruckId truck id to search for
+	 * @return \SplFixedArray SplFixedArray of Post found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId): \SplFixedArray {
-
+	public static function getPostByPostTruckId(\PDO $pdo, $postTruckId) : \SPLFixedArray {
 		try {
 			$postTruckId = self::validateUuid($postTruckId);
-		} catch(\InvalidArgumentException | \RangeException | \Exception | TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 
 		// create query template
-		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime WHERE postTruckId = :postTruckId";
+		$query = "SELECT postId, postTruckId, postUserId, postContent, postDatetime FROM post WHERE postTruckId = :postTruckId";
 		$statement = $pdo->prepare($query);
-		// bind the post truck id to the place holder in the template
+
+		// bind the member variables to the place holders in the template
 		$parameters = ["postTruckId" => $postTruckId->getBytes()];
 		$statement->execute($parameters);
-		// build an array of post
+
+		// build an array of posts
 		$posts = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$post = new Post($row["postID"], $row["postTruckId"], $row["postUserId"], $row["postContent"], $row["postDatetime"]);
+				$post = new Post($row["postId"],$row["postTruckId"],$row["postUserId"], $row["postContent"], $row["postDatetime"]);
 				$posts[$posts->key()] = $post;
 				$posts->next();
 			} catch(\Exception $exception) {
@@ -308,15 +351,18 @@ class Post implements \JsonSerializable {
 	}
 
 	/**
-	 * Specify data which should be serialized to JSON
-	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
-	 */
+	 * formats the state variables for JSON serialization
+	 *
+	 * @return array resulting state variables to serialize
+	 **/
 	public function jsonSerialize() {
 		$fields = get_object_vars($this);
-		$fields["postId"] = $this->postId->toString();
+		//format the date so that the front end can consume it
+		$fields["postId"] = $this->postId;
+		$fields["postTruckId"] = $this->postTruckId;
+		$fields["postUserId"] = $this->postUserId;
+		$fields["postContent"] = $this->postContent;
+		$fields["postDatetime"] = round(floatval($this->postDatetime->format("U.u")) * 1000);
 		return ($fields);
 	}
 

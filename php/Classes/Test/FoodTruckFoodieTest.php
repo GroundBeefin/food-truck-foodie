@@ -44,8 +44,8 @@ abstract class FoodTruckFoodieTest extends TestCase {
 		// THESE TABLES *MUST* BE LISTED IN THE SAME ORDER THEY WERE CREATED!!!!
 		$dataset->addTable("user");
 		$dataset->addTable("truck");
-		// the second parameter is required because like is also a SQL keyword and is the only way PHPUnit can query the like table
-		//$dataset->addTable("like", "SELECT likeProfileId, likeTweetId, likeDate FROM `like`");
+		// the second parameter is required because post is also a SQL keyword and is the only way PHPUnit can query the like table
+		//$dataset->addTable("post", "SELECT likeProfileId, likeTweetId, likeDate FROM `like`");
 		$dataset->addTable("post");
 		return($dataset);
 	}
