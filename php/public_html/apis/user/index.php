@@ -6,9 +6,9 @@ require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/jwt.php";
 require_once dirname(__DIR__, 3) . "/lib/uuid.php";
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use UssHopper\DataDesign\Profile;
+use UssHopper\FoodTruckFoodie\User;
 /**
- * API for Tweet
+ * API for User
  *
  * @author Gkephart
  * @version 1.0
@@ -29,8 +29,11 @@ try {
 	$method = $_SERVER["HTTP_X_HTTP_METHOD"] ?? $_SERVER["REQUEST_METHOD"];
 	// sanitize input
 	$id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	$profileAtHandle = filter_input(INPUT_GET, "profileAtHandle", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	$profileEmail = filter_input(INPUT_GET, "profileEmail", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$userActivationToken = filter_input(INPUT_GET, "userActivationToken", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$userAvatarUrl = filter_input(INPUT_GET, "userAvatarUrl", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$userEmail = filter_input(INPUT_GET, "userEmail", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$userHash = filter_input(INPUT_GET, "userHash", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$userName = filter_input(INPUT_GET, "userName", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	// make sure the id is valid for methods that require it
 	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true)) {
 		throw(new InvalidArgumentException("id cannot be empty or negative", 405));
@@ -40,12 +43,9 @@ try {
 		setXsrfCookie();
 		//gets a post by content
 		if(empty($id) === false) {
-			$reply->data = Profile::getProfileByProfileId($pdo, $id);
+			$reply->data = User::getUserbyUserId($pdo, $id);
 		} else if(empty($profileAtHandle) === false) {
-			$reply->data = Profile::getProfileByProfileAtHandle($pdo, $profileAtHandle);
-		} else if(empty($profileEmail) === false) {
-			$reply->data = Profile::getProfileByProfileEmail($pdo, $profileEmail);
-		}
+
 	} elseif($method === "PUT") {
 		//enforce that the XSRF token is present in the header
 		verifyXsrf();
