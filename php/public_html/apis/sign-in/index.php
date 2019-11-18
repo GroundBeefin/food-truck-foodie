@@ -4,11 +4,11 @@ require_once("/etc/apache2/capstone-mysql/Secrets.php");
 require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/jwt.php";
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use UssHopper\DataDesign\Profile;
+use GroundBeefin\FoodTruckFoodie;
 /**
  * api for handling sign-in
  *
- * @author Gkephart
+ * @author Gkephart/Lgutierrez79
  **/
 //prepare an empty reply
 $reply = new stdClass();
@@ -20,7 +20,7 @@ try {
 		session_start();
 	}
 	//grab mySQL statement
-	$secrets = new \Secrets("/etc/apache2/capstone-mysql/ddctwitter.ini");
+	$secrets = new \Secrets("/etc/apache2/capstone-mysql/foodie.ini");
 	$pdo = $secrets->getPdoObject();
 	//determine which HTTP method is being used
 	$method = array_key_exists("HTTP_X_HTTP_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $_SERVER["REQUEST_METHOD"];
@@ -32,34 +32,34 @@ try {
 		$requestContent = file_get_contents("php://input");
 		$requestObject = json_decode($requestContent);
 		//check to make sure the password and email field is not empty.s
-		if(empty($requestObject->profileEmail) === true) {
+		if(empty($requestObject->userEmail) === true) {
 			throw(new \InvalidArgumentException("email address not provided.", 401));
 		} else {
-			$profileEmail = filter_var($requestObject->profileEmail, FILTER_SANITIZE_EMAIL);
+			$profileEmail = filter_var($requestObject->userEmail, FILTER_SANITIZE_EMAIL);
 		}
-		if(empty($requestObject->profilePassword) === true) {
+		if(empty($requestObject->userPassword) === true) {
 			throw(new \InvalidArgumentException("Must enter a password.", 401));
 		} else {
-			$profilePassword = $requestObject->profilePassword;
+			$profilePassword = $requestObject->userPassword;
 		}
 		//grab the profile from the database by the email provided
-		$profile = Profile::getProfileByProfileEmail($pdo, $profileEmail);
-		if(empty($profile) === true) {
+		$user = User::getUserByUserEmail($pdo, $userEmail);
+		if(empty($user) === true) {
 			throw(new InvalidArgumentException("Invalid Email", 401));
 		}
-		$profile->setProfileActivationToken(null);
-		$profile->update($pdo);
+		$user->setUserActivationToken(null);
+		$user->update($pdo);
 		//verify hash is correct
-		if(password_verify($requestObject->profilePassword, $profile->getProfileHash()) === false) {
+		if(password_verify($requestObject->userPassword, $user->getUserHash()) === false) {
 			throw(new \InvalidArgumentException("Password or email is incorrect.", 401));
 		}
 		//grab profile from database and put into a session
-		$profile = Profile::getProfileByProfileId($pdo, $profile->getProfileId());
-		$_SESSION["profile"] = $profile;
+		$user = User::getUserByUserId($pdo, $user->getUserId());
+		$_SESSION["user"] = $user;
 		//create the Auth payload
 		$authObject = (object) [
-			"profileId" =>$profile->getProfileId(),
-			"profileAtHandle" => $profile->getProfileAtHandle()
+			"userId" =>$user->getUserId(),
+			"userEmail" => $user->getUserEmail()
 		];
 		// create and set th JWT TOKEN
 		setJwtAndAuthHeader("auth",$authObject);
