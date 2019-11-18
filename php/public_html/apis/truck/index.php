@@ -48,5 +48,36 @@ try{
 	$truckPhoneNumber = filter_input(INPUT_GET, "truckPhoneNumber", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckVerifyImage = filter_input(INPUT_GET, "truckVerifyImage", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+
+	//make sure the id is valid for methods that require it
+	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
+		throw(new InvalidArgumentException("id cannot be empty or negative", 402));
+
 }
+	// GET request - if id is present, that truck is returned, otherwise all trucks are returned
+	if($method === "GET") {
+		//set XSRF cookie
+		setXsrfCookie();
+
+		//get a specific truck or all trucks and update reply
+		if(empty($id) === false) {
+			$reply->data = Truck::getTruckByTruckId($pdo, $id);
+		} else if(empty($truckUserId) === false) {
+			// if the user is logged in grab all the tweets by that user based  on who is logged in
+			$reply->data = Truck::getTruckByTruckUserId($pdo, $truckUserId);
+
+		} else (empty($truck) === false) {
+			$reply->data = Truck::getTruckByFoodType($pdo, $truckFoodType);
+
+
+
+
+		}
+	} else if($method === "PUT" || $method === "POST") {
+		// enforce the user has a XSRF token
+		verifyXsrf();
+		// enforce the user is signed in
+		if(empty($_SESSION["profile"]) === true) {
+			throw(new \InvalidArgumentException("you must be logged in to post tweets", 401));
+		}
 
