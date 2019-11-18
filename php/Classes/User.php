@@ -344,6 +344,44 @@ class User implements \JsonSerializable {
 	}
 
 	/**
+	 * gets the User by userEmail
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid|string $userEmail user email to search for
+	 * @return User|null User found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 */
+	public static function getUserByUserEmail(\PDO $pdo, string $userEmail): ?User {
+		// sanitize the email before searching
+		$userEmail = trim($userEmail);
+		$userEmail = filter_var($userEmail, FILTER_VALIDATE_EMAIL);
+		if(empty($userEmail) === true) {
+			throw(new \PDOException("not a valid email"));
+		}
+		// create query template
+		$query = "SELECT userId, userActivationToken, userAvatarUrl, userEmail, userHash, userName FROM user WHERE userEmail = :userEmail";;
+		$statement = $pdo->prepare($query);
+		// bind the profile id to the place holder in the template
+		$parameters = ["userEmail" => $userEmail];
+		$statement->execute($parameters);
+		// grab the Profile from mySQL
+		try {
+			$user = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return ($user);
+	}
+
+
+	/**
 	 * formats the state variables for JSON serialization
 	 *
 	 * @return array resulting state variables to serialize

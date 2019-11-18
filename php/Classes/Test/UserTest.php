@@ -181,5 +181,26 @@ class UserTest extends FoodTruckFoodieTest {
 		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
 	}
 
+	/**
+	 * test grabbing a User by user Email
+	 **/
+	public function testGetUserByUserEmail(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("user");
+
+		$userId = generateUuidV4();
+		$user = new User($userId, $this->VALID_USER_ACTIVATION_TOKEN, $this->VALID_USER_AVATAR_URL, $this->VALID_USER_EMAIL, $this->VALID_USER_HASH, $this->VALID_USER_NAME);
+		$user->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoUser = User::getUserByUserEmail($this->getPDO(), $user->getUserEmail());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("user"));
+		$this->assertEquals($pdoUser->getUserId(), $userId);
+		$this->assertEquals($pdoUser->getUserActivationToken(), $this->VALID_USER_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoUser->getUserAvatarUrl(), $this->VALID_USER_AVATAR_URL);
+		$this->assertEquals($pdoUser->getUserEmail(), $this->VALID_USER_EMAIL);
+		$this->assertEquals($pdoUser->getUserHash(), $this->VALID_USER_HASH);
+		$this->assertEquals($pdoUser->getUserName(), $this->VALID_USER_NAME);
+	}
 }
 

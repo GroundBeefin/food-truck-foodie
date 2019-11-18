@@ -1,6 +1,7 @@
 <phpunit>
 	<testsuites>
 		<testsuite name="Food Truck Foodie Test">
+<<<<<<< HEAD
 			<!--file>UserTest.php</file-->
 <<<<<<< HEAD
 			<!--file>TruckTest.php</file-->
@@ -8,6 +9,11 @@
 		<!--	<file>TruckTest.php</file>-->
 >>>>>>> develop_branch
 			<file>PostTest.php</file>
+=======
+			<file>UserTest.php</file>
+		<!--	<file>TruckTest.php</file>-->
+			<!--<file>PostTest.php</file>-->
+>>>>>>> develop_branch
 		</testsuite>
 	</testsuites>
 	<filter>
