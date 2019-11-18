@@ -43,8 +43,10 @@ try {
 		setXsrfCookie();
 		//gets a post by content
 		if(empty($id) === false) {
-			$reply->data = User::getUserbyUserId($pdo, $id);
-		} else if(empty($profileAtHandle) === false) {
+			$reply->data = Profile::getUserByUserId($pdo, $id);
+		} else if(empty($userEmail) === false) {
+			$reply->data = User::getUserByUserEmail($pdo, $userEmail);
+		}
 
 	} elseif($method === "PUT") {
 		//enforce that the XSRF token is present in the header
@@ -52,7 +54,7 @@ try {
 		//enforce the end user has a JWT token
 		//validateJwtHeader();
 		//enforce the user is signed in and only trying to edit their own profile
-		if(empty($_SESSION["profile"]) === true || $_SESSION["profile"]->getProfileId()->toString() !== $id) {
+		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $id) {
 			throw(new \InvalidArgumentException("You are not allowed to access this profile", 403));
 		}
 		validateJwtHeader();
@@ -60,26 +62,17 @@ try {
 		$requestContent = file_get_contents("php://input");
 		$requestObject = json_decode($requestContent);
 		//retrieve the profile to be updated
-		$profile = Profile::getProfileByProfileId($pdo, $id);
-		if($profile === null) {
-			throw(new RuntimeException("Profile does not exist", 404));
+		$user = User::getUserByUserId($pdo, $id);
+		if($user === null) {
+			throw(new RuntimeException("User does not exist", 404));
 		}
-		//profile at handle
-		if(empty($requestObject->profileAtHandle) === true) {
-			throw(new \InvalidArgumentException ("No profile at handle", 405));
+		//user email is a required field
+		if(empty($requestObject->userEmail) === true) {
+			throw(new \InvalidArgumentException ("No user email present", 405));
 		}
-		//profile email is a required field
-		if(empty($requestObject->profileEmail) === true) {
-			throw(new \InvalidArgumentException ("No profile email present", 405));
-		}
-		//profile phone # | if null use the profile phone that is in the database
-		if(empty($requestObject->profilePhone) === true) {
-			$requestObject->ProfilePhone = $profile->getProfilePhone();
-		}
-		$profile->setProfileAtHandle($requestObject->profileAtHandle);
-		$profile->setProfileEmail($requestObject->profileEmail);
-		$profile->setProfilePhone($requestObject->profilePhone);
-		$profile->update($pdo);
+		$user->setUserEmail($requestObject->userEmail);
+		$user->update($pdo);
+
 		// update reply
 		$reply->message = "Profile information updated";
 	} elseif($method === "DELETE") {
@@ -87,17 +80,17 @@ try {
 		verifyXsrf();
 		//enforce the end user has a JWT token
 		//validateJwtHeader();
-		$profile = Profile::getProfileByProfileId($pdo, $id);
-		if($profile === null) {
-			throw (new RuntimeException("Profile does not exist"));
+		$user = User::getUserByUserId($pdo, $id);
+		if($user === null) {
+			throw (new RuntimeException("User does not exist"));
 		}
 		//enforce the user is signed in and only trying to edit their own profile
-		if(empty($_SESSION["profile"]) === true || $_SESSION["profile"]->getProfileId()->toString() !== $profile->getProfileId()->toString()) {
+		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $user->getUserId()->toString()) {
 			throw(new \InvalidArgumentException("You are not allowed to access this profile", 403));
 		}
 		validateJwtHeader();
 		//delete the post from the database
-		$profile->delete($pdo);
+		$user->delete($pdo);
 		$reply->message = "Profile Deleted";
 	} else {
 		throw (new InvalidArgumentException("Invalid HTTP request", 400));
