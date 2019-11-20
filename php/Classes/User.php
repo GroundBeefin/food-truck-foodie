@@ -416,7 +416,7 @@ class User implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$profile = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
+				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
