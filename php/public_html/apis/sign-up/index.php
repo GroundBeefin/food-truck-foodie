@@ -19,10 +19,12 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
 $reply = new stdClass();
 $reply->status = 200;
 $reply->data = null;
+
 try {
 	//grab the mySQL connection
 	$secrets = new \Secrets("/etc/apache2/capstone-mysql/ddctwitter.ini");
 	$pdo = $secrets->getPdoObject();
+
 	//determine which HTTP method was used
 	$method = array_key_exists("HTTP_X_HTTP_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $_SERVER["REQUEST_METHOD"];
 	if($method === "POST") {
@@ -30,33 +32,30 @@ try {
 		$requestContent = file_get_contents("php://input");
 		$requestObject = json_decode($requestContent);
 		//profile at handle is a required field
-		if(empty($requestObject->profileAtHandle) === true) {
-			throw(new \InvalidArgumentException ("No profile @handle", 405));
+		if(empty($requestObject->userName) === true) {
+			throw(new \InvalidArgumentException ("No user name present", 405));
 		}
 		//profile email is a required field
-		if(empty($requestObject->profileEmail) === true) {
-			throw(new \InvalidArgumentException ("No profile email present", 405));
+		if(empty($requestObject->userEmail) === true) {
+			throw(new \InvalidArgumentException ("No user email present", 405));
 		}
 		//verify that profile password is present
-		if(empty($requestObject->profilePassword) === true) {
+		if(empty($requestObject->userPassword) === true) {
 			throw(new \InvalidArgumentException ("Must input valid password", 405));
 		}
 		//verify that the confirm password is present
-		if(empty($requestObject->profilePasswordConfirm) === true) {
+		if(empty($requestObject->userPasswordConfirm) === true) {
 			throw(new \InvalidArgumentException ("Must input valid password", 405));
 		}
-		//if phone is empty set it too null
-		if(empty($requestObject->profilePhone) === true) {
-			$requestObject->profilePhone = null;
-		}
 		//make sure the password and confirm password match
-		if ($requestObject->profilePassword !== $requestObject->profilePasswordConfirm) {
+		if ($requestObject->userPassword !== $requestObject->userPasswordConfirm) {
 			throw(new \InvalidArgumentException("passwords do not match"));
 		}
-		$hash = password_hash($requestObject->profilePassword, PASSWORD_ARGON2I, ["time_cost" => 384]);
-		$profileActivationToken = bin2hex(random_bytes(16));
+		$hash = password_hash($requestObject->userPassword, PASSWORD_ARGON2I, ["time_cost" => 384]);
+		$userActivationToken = bin2hex(random_bytes(16));
+
 		//create the profile object and prepare to insert into the database
-		$profile = new Profile(generateUuidV4(), $profileActivationToken, $requestObject->profileAtHandle, "null", $requestObject->profileEmail, $hash, $requestObject->profilePhone);
+		$user = new User(generateUuidV4(), $userActivationToken, $requestObject->profileAtHandle, "null", $requestObject->profileEmail, $hash, $requestObject->profilePhone);
 		//insert the profile into the database
 		$profile->insert($pdo);
 		//compose the email message to send with th activation token
