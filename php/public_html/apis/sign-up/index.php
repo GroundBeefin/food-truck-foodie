@@ -158,7 +158,7 @@ EOF;
 	} else {
 		throw (new InvalidArgumentException("invalid http request"));
 	}
-	
+
 } catch(\Exception |\TypeError $exception) {
 	$reply->status = $exception->getCode();
 	$reply->message = $exception->getMessage();
