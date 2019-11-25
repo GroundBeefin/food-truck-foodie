@@ -37,21 +37,21 @@ try{
 		// set XSRF Cookie
 		setXsrfCookie();
 		//find profile associated with the activation token
-		$profile = Profile::getProfileByProfileActivationToken($pdo, $activation);
-		//verify the profile is not null
-		if($profile !== null){
+		$user = User::getUserByUserActivationToken($pdo, $activation);
+		//verify the user is not null
+		if($user !== null){
 			//make sure the activation token matches
-			if($activation === $profile->getProfileActivationToken()) {
+			if($activation === $user->getUserActivationToken()) {
 				//set activation to null
-				$profile->setProfileActivationToken(null);
-				//update the profile in the database
-				$profile->update($pdo);
+				$user->setUserActivationToken(null);
+				//update the user in the database
+				$user->update($pdo);
 				//set the reply for the end user
 				$reply->data = "Thank you for activating your account, you will be auto-redirected to your profile shortly.";
 			}
 		} else {
 			//throw an exception if the activation token does not exist
-			throw(new RuntimeException("Profile with this activation code does not exist", 404));
+			throw(new RuntimeException("User with this activation code does not exist", 404));
 		}
 	} else {
 		//throw an exception if the HTTP request is not a GET
