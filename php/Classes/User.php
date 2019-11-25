@@ -393,5 +393,37 @@ class User implements \JsonSerializable {
 		unset($fields["userActivationToken"]);
 		return ($fields);
 	}
+
+	static function getUserByUserActivationToken(\PDO $pdo, string $userActivationToken) : ?User {
+
+		//make sure activation token is in the right format and that it is a string representation of a hexadecimal
+		$userActivationToken = trim($userActivationToken);
+		if(ctype_xdigit($userActivationToken) === false) {
+			throw(new \InvalidArgumentException("user activation token is empty or in the wrong format"));
+		}
+
+		//create the query template
+		$query = "SELECT  userId, userActivationToken, userAvatarUrl, userEmail, userHash, userName FROM user WHERE userActivationToken = :userActivationToken";
+		$statement = $pdo->prepare($query);
+
+		// bind the profile activation token to the placeholder in the template
+		$parameters = ["userActivationToken" => $userActivationToken];
+		$statement->execute($parameters);
+
+		// grab the User from mySQL
+		try {
+			$user = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$profile = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return ($user);
+	}
+
 }
 
