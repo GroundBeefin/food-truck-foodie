@@ -10,7 +10,7 @@ use GroundBeefin\FoodTruckFoodie\{User, Truck, Post};
 /**
  * api for the Post class
  *
- * @author Valente Meza <valebmeza@gmail.com>
+ * @author Valente Meza <valebmeza@gmail.com> / Leonela Gutierrez <leonela_gutierrez@hotmail.com>
  **/
 //verify the session, start if not active
 if(session_status() !== PHP_SESSION_ACTIVE) {
@@ -33,11 +33,11 @@ try {
 	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
 		throw(new InvalidArgumentException("id cannot be empty or negative", 402));
 	}
-	// handle GET request - if id is present, that post is returned, otherwise all posts are returned
+	// handle GET request - if id is present, that post is returned
 	if($method === "GET") {
 		//set XSRF cookie
 		setXsrfCookie();
-		//get a specific post or all posts and update reply
+		//get a specific post
 		if(empty($id) === false) {
 			$reply->data = Post::getPostByPostId($pdo, $id);
 		};
