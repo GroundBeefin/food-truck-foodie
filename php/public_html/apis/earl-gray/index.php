@@ -4,7 +4,7 @@ require_once dirname(__DIR__, 3) . "/Classes/autoload.php";
 $reply = new stdClass();
 $reply->status = 200;
 $reply->data = null;
-use UssHopper\DataDesign\Profile;
+use GroundBeefin\FoodTruckFoodie;
 try {
 	//verify the HTTP method being used
 	$method = array_key_exists("HTTP_X_HTTP_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $_SERVER["REQUEST_METHOD"];
