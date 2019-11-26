@@ -6,7 +6,7 @@ require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/jwt.php";
 require_once dirname(__DIR__, 3) . "/lib/uuid.php";
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use UssHopper\FoodTruckFoodie\User;
+use GroundBeefin\FoodTruckFoodie\User;
 /**
  * API for User
  *
@@ -24,7 +24,7 @@ $reply->data = null;
 
 try {
 	//grab the mySQL connection
-	$secrets = new \Secrets("/etc/apache2/capstone-mysql/ddctwitter.ini");
+	$secrets = new \Secrets("/etc/apache2/capstone-mysql/foodie.ini");
 	$pdo = $secrets->getPdoObject();
 
 	//determine which HTTP method was used
@@ -49,7 +49,7 @@ try {
 
 		//gets a post by content
 		if(empty($id) === false) {
-			$reply->data = Profile::getUserByUserId($pdo, $id);
+			$reply->data = User::getUserByUserId($pdo, $id);
 
 		} else if(empty($userEmail) === false) {
 			$reply->data = User::getUserByUserEmail($pdo, $userEmail);
@@ -64,7 +64,7 @@ try {
 
 		//enforce the user is signed in and only trying to edit their own profile
 		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $id) {
-			throw(new \InvalidArgumentException("You are not allowed to access this profile", 403));
+			throw(new \InvalidArgumentException("You are not allowed to access this user", 403));
 		}
 
 		validateJwtHeader();
@@ -77,9 +77,10 @@ try {
 		if($user === null) {
 			throw(new RuntimeException("User does not exist", 404));
 		}
+
 		//user avatar url is a required field
 		if(empty($requestObject->userAvatarUrl) === true) {
-			throw(new \InvalidArgumentException ("Avatar url is invalid", 405));
+			$requestObject->userAvatarUrl = $user->getUserAvatarUrl();
 		}
 
 		//user email is a required field
@@ -112,9 +113,9 @@ try {
 			throw (new RuntimeException("User does not exist"));
 		}
 
-		//enforce the user is signed in and only trying to edit their own profile
+		//enforce the user is signed in and only trying to edit their own user profile
 		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $user->getUserId()->toString()) {
-			throw(new \InvalidArgumentException("You are not allowed to access this profile", 403));
+			throw(new \InvalidArgumentException("You are not allowed to access this user", 403));
 		}
 
 		validateJwtHeader();
