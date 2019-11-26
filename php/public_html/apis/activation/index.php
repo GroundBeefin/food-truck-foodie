@@ -3,7 +3,7 @@ require_once dirname(__DIR__, 3) . "/vendor/autoload.php";
 require_once dirname(__DIR__, 3) . "/Classes/autoload.php";
 require_once dirname(__DIR__,3) . "/lib/xsrf.php";
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use GroundBeefin\FoodTruckFoodie;
+use GroundBeefin\FoodTruckFoodie\User;
 /**
  * API to check profile activation status
  * @author Gkephar/ lgutierrez
@@ -28,7 +28,7 @@ try{
 	if(strlen($activation) !== 32){
 		throw(new InvalidArgumentException("activation has an incorrect length", 405));
 	}
-	// verify that the activation token is a string value of a hexadeciaml
+	// verify that the activation token is a string value of a hexadecimal
 	if(ctype_xdigit($activation) === false) {
 		throw (new \InvalidArgumentException("activation is empty or has invalid contents", 405));
 	}
@@ -43,7 +43,7 @@ try{
 			//make sure the activation token matches
 			if($activation === $user->getUserActivationToken()) {
 				//set activation to null
-				$user->setUserActivationToken(null);
+				$user->setUserActivationToken("null");
 				//update the user in the database
 				$user->update($pdo);
 				//set the reply for the end user

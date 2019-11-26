@@ -58,7 +58,7 @@ class User implements \JsonSerializable {
 	 * @param string $newUserHash string containing password hash
 	 * @param string $newUserName string containing username
 	 */
-	public function __construct($newUserId, string $newUserActivationToken, ?string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
+	public function __construct($newUserId, ?string $newUserActivationToken, ?string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
 		try {
 			$this->setUserId($newUserId);
 			$this->setUserActivationToken($newUserActivationToken);

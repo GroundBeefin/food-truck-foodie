@@ -4,7 +4,7 @@ require_once("/etc/apache2/capstone-mysql/Secrets.php");
 require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/jwt.php";
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use GroundBeefin\FoodTruckFoodie;
+use GroundBeefin\FoodTruckFoodie\User;
 /**
  * api for handling sign-in
  *
@@ -35,12 +35,12 @@ try {
 		if(empty($requestObject->userEmail) === true) {
 			throw(new \InvalidArgumentException("email address not provided.", 401));
 		} else {
-			$profileEmail = filter_var($requestObject->userEmail, FILTER_SANITIZE_EMAIL);
+			$userEmail = filter_var($requestObject->userEmail, FILTER_SANITIZE_EMAIL);
 		}
 		if(empty($requestObject->userPassword) === true) {
 			throw(new \InvalidArgumentException("Must enter a password.", 401));
 		} else {
-			$profilePassword = $requestObject->userPassword;
+			$userPassword = $requestObject->userPassword;
 		}
 		//grab the profile from the database by the email provided
 		$user = User::getUserByUserEmail($pdo, $userEmail);
