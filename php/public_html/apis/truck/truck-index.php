@@ -53,7 +53,7 @@ try{
 	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
 		throw(new InvalidArgumentException("id cannot be empty or negative", 402));
 
-}
+	}
 	// GET request - if id is present, that truck is returned, otherwise all trucks are returned
 	if($method === "GET") {
 		//set XSRF cookie
@@ -64,15 +64,31 @@ try{
 			$reply->data = Truck::getTruckByTruckId($pdo, $id);
 		} else if(empty($truckUserId) === false) {
 			// if the user is logged in grab all the tweets by that user based  on who is logged in
-			$reply->data = Truck::getTruckByTruckUserId($pdo, $id);
+			$reply->data = Truck::getTruckByTruckUserId($pdo, $truckUserId);
 
-		} else (empty($truckUserId) === false) {
-			$reply->data = Truck::getTruckByTruckFoodType($pdo, $truckFoodType);
-
-
+		} else if(empty($truckUserId) === false){
+		$reply->data = Truck::getTruckByTruckFoodType($pdo, $truckFoodType)->toArray();
 
 
+	} else {
+			$truck = Truck::getAllTrucks($pdo)->toArray();
+			$truckUserId = [];
+			foreach($trucks as $truck) {
+					$user = User::getUserByUserId($pdo, $truck->getTruckUserId());
+					$truckUserId[] = (object)[
+				"truckId"=>$truck->getTruckId(),
+				"truckAvatarUrl"=>$truck->getTruckAvatarUrl(),
+				"truckEmail"=>$truck->getTruckEmail(),
+				"truckFoodType"=>$truck->getTruckFoodType(),
+				"truckMenuUrl"=>$truck->getTruckMenuUrl(),
+				"truckName"=>$truck->getTruckName(),
+				"truckPhoneNumber"=>$truck->getTruckPhoneNumber()
+					];
+			}
+			$reply->data = $truckUserId;
 		}
+
+
 	} else if($method === "PUT" || $method === "POST") {
 		// enforce the user has a XSRF token
 		verifyXsrf();
@@ -92,7 +108,7 @@ try{
 
 		//perform the actual put or post
 		if($method === "PUT") {
-			// retrieve the tweet to update
+			// retrieve the truck to update
 			$truck = Truck::getTruckByTruckId($pdo, $id);
 			if($truck === null) {
 				throw(new RuntimeException("Truck does not exist", 404));
@@ -105,23 +121,21 @@ try{
 
 			validateJwtHeader();
 			// update all attributes
-			$truck->setTruckId(newTruckId)$requestObject->truckId);
-			$truck->setTruckUserId(newTruckUserId)$requestObject->truckUserId);
-			$truck->setTruckAvatarUrl(newTruckAvatarUrl)$requestObject->truckAvatarUrl);
-			$truck->setTruckEmail(newTruckEmail)$requestObject->truckEmail);
-			$truck->setTruckFoodType(newTruckFoodType)$requestObject->truckFoodType);
-			$truck->setTrucMenuUrl(newTruckMenuUrl)$requestObject->truckMenuUrl);
-			$truck->setTruckName(newTruckName)$requestObject->truckName);
-			$truck->setTruckPhoneNumber(newTruckPhoneNumber)$requestObject->truckPhoneNumber);
+			$truck->setTruckAvatarUrl($requestObject->truckAvatarUrl);
+			$truck->setTruckEmail($requestObject->truckEmail);
+			$truck->setTruckFoodType($requestObject->truckFoodType);
+			$truck->setTruckMenuUrl($requestObject->truckMenuUrl);
+			$truck->setTruckName($requestObject->truckName);
+			$truck->setTruckPhoneNumber($requestObject->truckPhoneNumber);
 			$truck->update($pdo);
 
 			// update reply
 			$reply->message = "Truck updated OK";
-		} else if{$method === "POST") {
+		} else if($method === "POST") {
 
 
 		//enforce the end user is signed in
-			if(empty($_SESSION["user"])) === true) {
+			if(empty($_SESSION["user"]) === true) {
 						throw (new InvalidArgumentException("you must be logged in to update truck", 403));
 		}
 
@@ -158,7 +172,8 @@ try{
 		} else {
 			throw (new InvalidArgumentException("Invalid HTTP method request", 418));
 		}
-
+	}
+}
 // update the $reply->status $reply->message
 	} catch(\Exception | \TypeError $exception) {
 		$reply->status = $exception->getCode();
