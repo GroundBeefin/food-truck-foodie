@@ -58,7 +58,7 @@ class User implements \JsonSerializable {
 	 * @param string $newUserHash string containing password hash
 	 * @param string $newUserName string containing username
 	 */
-	public function __construct($newUserId, string $newUserActivationToken, ?string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
+	public function __construct($newUserId, ?string $newUserActivationToken, ?string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
 		try {
 			$this->setUserId($newUserId);
 			$this->setUserActivationToken($newUserActivationToken);
@@ -105,9 +105,10 @@ class User implements \JsonSerializable {
 	 *
 	 * @return string value of the activation token
 	 */
-	public function getUserActivationToken() : ?string {
+	public function getUserActivationToken(): ?string {
 		return ($this->userActivationToken);
 	}
+
 	/**
 	 *mutator method for user activation token
 	 *
@@ -137,9 +138,10 @@ class User implements \JsonSerializable {
 	 *
 	 * @return string value of the user avatar url
 	 */
-	public function getUserAvatarUrl() : string {
-		return($this->userAvatarUrl);
+	public function getUserAvatarUrl(): ?string {
+		return ($this->userAvatarUrl);
 	}
+
 	/**
 	 * mutator method for user avatar url
 	 * @param string|null $newUserAvatarUrl
@@ -150,9 +152,14 @@ class User implements \JsonSerializable {
 
 		//verify the at avatar is secure
 		$newUserAvatarUrl = trim($newUserAvatarUrl);
-		$newUserAvatarUrl = filter_var($newUserAvatarUrl, FILTER_VALIDATE_URL);
-		if(strlen($newUserAvatarUrl) > 255) {
-			throw(new \RangeException("avatar is too large"));
+		if(empty($newUserAvatarUrl) === false) {
+			$newUserAvatarUrl = filter_var($newUserAvatarUrl, FILTER_VALIDATE_URL);
+			if(strlen($newUserAvatarUrl) > 255) {
+				throw(new \RangeException("avatar is too large"));
+			}
+			if(!$newUserAvatarUrl) {
+				throw(new \InvalidArgumentException("avatar url is incorrect format"));
+			}
 		}
 		// store  the at handle
 		$this->userAvatarUrl = $newUserAvatarUrl;
@@ -231,9 +238,10 @@ class User implements \JsonSerializable {
 	 *
 	 * @return string value of userName
 	 */
-	public function getUserName() : string {
-		return($this->userName);
+	public function getUserName(): string {
+		return ($this->userName);
 	}
+
 	/**
 	 * mutator method for userName
 	 *
@@ -309,7 +317,7 @@ class User implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getUserByUserId(\PDO $pdo, $userId) : ?User {
+	public static function getUserByUserId(\PDO $pdo, $userId): ?User {
 		// sanitize the UserId before searching
 		try {
 			$userId = self::validateUuid($userId);
@@ -324,17 +332,17 @@ class User implements \JsonSerializable {
 		$statement->execute($parameters);
 		// grab the user from mySQL
 		try {
-			$user= null;
+			$user = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
+				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"], $row["userHash"], $row["userName"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-		return($user);
+		return ($user);
 	}
 
 	/**
@@ -365,7 +373,7 @@ class User implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
+				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"], $row["userHash"], $row["userName"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -388,7 +396,7 @@ class User implements \JsonSerializable {
 		return ($fields);
 	}
 
-	static function getUserByUserActivationToken(\PDO $pdo, string $userActivationToken) : ?User {
+	static function getUserByUserActivationToken(\PDO $pdo, string $userActivationToken): ?User {
 
 		//make sure activation token is in the right format and that it is a string representation of a hexadecimal
 		$userActivationToken = trim($userActivationToken);
@@ -410,7 +418,7 @@ class User implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"],$row["userHash"], $row["userName"]);
+				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"], $row["userHash"], $row["userName"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
