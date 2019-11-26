@@ -58,7 +58,7 @@ class User implements \JsonSerializable {
 	 * @param string $newUserHash string containing password hash
 	 * @param string $newUserName string containing username
 	 */
-	public function __construct($newUserId, string $newUserActivationToken, string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
+	public function __construct($newUserId, string $newUserActivationToken, ?string $newUserAvatarUrl, string $newUserEmail, string $newUserHash, string $newUserName) {
 		try {
 			$this->setUserId($newUserId);
 			$this->setUserActivationToken($newUserActivationToken);
@@ -147,16 +147,10 @@ class User implements \JsonSerializable {
 	 *
 	 */
 	public function setUserAvatarUrl(?string $newUserAvatarUrl): void {
-		if($newUserAvatarUrl === null) {
-			$this->getUserAvatarUrl = null;
-			return;
-		}
+
 		//verify the at avatar is secure
 		$newUserAvatarUrl = trim($newUserAvatarUrl);
 		$newUserAvatarUrl = filter_var($newUserAvatarUrl, FILTER_VALIDATE_URL);
-		if($newUserAvatarUrl === false) {
-			throw(new InvalidArgumentException("user url is empty or insecure"));
-		}
 		if(strlen($newUserAvatarUrl) > 255) {
 			throw(new \RangeException("avatar is too large"));
 		}
