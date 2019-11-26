@@ -4,10 +4,11 @@ require_once dirname(__DIR__, 3) . "/Classes/autoload.php";
 require_once("/etc/apache2/capstone-mysql/Secrets.php");
 require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/uuid.php";
-require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use UssHopper\FoodTruckFoodie\User;
+
+use GroundBeefin\FoodTruckFoodie\User;
+
 /**
- * api for signing up too DDC Twitter
+ * api for signing up too Food Truck Foodie
  *
  * @author Gkephart <GKephart@cnm.edu>
  **/
@@ -24,7 +25,7 @@ $reply->data = null;
 
 try {
 	//grab the mySQL connection
-	$secrets = new \Secrets("/etc/apache2/capstone-mysql/ddctwitter.ini");
+	$secrets = new \Secrets("/etc/apache2/capstone-mysql/foodie.ini");
 	$pdo = $secrets->getPdoObject();
 
 	//determine which HTTP method was used
@@ -40,6 +41,11 @@ try {
 		//user name is a required field
 		if(empty($requestObject->userName) === true) {
 			throw(new \InvalidArgumentException ("No user name present", 405));
+		}
+
+		//verify that user password is present
+		if(empty($requestObject->userAvatarUrl) === true) {
+			throw(new \InvalidArgumentException ("No user email present", 405));;
 		}
 
 		//user email is a required field
@@ -58,7 +64,7 @@ try {
 		}
 
 		//make sure the password and confirm password match
-		if ($requestObject->userPassword !== $requestObject->userPasswordConfirm) {
+		if($requestObject->userPassword !== $requestObject->userPasswordConfirm) {
 			throw(new \InvalidArgumentException("passwords do not match"));
 		}
 
@@ -66,7 +72,7 @@ try {
 		$userActivationToken = bin2hex(random_bytes(16));
 
 		//create the profile object and prepare to insert into the database
-		$user = new User(generateUuidV4(), $userActivationToken, $requestObject->userAvatarUrl, $requestObject->userEmail, $hash, $requestObject->userName);
+		$user = new User(generateUuidV4(), $userActivationToken,  $requestObject->userAvatarUrl, $requestObject->userEmail, $hash, $requestObject->userName);
 
 		//insert the profile into the database
 		$user->insert($pdo);
