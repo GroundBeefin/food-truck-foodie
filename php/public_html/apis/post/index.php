@@ -5,12 +5,13 @@ require_once("/etc/apache2/capstone-mysql/Secrets.php");
 require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/jwt.php";
 require_once dirname(__DIR__, 3) . "/lib/uuid.php";
-use GroundBeefin\FoodTruckFoodie;
+require_once("/etc/apache2/capstone-mysql/Secrets.php");
+use GroundBeefin\FoodTruckFoodie\{User, Truck, Post};
 /**
- * Api for the Post class
+ * api for the Post class
  *
- * @author george kephart
- */
+ * @author Valente Meza <valebmeza@gmail.com> / Leonela Gutierrez <leonela_gutierrez@hotmail.com>
+ **/
 //verify the session, start if not active
 if(session_status() !== PHP_SESSION_ACTIVE) {
 	session_start();
@@ -20,89 +21,104 @@ $reply = new stdClass();
 $reply->status = 200;
 $reply->data = null;
 try {
-	$secrets = new \Secrets("/etc/apache2/capstone-mysql/ddctwitter.ini");
+	$secrets = new \Secrets("/etc/apache2/capstone-mysql/foodie.ini");
 	$pdo = $secrets->getPdoObject();
 	//determine which HTTP method was used
 	$method = $_SERVER["HTTP_X_HTTP_METHOD"] ?? $_SERVER["REQUEST_METHOD"];
-	//sanitize the search parameters
-	$likeProfileId = $id = filter_input(INPUT_GET, "likeProfileId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
-	$likeTweetId = $id = filter_input(INPUT_GET, "likeTweetId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+	//sanitize input
+	$postId = filter_input(INPUT_GET, "postId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+	$postTruckId = filter_input(INPUT_GET, "postTruckId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+	$postContent = filter_input(INPUT_GET, "postContent", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	//make sure the id is valid for methods that require it
+	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
+		throw(new InvalidArgumentException("id cannot be empty or negative", 402));
+	}
+	// handle GET request - if id is present, that post is returned
 	if($method === "GET") {
 		//set XSRF cookie
 		setXsrfCookie();
-		//gets  a specific like associated based on its composite key
-		if ($likeProfileId !== null && $likeTweetId !== null) {
-			$like = Like::getLikeByLikeTweetIdAndLikeProfileId($pdo, $likeProfileId, $likeTweetId);
-			if($like!== null) {
-				$reply->data = $like;
-			}
-			//if none of the search parameters are met throw an exception
-		} else if(empty($likeProfileId) === false) {
-			$reply->data = Like::getLikeByLikeProfileId($pdo, $likeProfileId)->toArray();
-			//get all the likes associated with the tweetId
-		} else if(empty($likeTweetId) === false) {
-			$reply->data = Like::getLikeByLikeTweetId($pdo, $likeTweetId)->toArray();
-		} else {
-			throw new InvalidArgumentException("incorrect search parameters ", 404);
+		//get a specific post
+		if(empty($id) === false) {
+			$reply->data = Post::getPostByPostId($pdo, $id);
+		};
+
+	} else if($method === "PUT" || $method === "POST") {
+		// enforce the Truck has a XSRF token
+		verifyXsrf();
+		// enforce the user is signed in
+		if(empty($_SESSION["user"]) === true) {
+			throw(new \InvalidArgumentException("you must be logged in to post", 401));
 		}
-	} else if($method === "POST" || $method === "PUT") {
-		//decode the response from the front end
 		$requestContent = file_get_contents("php://input");
+		// Retrieves the JSON package that the front end sent, and stores it in $requestContent. Here we are using file_get_contents("php://input") to get the request from the front end. file_get_contents() is a PHP function that reads a file into a string. The argument for the function, here, is "php://input". This is a read only stream that allows raw data to be read from the front end request which is, in this case, a JSON package.
 		$requestObject = json_decode($requestContent);
-		if(empty($requestObject->likeProfileId) === true) {
-			throw (new \InvalidArgumentException("No Profile linked to the Like", 405));
+		// This Line Then decodes the JSON package and stores that result in $requestObject
+		//make sure tweet content is available (required field)
+		if(empty($requestObject->postContent) === true) {
+			throw(new \InvalidArgumentException ("No content for Post.", 405));
 		}
-		if(empty($requestObject->likeTweetId) === true) {
-			throw (new \InvalidArgumentException("No tweet linked to the Like", 405));
+		// make sure post date is accurate (optional field)
+		if(empty($requestObject->postDatetime) === true) {
+			$requestObject->postDatetime = null;
 		}
-		if(empty($requestObject->likeDate) === true) {
-			$requestObject->LikeDate =  date("y-m-d H:i:s");
-		}
-		if($method === "POST") {
-			//enforce that the end user has a XSRF token.
-			verifyXsrf();
+		//perform the actual put or post
+		if($method === "PUT") {
+			// retrieve the post to update
+			$post = Post::getPostByPostId($pdo, $id);
+			if($post === null) {
+				throw(new RuntimeException("Post does not exist", 404));
+			}
 			//enforce the end user has a JWT token
-			//validateJwtHeader();
+			//enforce the user is signed in and only trying to edit their own post
+			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $post->getPostId()->toString()) {
+				throw(new \InvalidArgumentException("You are not allowed to edit this post", 403));
+			}
+			validateJwtHeader();
+			// update all attributes
+			//$post->setPostDatetime($requestObject->postDatetime);
+			$post->setPostContent($requestObject->postContent);
+			$post->update($pdo);
+			// update reply
+			$reply->message = "Post updated OK";
+		} else if($method === "POST") {
 			// enforce the user is signed in
-			if(empty($_SESSION["profile"]) === true) {
-				throw(new \InvalidArgumentException("you must be logged in too like posts", 403));
+			if(empty($_SESSION["user"]) === true) {
+				throw(new \InvalidArgumentException("you must be logged in to post ", 403));
 			}
-			validateJwtHeader();
-			$like = new Like($_SESSION["profile"]->getProfileId(), $requestObject->likeTweetId);
-			$like->insert($pdo);
-			$reply->message = "liked tweet successful";
-		} else if($method === "PUT") {
-			//enforce the end user has a XSRF token.
-			verifyXsrf();
 			//enforce the end user has a JWT token
 			validateJwtHeader();
-			//grab the like by its composite key
-			$like = Like::getLikeByLikeTweetIdAndLikeProfileId($pdo, $requestObject->likeProfileId, $requestObject->likeTweetId);
-			if($like === null) {
-				throw (new RuntimeException("Like does not exist"));
-			}
-			//enforce the user is signed in and only trying to edit their own like
-			if(empty($_SESSION["profile"]) === true || $_SESSION["profile"]->getProfileId()->toString() !== $like->getLikeProfileId()->toString()) {
-				throw(new \InvalidArgumentException("You are not allowed to delete this tweet", 403));
-			}
-			//validateJwtHeader();
-			//preform the actual delete
-			$like->delete($pdo);
-			//update the message
-			$reply->message = "Like successfully deleted";
+			// create new post and insert into the database
+			$post = new Post(generateUuidV4(),$requestObject->post->postTruckId ,$_SESSION["user"]->getUserId(), $requestObject->postContent, null);
+			$post->insert($pdo);
+			// update reply
+			$reply->message = "Post created OK";
 		}
-		// if any other HTTP request is sent throw an exception
+	} else if($method === "DELETE") {
+		//enforce that the end user has a XSRF token.
+		verifyXsrf();
+		// retrieve the Post to be deleted
+		$post = Post::getPostByPostId($pdo, $id);
+		if($post === null) {
+			throw(new RuntimeException("Post does not exist", 404));
+		}
+		//enforce the user is signed in and only trying to edit their own post
+		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $post->getPostTruckId()->toString()) {
+			throw(new \InvalidArgumentException("You are not allowed to delete this post", 403));
+		}
+		//enforce the end user has a JWT token
+		validateJwtHeader();
+		// delete post
+		$post->delete($pdo);
+		// update reply
+		$reply->message = "Post deleted OK";
 	} else {
-		throw new \InvalidArgumentException("invalid http request", 400);
+		throw (new InvalidArgumentException("Invalid HTTP method request", 418));
 	}
-	//catch any exceptions that is thrown and update the reply status and message
+// update the $reply->status $reply->message
 } catch(\Exception | \TypeError $exception) {
 	$reply->status = $exception->getCode();
 	$reply->message = $exception->getMessage();
 }
-header("Content-type: application/json");
-if($reply->data === null) {
-	unset($reply->data);
-}
 // encode and return reply to front end caller
+header("Content-type: application/json");
 echo json_encode($reply);
