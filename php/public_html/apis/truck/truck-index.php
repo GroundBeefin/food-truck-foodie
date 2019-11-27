@@ -46,8 +46,8 @@ try{
 	$truckMenuUrl = filter_input(INPUT_GET, "truckMenuUrl", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckName = filter_input(INPUT_GET, "truckName", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckPhoneNumber = filter_input(INPUT_GET, "truckPhoneNumber", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	$truckVerifyImage = filter_input(INPUT_GET, "truckVerifyImage", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+//	$truckVerifyImage = filter_input(INPUT_GET, "truckVerifyImage", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+//	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
 	//make sure the id is valid for methods that require it
 	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
@@ -65,13 +65,15 @@ try{
 		} else if(empty($truckUserId) === false) {
 			// if the user is logged in grab all the tweets by that user based  on who is logged in
 			$reply->data = Truck::getTruckByTruckUserId($pdo, $truckUserId);
+		} else if(empty($truckName) === false){
+			$reply->data = Truck::getTruckByTruckName($pdo, $truckName);
 
-		} else if(empty($truckUserId) === false){
+		} else if(empty($truckFoodTruck) === false){
 		$reply->data = Truck::getTruckByTruckFoodType($pdo, $truckFoodType)->toArray();
 
 
 	} else {
-			$truck = Truck::getAllTrucks($pdo)->toArray();
+			$trucks = Truck::getAllTrucks($pdo)->toArray();
 			$truckUserId = [];
 			foreach($trucks as $truck) {
 					$user = User::getUserByUserId($pdo, $truck->getTruckUserId());
@@ -172,8 +174,8 @@ try{
 		} else {
 			throw (new InvalidArgumentException("Invalid HTTP method request", 418));
 		}
-	}
-}
+
+
 // update the $reply->status $reply->message
 	} catch(\Exception | \TypeError $exception) {
 		$reply->status = $exception->getCode();
