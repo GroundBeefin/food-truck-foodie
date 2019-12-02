@@ -43,7 +43,7 @@ try{
 			//make sure the activation token matches
 			if($activation === $user->getUserActivationToken()) {
 				//set activation to null
-				$user->setUserActivationToken("null");
+				$user->setUserActivationToken(null);
 				//update the user in the database
 				$user->update($pdo);
 				//set the reply for the end user

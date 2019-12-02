@@ -38,7 +38,7 @@ try{
 
 	//sanitize input
 	$id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
-	$truckId = filter_input(INPUT_GET, "truckId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+//	$truckId = filter_input(INPUT_GET, "truckId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckUserId = filter_input(INPUT_GET, "truckUserId", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckAvatarUrl = filter_input(INPUT_GET, "truckAvatarUrl", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckEmail = filter_input(INPUT_GET, "truckEmail", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -142,7 +142,7 @@ try{
 		}
 
 		//enforce the end user has a JWT token
-			validateJwtHeader();
+//			validateJwtHeader();
 
 		// create new truck and insert into the database
 			$truck = new Truck(generateUuidV4(), $_SESSION["user"]->getUserId(), $requestObject->truckAvatarUrl, $requestObject->truckEmail, $requestObject->truckFoodType, $requestObject->truckMenuUrl, $requestObject->truckName, $requestObject->truckPhoneNumber);
