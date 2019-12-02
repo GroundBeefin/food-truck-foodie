@@ -63,33 +63,14 @@ try{
 		if(empty($id) === false) {
 			$reply->data = Truck::getTruckByTruckId($pdo, $id);
 		} else if(empty($truckUserId) === false) {
-			// if the user is logged in grab all the tweets by that user based  on who is logged in
 			$reply->data = Truck::getTruckByTruckUserId($pdo, $truckUserId);
-		} else if(empty($truckName) === false){
+		} else if(empty($truckName) === false) {
 			$reply->data = Truck::getTruckByTruckName($pdo, $truckName);
-
-		} else if(empty($truckFoodTruck) === false){
-		$reply->data = Truck::getTruckByTruckFoodType($pdo, $truckFoodType)->toArray();
-
-
-	} else {
-			$trucks = Truck::getAllTrucks($pdo)->toArray();
-			$truckUserId = [];
-			foreach($trucks as $truck) {
-					$user = User::getUserByUserId($pdo, $truck->getTruckUserId());
-					$truckUserId[] = (object)[
-				"truckId"=>$truck->getTruckId(),
-				"truckAvatarUrl"=>$truck->getTruckAvatarUrl(),
-				"truckEmail"=>$truck->getTruckEmail(),
-				"truckFoodType"=>$truck->getTruckFoodType(),
-				"truckMenuUrl"=>$truck->getTruckMenuUrl(),
-				"truckName"=>$truck->getTruckName(),
-				"truckPhoneNumber"=>$truck->getTruckPhoneNumber()
-					];
-			}
-			$reply->data = $truckUserId;
+		} else if(empty($truckFoodTruck) === false) {
+			$reply->data = Truck::getTruckByTruckFoodType($pdo, $truckFoodType)->toArray();
+		} else {
+			$reply->data = Truck::getAllTrucks($pdo)->toArray();
 		}
-
 
 	} else if($method === "PUT" || $method === "POST") {
 		// enforce the user has a XSRF token
@@ -133,6 +114,8 @@ try{
 
 			// update reply
 			$reply->message = "Truck updated OK";
+
+
 		} else if($method === "POST") {
 
 
@@ -141,11 +124,9 @@ try{
 						throw (new InvalidArgumentException("you must be logged in to update truck", 403));
 		}
 
-		//enforce the end user has a JWT token
-//			validateJwtHeader();
 
 		// create new truck and insert into the database
-			$truck = new Truck(generateUuidV4(), $_SESSION["user"]->getUserId(), $requestObject->truckAvatarUrl, $requestObject->truckEmail, $requestObject->truckFoodType, $requestObject->truckMenuUrl, $requestObject->truckName, $requestObject->truckPhoneNumber);
+			$truck = new Truck(generateUuidV4(), $_SESSION["user"]->getUserId(), $requestObject->truckAvatarUrl, $requestObject->truckEmail, $requestObject->truckFoodType, $requestObject->truckMenuUrl, $requestObject->truckName, $requestObject->truckPhoneNumber, $requestObject->truckVerifyImage, $requestObject->truckVerfiedCheck);
 			$truck->insert($pdo);
 
 
@@ -159,14 +140,13 @@ try{
 			// retrieve the Truck to be deleted
 			$truck = Truck::getTruckByTruckId($pdo, $id);
 			if($truck === null) {
-				throw(new RuntimeException("Tweet does not exist", 404));
+				throw(new RuntimeException("Truck does not exist", 404));
 			}
 			//enforce the user is signed in and only trying to edit their own truck
-			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUsereId()->toString() !== $truck->getTruckUserId()->toString()) {
+			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUsereId() !== $truck->getTruckUserId()) {
 				throw(new \InvalidArgumentException("You are not allowed to delete this truck", 403));
 			}
-			//enforce the end user has a JWT token
-			validateJwtHeader();
+
 			// delete truck
 			$truck->delete($pdo);
 			// update reply
