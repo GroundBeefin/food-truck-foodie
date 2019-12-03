@@ -122,6 +122,7 @@ class User implements \JsonSerializable {
 			$this->userActivationToken = null;
 			return;
 		}
+		var_dump();
 		$newUserActivationToken = strtolower(trim($newUserActivationToken));
 		if(ctype_xdigit($newUserActivationToken) === false) {
 			throw(new\RangeException("user activation is not valid"));

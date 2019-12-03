@@ -5,8 +5,8 @@ require_once("/etc/apache2/capstone-mysql/Secrets.php");
 require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/jwt.php";
 require_once dirname(__DIR__, 3) . "/lib/uuid.php";
-require_once("/etc/apache2/capstone-mysql/Secrets.php");
-use GroundBeefin\FoodTruckFoodie\{User, Truck, Post};
+
+use GroundBeefin\FoodTruckFoodie\Post;
 /**
  * api for the Post class
  *
@@ -26,7 +26,8 @@ try {
 	//determine which HTTP method was used
 	$method = $_SERVER["HTTP_X_HTTP_METHOD"] ?? $_SERVER["REQUEST_METHOD"];
 	//sanitize input
-	$postId = filter_input(INPUT_GET, "postId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+	$id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
+	$postUserId = filter_input(INPUT_GET, "postUserId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
 	$postTruckId = filter_input(INPUT_GET, "postTruckId", FILTER_SANITIZE_STRING,FILTER_FLAG_NO_ENCODE_QUOTES);
 	$postContent = filter_input(INPUT_GET, "postContent", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	//make sure the id is valid for methods that require it
@@ -38,9 +39,14 @@ try {
 		//set XSRF cookie
 		setXsrfCookie();
 		//get a specific post
-		if(empty($id) === false) {
+		if(empty($id)=== false) {
+			// if the user is logged in grab all the tweets by that user based  on who is logged in
 			$reply->data = Post::getPostByPostId($pdo, $id);
+		}
+		elseif(empty($postTruckId) === false) {
+			$reply->data = Post::getPostByPostTruckId($pdo, $postTruckId);
 		};
+
 
 	} else if($method === "PUT" || $method === "POST") {
 		// enforce the Truck has a XSRF token
@@ -53,7 +59,7 @@ try {
 		// Retrieves the JSON package that the front end sent, and stores it in $requestContent. Here we are using file_get_contents("php://input") to get the request from the front end. file_get_contents() is a PHP function that reads a file into a string. The argument for the function, here, is "php://input". This is a read only stream that allows raw data to be read from the front end request which is, in this case, a JSON package.
 		$requestObject = json_decode($requestContent);
 		// This Line Then decodes the JSON package and stores that result in $requestObject
-		//make sure tweet content is available (required field)
+		//make sure post content is available (required field)
 		if(empty($requestObject->postContent) === true) {
 			throw(new \InvalidArgumentException ("No content for Post.", 405));
 		}
@@ -70,7 +76,7 @@ try {
 			}
 			//enforce the end user has a JWT token
 			//enforce the user is signed in and only trying to edit their own post
-			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $post->getPostId()->toString()) {
+			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $post->getPostUserId()->toString()) {
 				throw(new \InvalidArgumentException("You are not allowed to edit this post", 403));
 			}
 			validateJwtHeader();
@@ -88,11 +94,12 @@ try {
 			//enforce the end user has a JWT token
 			validateJwtHeader();
 			// create new post and insert into the database
-			$post = new Post(generateUuidV4(),$requestObject->post->postTruckId ,$_SESSION["user"]->getUserId(), $requestObject->postContent, null);
+			$post = new Post(generateUuidV4(),$requestObject->postTruckId ,$_SESSION["user"]->getUserId(), $requestObject->postContent, null);
 			$post->insert($pdo);
 			// update reply
 			$reply->message = "Post created OK";
 		}
+
 	} else if($method === "DELETE") {
 		//enforce that the end user has a XSRF token.
 		verifyXsrf();
@@ -101,16 +108,18 @@ try {
 		if($post === null) {
 			throw(new RuntimeException("Post does not exist", 404));
 		}
+
 		//enforce the user is signed in and only trying to edit their own post
-		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $post->getPostTruckId()->toString()) {
+		if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $post->getPostUserId()->toString()) {
 			throw(new \InvalidArgumentException("You are not allowed to delete this post", 403));
 		}
+
 		//enforce the end user has a JWT token
 		validateJwtHeader();
 		// delete post
 		$post->delete($pdo);
 		// update reply
-		$reply->message = "Post deleted OK";
+		$reply->message = "Post deleted!";
 	} else {
 		throw (new InvalidArgumentException("Invalid HTTP method request", 418));
 	}
