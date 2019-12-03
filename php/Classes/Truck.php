@@ -58,9 +58,9 @@ class Truck  implements \JsonSerializable {
 	private $truckVerifyImage;
 	/**
 	 * this is the truck verify checked
-	 * @var $truckVerifiedCheck
+//	 * @var $truckVerifiedCheck
 	 * */
-	private $truckVerifiedCheck;
+//	private $truckVerifiedCheck;
 
 	/**
 	 * constructor for this truck
@@ -74,11 +74,11 @@ class Truck  implements \JsonSerializable {
 	 * @param string $newTruckName string containing the actual name of the truck
 	 * @param string $newTruckPhoneNumber containing the phone number to contact the truck
 	 * @param string $newTruckVerifyImage containing the verify image to see if this is a real food truck
-	 * @param string $newTruckVerifiedCheck containing the data that the truck has been checked and verified as a real food truck.
+//	 * @param string $newTruckVerifiedCheck containing the data that the truck has been checked and verified as a real food truck.
 	 * */
 
 
-	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, ?bool $newTruckVerifiedCheck) {
+	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage) {
 		try {
 			$this->setTruckId($newTruckId);
 			$this->setTruckUserId($newTruckUserId);
@@ -89,7 +89,7 @@ class Truck  implements \JsonSerializable {
 			$this->setTruckName($newTruckName);
 			$this->setTruckPhoneNumber($newTruckPhoneNumber);
 			$this->setTruckVerifyImage($newTruckVerifyImage);
-			$this->setTruckVerifiedCheck($newTruckVerifiedCheck);
+//			$this->setTruckVerifiedCheck($newTruckVerifiedCheck);
 		} catch(\InvalidArgumentException | \RangeException | \Exception|  \TypeError $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
@@ -387,9 +387,9 @@ class Truck  implements \JsonSerializable {
 	 *
 	 * @return boolean value of verify check
 	 **/
-	public function getTruckVerifiedCheck(): bool {
-		return($this->truckVerifiedCheck);
-	}
+//	public function getTruckVerifiedCheck(): ?int {
+//		return($this->truckVerifiedCheck);
+//	}
 
 
 	/**
@@ -398,15 +398,15 @@ class Truck  implements \JsonSerializable {
 	 * @param boolean $newTruckVerifiedCheck new value of truck verify check
 	 * @throws \InvalidArgumentException if $newTruckVerifiedCheck is false
 	 **/
-	public function setTruckVerifiedCheck(?bool $newTruckVerifiedCheck) {
-		// verify check content is secure
-		$newTruckVerifiedCheck = filter_var($newTruckVerifiedCheck, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-		if($newTruckVerifiedCheck === null ) {
-			$this->truckVerifiedCheck = false;
-			return;
-		}
-		$this->truckVerifiedCheck = $newTruckVerifiedCheck;
-	}
+//	public function setTruckVerifiedCheck( ?int $newTruckVerifiedCheck) {
+//		 verify check content is secure
+//		$newTruckVerifiedCheck = filter_var($newTruckVerifiedCheck, FILTER_SANITIZE_NUMBER_INT, FILTER_FLAG_NO_ENCODE_QUOTES);
+//		if($newTruckVerifiedCheck === null ) {
+//			$this->truckVerifiedCheck !== 0 || 1;
+//			return;
+//		}
+//		$this->truckVerifiedCheck = $newTruckVerifiedCheck;
+//	}
 
 
 	/**
@@ -419,11 +419,11 @@ class Truck  implements \JsonSerializable {
 	public function insert(\PDO $pdo) : void {
 
 		// create query template
-		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage, :truckVerifiedCheck)";
+		$query = "INSERT INTO truck(truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage) VALUES(:truckId, :truckUserId, :truckAvatarUrl, :truckEmail, :truckFoodType, :truckMenuUrl, :truckName, :truckPhoneNumber, :truckVerifyImage)";
 		$statement = $pdo->prepare($query);
 
 		//bind the truck variables to placeholder template
-		$parameters = ["truckId" => $this->truckId->getBytes(), "truckUserId" => $this->truckUserId->getBytes(), "truckAvatarUrl" => $this->truckAvatarUrl, "truckEmail" => $this->truckEmail, "truckFoodType" => $this->truckFoodType, "truckMenuUrl"=> $this->truckMenuUrl, "truckName" => $this->truckName, "truckPhoneNumber" => $this->truckPhoneNumber, "truckVerifyImage" => $this->truckVerifyImage, "truckVerifiedCheck" => $this->truckVerifiedCheck];
+		$parameters = ["truckId" => $this->truckId->getBytes(), "truckUserId" => $this->truckUserId->getBytes(), "truckAvatarUrl" => $this->truckAvatarUrl, "truckEmail" => $this->truckEmail, "truckFoodType" => $this->truckFoodType, "truckMenuUrl"=> $this->truckMenuUrl, "truckName" => $this->truckName, "truckPhoneNumber" => $this->truckPhoneNumber, "truckVerifyImage" => $this->truckVerifyImage];
 		$statement->execute($parameters);
 
 
@@ -439,9 +439,9 @@ class Truck  implements \JsonSerializable {
 	public function update(\PDO $pdo) : void {
 
 		// create query template
-		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage, truckVerifiedCheck= :truckVerifiedCheck WHERE truckId = :truckId";
+		$query = "UPDATE truck SET truckUserId = :truckUserId, truckAvatarUrl = :truckAvatarUrl, truckEmail= :truckEmail, truckFoodType= :truckFoodType, truckMenuUrl= :truckMenuUrl, truckName= :truckName, truckPhoneNumber= :truckPhoneNumber, truckVerifyImage= :truckVerifyImage WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
-		$parameters = ["truckId" => $this->truckId->getBytes(), "truckUserId" => $this->truckUserId->getBytes(), "truckAvatarUrl" => $this->truckAvatarUrl, "truckEmail" => $this->truckEmail, "truckFoodType" => $this->truckFoodType, "truckMenuUrl"=> $this->truckMenuUrl, "truckName" => $this->truckName, "truckPhoneNumber" => $this->truckPhoneNumber, "truckVerifyImage" => $this->truckVerifyImage, "truckVerifiedCheck" => $this->truckVerifiedCheck];
+		$parameters = ["truckId" => $this->truckId->getBytes(), "truckUserId" => $this->truckUserId->getBytes(), "truckAvatarUrl" => $this->truckAvatarUrl, "truckEmail" => $this->truckEmail, "truckFoodType" => $this->truckFoodType, "truckMenuUrl"=> $this->truckMenuUrl, "truckName" => $this->truckName, "truckPhoneNumber" => $this->truckPhoneNumber, "truckVerifyImage" => $this->truckVerifyImage];
 		$statement->execute($parameters);
 
 	}
@@ -477,7 +477,7 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckId = :truckId";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage FROM truck WHERE truckId = :truckId";
 		$statement = $pdo->prepare($query);
 		// bind the truck id to the place holder in the template
 		$parameters = ["truckId" => $truckId->getBytes()];
@@ -488,7 +488,7 @@ class Truck  implements \JsonSerializable {
 				$statement->setFetchMode(\PDO::FETCH_ASSOC);
 				$row = $statement->fetch();
 				if($row !== false) {
-					$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
+					$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"]);
 				}
 			}catch(\Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -508,7 +508,7 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckFoodType LIKE :truckFoodType";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage FROM truck WHERE truckFoodType LIKE :truckFoodType";
 		$statement = $pdo->prepare($query);
 		// bind the truck food type to the place holder in the template
 		$parameters = ["truckFoodType" => $truckFoodType];
@@ -518,7 +518,7 @@ class Truck  implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"]);
 				$trucks[$trucks->key()] = $truck;
 				$trucks->next();
 			} catch(\Exception $exception) {
@@ -537,7 +537,7 @@ class Truck  implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckUserId = :truckUserId";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage FROM truck WHERE truckUserId = :truckUserId";
 		$statement = $pdo->prepare($query);
 		// bind the truck food type to the place holder in the template
 		$parameters = ["truckUserId" => $truckUserId->getBytes()];
@@ -547,7 +547,7 @@ class Truck  implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifyImage"]);
 				$trucks[$trucks->key()] = $truck;
 				$trucks->next();
 			} catch(\Exception $exception) {
@@ -581,7 +581,7 @@ class Truck  implements \JsonSerializable {
 		$truckName = str_replace("_", "\\_", str_replace("%", "\\%", $truckName));
 
 		// create query template
-		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage, truckVerifiedCheck FROM truck WHERE truckName LIKE :truckName";
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage FROM truck WHERE truckName LIKE :truckName";
 		$statement = $pdo->prepare($query);
 
 		// bind the truck food type to the place holder in the template
@@ -594,7 +594,7 @@ class Truck  implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifyImage"], $row["truckVerifiedCheck"]);
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"], $row["truckMenuUrl"], $row["truckName"], $row["truckPhoneNumber"],  $row["truckVerifyImage"]);
 				$trucks[$trucks->key()] = $truck;
 				$trucks->next();
 			} catch(\Exception $exception) {

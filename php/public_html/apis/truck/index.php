@@ -47,7 +47,7 @@ try{
 	$truckName = filter_input(INPUT_GET, "truckName", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckPhoneNumber = filter_input(INPUT_GET, "truckPhoneNumber", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckVerifyImage = filter_input(INPUT_GET, "truckVerifyImage", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+//	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
 	//make sure the id is valid for methods that require it
 	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
@@ -124,7 +124,7 @@ try{
 
 
 		// create new truck and insert into the database
-			$truck = new Truck(generateUuidV4(), $_SESSION["user"]->getUserId(), $requestObject->truckAvatarUrl, $requestObject->truckEmail, $requestObject->truckFoodType, $requestObject->truckMenuUrl, $requestObject->truckName, $requestObject->truckPhoneNumber, $requestObject->truckVerifyImage, $requestObject->truckVerfiedCheck);
+			$truck = new Truck(generateUuidV4(), $_SESSION["user"]->getUserId(), $requestObject->truckAvatarUrl, $requestObject->truckEmail, $requestObject->truckFoodType, $requestObject->truckMenuUrl, $requestObject->truckName, $requestObject->truckPhoneNumber, $requestObject->truckVerifyImage);
 			$truck->insert($pdo);
 
 
