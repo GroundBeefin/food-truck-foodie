@@ -46,8 +46,8 @@ try{
 	$truckMenuUrl = filter_input(INPUT_GET, "truckMenuUrl", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckName = filter_input(INPUT_GET, "truckName", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 	$truckPhoneNumber = filter_input(INPUT_GET, "truckPhoneNumber", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-//	$truckVerifyImage = filter_input(INPUT_GET, "truckVerifyImage", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-//	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$truckVerifyImage = filter_input(INPUT_GET, "truckVerifyImage", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+	$truckVerifiedCheck = filter_input(INPUT_GET, "truckVerifiedCheck", FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
 	//make sure the id is valid for methods that require it
 	if(($method === "DELETE" || $method === "PUT") && (empty($id) === true )) {
@@ -85,7 +85,7 @@ try{
 		$requestObject = json_decode($requestContent);
 		// This Line Then decodes the JSON package and stores that result in $requestObject
 		//make sure tweet content is available (required field)
-		if(empty($requestObject->truckFoodType) === true) {
+		if(empty($requestObject->truckName) === true) {
 			throw(new \InvalidArgumentException ("No Food Type for truck.", 405));
 		}
 
@@ -101,8 +101,6 @@ try{
 			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $truck->getTruckUserId()->toString()) {
 				throw(new \InvalidArgumentException("You are not allowed to edit this truck", 403));
 		}
-
-			validateJwtHeader();
 			// update all attributes
 			$truck->setTruckAvatarUrl($requestObject->truckAvatarUrl);
 			$truck->setTruckEmail($requestObject->truckEmail);

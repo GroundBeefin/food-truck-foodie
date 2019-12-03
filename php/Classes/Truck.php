@@ -78,7 +78,7 @@ class Truck  implements \JsonSerializable {
 	 * */
 
 
-	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, $newTruckVerifiedCheck) {
+	public function __construct($newTruckId, $newTruckUserId, $newTruckAvatarUrl, $newTruckEmail, $newTruckFoodType, $newTruckMenuUrl, $newTruckName, $newTruckPhoneNumber, $newTruckVerifyImage, ?bool $newTruckVerifiedCheck) {
 		try {
 			$this->setTruckId($newTruckId);
 			$this->setTruckUserId($newTruckUserId);
@@ -398,7 +398,7 @@ class Truck  implements \JsonSerializable {
 	 * @param boolean $newTruckVerifiedCheck new value of truck verify check
 	 * @throws \InvalidArgumentException if $newTruckVerifiedCheck is false
 	 **/
-	public function setTruckVerifiedCheck(bool $newTruckVerifiedCheck) {
+	public function setTruckVerifiedCheck(?bool $newTruckVerifiedCheck) {
 		// verify check content is secure
 		$newTruckVerifiedCheck = filter_var($newTruckVerifiedCheck, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 		if($newTruckVerifiedCheck === null ) {
