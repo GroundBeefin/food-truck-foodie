@@ -96,7 +96,6 @@ try{
 			if($truck === null) {
 				throw(new RuntimeException("Truck does not exist", 404));
 			}
-			//enforce the end user has a JWT token
 			//enforce the user is signed in and only trying to edit their own truck
 			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $truck->getTruckUserId()->toString()) {
 				throw(new \InvalidArgumentException("You are not allowed to edit this truck", 403));
@@ -141,7 +140,7 @@ try{
 				throw(new RuntimeException("Truck does not exist", 404));
 			}
 			//enforce the user is signed in and only trying to edit their own truck
-			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUsereId() !== $truck->getTruckUserId()) {
+			if(empty($_SESSION["user"]) === true || $_SESSION["user"]->getUserId()->toString() !== $truck->getTruckUserId()->toString()) {
 				throw(new \InvalidArgumentException("You are not allowed to delete this truck", 403));
 			}
 

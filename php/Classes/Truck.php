@@ -468,6 +468,36 @@ class Truck  implements \JsonSerializable {
 	 * @param Uuid $truckId
 	 * @return truck
 	 */
+
+	/**
+	 * gets all Trucks
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray SplFixedArray of Trucks found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getAllTrucks(\PDO $pdo) : \SPLFixedArray {
+		// create query template
+		$query = "SELECT truckId, truckUserId, truckAvatarUrl, truckEmail, truckFoodType, truckMenuUrl, truckName, truckPhoneNumber, truckVerifyImage FROM truck";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		// build an array of tweets
+		$trucks = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$truck = new Truck($row["truckId"], $row["truckUserId"], $row["truckAvatarUrl"], $row["truckEmail"], $row["truckFoodType"],$row["truckMenuUrl"],$row["truckName"], $row["truckPhoneNumber"], $row["truckVerifyImage"]);
+				$trucks[$trucks->key()] = $truck;
+				$trucks->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($trucks);
+	}
+
 	//get truck by truck id
 	public static function getTruckByTruckId(\PDO $pdo, $truckId) : ?Truck {
 		try {
