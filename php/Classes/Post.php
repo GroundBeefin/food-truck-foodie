@@ -111,7 +111,7 @@ class Post implements \JsonSerializable {
 
 
 	/**
-	 * gets the Tweet by tweetId
+	 * gets the Post by postId
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @param string|Uuid $postId post id to search for
@@ -349,6 +349,9 @@ class Post implements \JsonSerializable {
 		}
 		return ($posts);
 	}
+
+
+
 
 	/**
 	 * formats the state variables for JSON serialization
