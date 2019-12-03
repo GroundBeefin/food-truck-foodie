@@ -5,6 +5,8 @@ require_once("/etc/apache2/capstone-mysql/Secrets.php");
 require_once dirname(__DIR__, 3) . "/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/lib/uuid.php";
 
+
+
 use GroundBeefin\FoodTruckFoodie\User;
 
 /**
@@ -45,7 +47,7 @@ try {
 
 		//verify that user password is present
 		if(empty($requestObject->userAvatarUrl) === true) {
-			throw(new \InvalidArgumentException ("No user email present", 405));;
+			throw(new \InvalidArgumentException ("No user Avatar present", 405));;
 		}
 
 		//user email is a required field
