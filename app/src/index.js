@@ -8,16 +8,17 @@ import {Home} from "./pages/Home";
 // import {SignInForm} from "./shared/components/main-nav/sign-in/SignInForm";
 import {MainNav} from "./shared/components/main-nav/MainNav";
 
-
+import {Footer} from "./shared/components/footer/footer";
 
 const Routing = () => (
 	<>
 		<BrowserRouter>
+			<MainNav/>
 			<Switch>
-				 <MainNav/>
 				<Route exact path="/" component={Home}/>
 				<Route component={FourOhFour}/>
 			</Switch>
+			<Footer/>
 		</BrowserRouter>
 	</>
 );
