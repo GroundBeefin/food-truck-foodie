@@ -12,7 +12,7 @@ import Row from "react-bootstrap/Row";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
-export const footer = () => (
+export const Footer = () => (
 	<>
 
 					<footer className="page-footer text-dark py-2 py-md-44">
