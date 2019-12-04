@@ -12,7 +12,6 @@ export const SignUpForm = () => {
 		userName: "",
 		userPassword: "",
 		userPasswordConfirm: "",
-
 	};
 
 	const [status, setStatus] = useState(null);
