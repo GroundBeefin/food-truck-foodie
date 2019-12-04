@@ -19,8 +19,8 @@ export const SignInForm = () => {
 
 	//the initial values object defines what the request payload is.
 	const signIn = {
-		profileEmail: "",
-		profilePassword: ""
+		userEmail: "",
+		userPassword: ""
 	};
 
 	const submitSignIn = (values, {resetForm, setStatus}) => {
