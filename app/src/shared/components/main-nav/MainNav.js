@@ -13,7 +13,7 @@ export const MainNav = (props) => {
 			<LinkContainer exact to="/" >
 				<Navbar.Brand>Navbar</Navbar.Brand>
 			</LinkContainer>
-			<Nav className="mr-auto">
+			<Nav className="m	r-auto">
 				<LinkContainer exact to="/profile">
 					<Nav.Link>profile</Nav.Link>
 				</LinkContainer>
