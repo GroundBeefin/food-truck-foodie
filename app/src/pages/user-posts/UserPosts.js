@@ -7,11 +7,11 @@ export const UserPosts = ({match}) => {
 
 
 	// Returns the the userPosts store from redux and assigns it to the userPosts variable.
-	const userPosts = useSelector(state => state.post ? state.post : []);
+	const userPosts = useSelector(state => state.userPosts ? state.userPosts : []);
 
 
 	// Since userPosts contains a collection of different data from the backend  each piece must be assigned to a new variable.
-	const posts = userPosts.post ? [...userPosts.post] : [];
+	const posts = userPosts.posts ? [...userPosts.posts] : [];
 	const user = userPosts.user ? {...userPosts.user} : null;
 
 	const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export const UserPosts = ({match}) => {
 	const sideEffects = () => {
 
 		// The dispatch function takes actions as arguments to make changes to the store/redux.
-		dispatch(getPost(match.params.userId))
+		dispatch(getUserPosts(match.params.userId))
 	};
 
 	// Declare any inputs that will be used by functions that are declared in sideEffects.
