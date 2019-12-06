@@ -9,12 +9,11 @@ import {Home} from "./pages/Home";
 import {MainNav} from "./shared/components/main-nav/MainNav";
 
 
-
 const Routing = () => (
 	<>
 		<BrowserRouter>
+			<MainNav/>
 			<Switch>
-				 <MainNav/>
 				<Route exact path="/" component={Home}/>
 				<Route component={FourOhFour}/>
 			</Switch>
