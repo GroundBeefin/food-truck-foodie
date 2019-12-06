@@ -44,8 +44,38 @@ export const SignUpFormContent = (props) => {
 								{errors.userEmail}
 							</div>
 						)
-
 					}
+
+					<div className="form-group">
+						<label htmlFor="userName">Name</label>
+						<div className="input-group">
+							<div className="input-group-prepend">
+								<div className="input-group-text">
+									<FontAwesomeIcon icon="dove"/>
+								</div>
+							</div>
+							<input
+								className="form-control"
+								id="userName"
+								type="text"
+								value={values.userName}
+								placeholder="Name"
+								onChange={handleChange}
+								onBlur={handleBlur}
+
+							/>
+						</div>
+						{
+							errors.userName && touched.userName && (
+								<div className="alert alert-danger">
+									{errors.userName}
+								</div>
+							)
+						}
+					</div>
+
+
+
 				</div>
 				{/*controlId must match what is defined by the initialValues object*/}
 				<div className="form-group">
@@ -95,62 +125,6 @@ export const SignUpFormContent = (props) => {
 				</div>
 
 
-				{/*<div className="form-group">*/}
-				{/*	<label htmlFor="userHandle">@Handle</label>*/}
-				{/*	<div className="input-group">*/}
-				{/*		<div className="input-group-prepend">*/}
-				{/*			<div className="input-group-text">*/}
-				{/*				<FontAwesomeIcon icon="dove"/>*/}
-				{/*			</div>*/}
-				{/*		</div>*/}
-				{/*		<input*/}
-				{/*			className="form-control"*/}
-				{/*			id="profileHandle"*/}
-				{/*			type="text"*/}
-				{/*			value={values.profileAtHandle}*/}
-				{/*			placeholder="@Handle"*/}
-				{/*			onChange={handleChange}*/}
-				{/*			onBlur={handleBlur}*/}
-
-				{/*		/>*/}
-				{/*	</div>*/}
-				{/*	{*/}
-				{/*		errors.profileAtHandle && touched.profileAtHandle && (*/}
-				{/*			<div className="alert alert-danger">*/}
-				{/*				{errors.profileAtHandle}*/}
-				{/*			</div>*/}
-				{/*		)*/}
-				{/*	}*/}
-				{/*</div>*/}
-
-
-				{/*<div className="form-group">*/}
-				{/*	<label htmlFor="profilePhone">Phone Number</label>*/}
-				{/*	<div className="input-group">*/}
-				{/*		<div className="input-group-prepend">*/}
-				{/*			<div className="input-group-text">*/}
-				{/*				<FontAwesomeIcon icon="phone"/>*/}
-				{/*			</div>*/}
-				{/*		</div>*/}
-				{/*		<input*/}
-				{/*			className="form-control"*/}
-				{/*			id="profilePhone"*/}
-				{/*			type="text"*/}
-				{/*			value={values.profilePhone}*/}
-				{/*			placeholder="Enter email"*/}
-				{/*			onChange={handleChange}*/}
-				{/*			onBlur={handleBlur}*/}
-				{/*		/>*/}
-				{/*	</div>*/}
-				{/*	{*/}
-				{/*		errors.profilePhone && touched.profilePhone && (*/}
-				{/*			<div className="alert alert-danger">*/}
-				{/*				{errors.profilePhone}*/}
-				{/*			</div>*/}
-				{/*		)*/}
-
-				{/*	}*/}
-				{/*</div>*/}
 				<div className="form-group">
 					<button className="btn btn-primary mb-2" type="submit">Submit</button>
 					<button

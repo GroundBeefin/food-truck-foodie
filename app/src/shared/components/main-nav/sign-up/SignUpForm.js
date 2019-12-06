@@ -7,12 +7,10 @@ import {SignUpFormContent} from "./SignUpFormContent";
 
 export const SignUpForm = () => {
 	const signUp = {
-		userAvatarUrl: "",
 		userEmail: "",
 		userName: "",
 		userPassword: "",
 		userPasswordConfirm: "",
-
 	};
 
 	const [status, setStatus] = useState(null);
@@ -20,17 +18,14 @@ export const SignUpForm = () => {
 		userEmail: Yup.string()
 			.email("email must be a valid email")
 			.required('email is required'),
-		// profileAtHandle: Yup.string()
-		// 	.required("profile handle is required"),
+		userName: Yup.string()
+			.required("Name is required"),
 		userPassword: Yup.string()
 			.required("Password is required")
 			.min(8, "Password must be at least eight characters"),
 		userPasswordConfirm: Yup.string()
 			.required("Password Confirm is required")
 			.min(8, "Password must be at least eight characters"),
-		// profilePhone: Yup.string()
-		// 	.min(10, "phone number is to short")
-		// 	.max(10, "phone Number is to long")
 	});
 
 	const submitSignUp = (values, {resetForm}) => {
