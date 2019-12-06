@@ -7,6 +7,7 @@ import {FourOhFour} from "./pages/FourOhFour";
 import {Home} from "./pages/Home";
 import {MainNav} from "./shared/components/main-nav/MainNav";
 import {Footer} from "./shared/components/footer/footer";
+import "./index.css";
 
 
 const Routing = () => (
