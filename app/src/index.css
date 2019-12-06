@@ -8,9 +8,11 @@ body {
 }
 
 h1 {
-	color: black;
+	color: #F6D758;
+	text-shadow: 5px 4px 0 black;
 }
 
 p {
 	color: black;
+	font-size: 20px;
 }
