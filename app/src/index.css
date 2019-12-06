@@ -1,0 +1,18 @@
+body {
+	background: coral;
+	background-image: url("images/ftfBack.jpg");
+}
+
+.jumbotron {
+	background-color: #C12902;
+}
+
+h1 {
+	color: #F6D758;
+	text-shadow: 5px 4px 0 black;
+}
+
+p {
+	color: black;
+	font-size: 20px;
+}
