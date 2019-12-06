@@ -12,11 +12,7 @@
     "formik": "^1.5.4",
     "http-proxy-middleware": "^0.19.1",
     "react": "^16.9.0",
-<<<<<<< HEAD
     "react-bootstrap": "^1.0.0-beta.16",
-=======
-    "react-bootstrap": "^1.0.0-beta.10",
->>>>>>> list
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.0",
     "react-router": "^5.0.1",
