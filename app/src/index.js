@@ -8,6 +8,10 @@ import {Home} from "./pages/Home";
 // import {SignInForm} from "./shared/components/main-nav/sign-in/SignInForm";
 import {MainNav} from "./shared/components/main-nav/MainNav";
 
+<<<<<<< HEAD
+=======
+import {Footer} from "./shared/components/footer/footer";
+>>>>>>> list
 
 const Routing = () => (
 	<>
@@ -17,6 +21,7 @@ const Routing = () => (
 				<Route exact path="/" component={Home}/>
 				<Route component={FourOhFour}/>
 			</Switch>
+			<Footer/>
 		</BrowserRouter>
 	</>
 );
