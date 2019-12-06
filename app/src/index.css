@@ -14,3 +14,30 @@ h1 {
 p {
 	color: black;
 }
+
+
+/*navBar Styling*/
+img[alt="FTF logo"] {
+	width: 100px;
+	height: auto;
+}
+.signUp {
+	background-color: #C12902;
+	border:none;
+	color: #F6D758;
+}
+
+.signIn {
+	background-color: #F6D758;
+	border:none;
+	color: #C12902;
+}
+
+/*!*.searchButton*!*/
+
+/*.signIn:hover {*/
+
+/*}*/
+/*.signUp:hover {*/
+/*	co*/
+/*}*/

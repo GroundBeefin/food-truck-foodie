@@ -10,9 +10,10 @@ export const SignUpModal = () => {
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
+
 	return (
 		<>
-			<Button variant="info" onClick={handleShow}>
+			<Button className={"signUp"} onClick={handleShow}>
 				Sign Up
 			</Button>
 
