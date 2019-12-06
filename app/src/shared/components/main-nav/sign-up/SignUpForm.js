@@ -15,6 +15,8 @@ export const SignUpForm = () => {
 
 	const [status, setStatus] = useState(null);
 	const validator = Yup.object().shape({
+		userAvatarUrl: Yup.string()
+			.required('User Avatar URL required for sign-up'),
 		userEmail: Yup.string()
 			.email("email must be a valid email")
 			.required('email is required'),
