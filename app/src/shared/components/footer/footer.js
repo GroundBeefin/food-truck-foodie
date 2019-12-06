@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 export const Footer = () => (
 	<>
 				<div className="fixed-bottom Container bg-dark text-light py-md-2">
-					<footer className="page-footer text-muted py-2 py-md-4">
+					<footer className="page-footer text-muted py-2">
 						<Container fluid="true">
 							<Row>
 												<Col className="text-center">
