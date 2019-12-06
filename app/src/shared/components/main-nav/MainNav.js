@@ -11,17 +11,11 @@ export const MainNav = (props) => {
 	return(
 		<Navbar bg="primary" variant="dark">
 			<LinkContainer exact to="/" >
-				<Navbar.Brand>Navbar</Navbar.Brand>
+				<Navbar.Brand>Food Truck Foodie</Navbar.Brand>
 			</LinkContainer>
 			<Nav className="m	r-auto">
-				<LinkContainer exact to="/profile">
-					<Nav.Link>profile</Nav.Link>
-				</LinkContainer>
 				<SignUpModal/>
 				<SignInModal/>
-				<LinkContainer exact to="/image"
-				><Nav.Link>image</Nav.Link>
-				</LinkContainer>
 			</Nav>
 		</Navbar>
 	)
