@@ -5,7 +5,6 @@ import {BrowserRouter} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import {FourOhFour} from "./pages/FourOhFour";
 import {Home} from "./pages/Home";
-// import {SignInForm} from "./shared/components/main-nav/sign-in/SignInForm";
 import {MainNav} from "./shared/components/main-nav/MainNav";
 import {Footer} from "./shared/components/footer/footer";
 import "./index.css";

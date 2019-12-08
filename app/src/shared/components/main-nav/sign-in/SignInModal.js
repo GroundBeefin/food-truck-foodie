@@ -12,7 +12,7 @@ export const SignInModal = () => {
 
 	return (
 		<>
-			<Button variant="outline-info" onClick={handleShow}>
+			<Button className={"signIn"} onClick={handleShow}>
 				Sign In
 			</Button>
 

@@ -4,15 +4,17 @@ import {Modal} from "react-bootstrap";
 import {SignUpForm} from "./SignUpForm";
 
 
+
 export const SignUpModal = () => {
 	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
+
 	return (
 		<>
-			<Button variant="info" onClick={handleShow}>
+			<Button className={"signUp"} onClick={handleShow}>
 				Sign Up
 			</Button>
 
@@ -33,5 +35,7 @@ export const SignUpModal = () => {
 				</Modal.Footer>
 			</Modal>
 		</>
+
 	);
 }
+

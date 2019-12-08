@@ -16,3 +16,35 @@ p {
 	color: black;
 	font-size: 20px;
 }
+
+
+/*navBar Styling*/
+img[alt="FTF logo"] {
+	width: 100px;
+	height: auto;
+}
+.signUp {
+	background-color: transparent;
+	border:#C12902 2px solid;
+	color: #C12902;
+}
+
+.signIn {
+	background-color: transparent;
+	border:#F6D758 2px solid;
+	color: #F6D758;
+}
+
+.signUp:hover {
+	color: #F6D758 ;
+	background-color: #C12902;
+	border: #F6D758 2px solid;
+}
+
+
+.signIn:hover {
+	color: #C12902;
+	background-color: #F6D758;
+	border: #C12902 2px solid;
+}
+
