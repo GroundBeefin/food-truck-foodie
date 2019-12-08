@@ -4,6 +4,7 @@ import {Modal} from "react-bootstrap";
 import {SignUpForm} from "./SignUpForm";
 
 
+
 export const SignUpModal = () => {
 	const [show, setShow] = useState(false);
 
@@ -34,5 +35,7 @@ export const SignUpModal = () => {
 				</Modal.Footer>
 			</Modal>
 		</>
+
 	);
 }
+
