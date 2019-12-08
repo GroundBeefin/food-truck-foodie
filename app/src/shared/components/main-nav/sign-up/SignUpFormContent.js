@@ -47,6 +47,35 @@ export const SignUpFormContent = (props) => {
 					}
 
 					<div className="form-group">
+						<label htmlFor="userAvatarUrl">Avatar</label>
+						<div className="input-group">
+							<div className="input-group-prepend">
+								<div className="input-group-text">
+									<FontAwesomeIcon icon="dove"/>
+								</div>
+							</div>
+							<input
+								className="form-control"
+								id="userAvatarUrl"
+								type="text"
+								value={values.userAvatarUrl}
+								placeholder="Avatar Url"
+								onChange={handleChange}
+								onBlur={handleBlur}
+
+							/>
+						</div>
+						{
+							errors.userAvatarUrl && touched.userAvatarUrl && (
+								<div className="alert alert-danger">
+									{errors.userAvatarUrl}
+								</div>
+							)
+						}
+					</div>
+
+
+					<div className="form-group">
 						<label htmlFor="userName">Name</label>
 						<div className="input-group">
 							<div className="input-group-prepend">
