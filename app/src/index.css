@@ -22,22 +22,26 @@ img[alt="FTF logo"] {
 	height: auto;
 }
 .signUp {
-	background-color: #C12902;
-	border:none;
-	color: #F6D758;
-}
-
-.signIn {
-	background-color: #F6D758;
-	border:none;
+	background-color: transparent;
+	border:#C12902 2px solid;
 	color: #C12902;
 }
 
-/*!*.searchButton*!*/
+.signIn {
+	background-color: transparent;
+	border:#F6D758 2px solid;
+	color: #F6D758;
+}
 
-/*.signIn:hover {*/
+.signUp:hover {
+	color: #F6D758 ;
+	background-color: #C12902;
+	border: #F6D758 2px solid;
+}
 
-/*}*/
-/*.signUp:hover {*/
-/*	co*/
-/*}*/
+
+.signIn:hover {
+	color: #C12902;
+	background-color: #F6D758;
+	border: #C12902 2px solid;
+}
