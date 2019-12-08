@@ -8,6 +8,17 @@ import {Home} from "./pages/Home";
 import {MainNav} from "./shared/components/main-nav/MainNav";
 import {Footer} from "./shared/components/footer/footer";
 import "./index.css";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {faDove, faEnvelope, faKey, faPhone, faStroopwafel} from '@fortawesome/free-solid-svg-icons'
+import {Provider} from "react-redux";
+import {applyMiddleware, createStore} from "redux";
+import thunk from "redux-thunk";
+import {combinedReducers} from "./shared/reducers/reducers";
+// import 'bootstrap/dist/js/bootstrap.bundle.min';
+
+const store = createStore(combinedReducers, applyMiddleware(thunk));
+
+library.add(faStroopwafel, faEnvelope, faKey, faDove, faPhone);
 
 
 const Routing = () => (
