@@ -8,7 +8,7 @@ export const Home = () => {
 		<>
 				<Container fluid="true">
 					<Jumbotron className="py-10 m-5">
-						<h1>Food Truck Foodie</h1>
+						<h1>Food Truck Foody</h1>
 						<p>
 							ABQ's Social Network for Food Trucks
 						</p>
