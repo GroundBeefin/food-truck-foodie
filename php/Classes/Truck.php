@@ -1,5 +1,5 @@
 <?php
-namespace Groundbeefin\FoodTruckFoodie;
+namespace GroundBeefin\FoodTruckFoodie;
 require_once ("autoload.php");
 
 use Ramsey\Uuid\Uuid;
