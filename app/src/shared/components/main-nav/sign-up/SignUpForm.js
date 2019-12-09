@@ -4,8 +4,10 @@ import * as Yup from "yup";
 import {Formik} from "formik";
 
 import {SignUpFormContent} from "./SignUpFormContent";
+import {useHistory} from "react-router";
 
 export const SignUpForm = () => {
+	// const history = useHistory()
 	const signUp = {
 		userEmail: "",
 		userName: "",

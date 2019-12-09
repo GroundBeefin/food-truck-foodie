@@ -1,20 +1,32 @@
+/* Global styles */
 body {
-	background: coral;
-	background-image: url("images/ftfBack.jpg");
+	background: coral url("images/test1.jpeg");
+	background-size: cover;
 }
 
+/* jumbotron styling */
 .jumbotron {
-	background-color: #C12902;
+	/*background-color: #C12902;*/
+	/*border: solid #F6D758 1px;*/
+	background: transparent;
 }
 
-h1 {
-	color: #F6D758;
-	text-shadow: 5px 4px 0 black;
+
+.jumbotron h1 {
+	color: #C12902;
+	text-shadow: 4px 4px 0 #F6D758;
+	font-size: 70px;
+	text-align: center;
+	font-family: alegreya sans SC;
 }
 
-p {
-	color: black;
+.jumbotron p {
+	color: white;
 	font-size: 20px;
+	text-align: center;
+	font-family: alegreya sans SC;
+	/*background-color: #C12902;*/
+
 }
 
 
