@@ -1,6 +1,6 @@
 import React from "react";
 import Jumbotron from "react-bootstrap/Jumbotron";
-import FTFlogo2 from "../images/FTFlogo2.png";
+import MainFTFlogo3 from "../images/MainFTFLogo3.png";
 import Image from "react-bootstrap/Image";
 
 
@@ -10,7 +10,7 @@ export const Home = () => {
 			<container-fluid>
 				<Jumbotron>
 					<div className="d-flex justify-content-center">
-						<Image src={} alt="logo"/>
+						<Image src={MainFTFlogo3} alt="logo"/>
 					</div>
 				</Jumbotron>
 			</container-fluid>
