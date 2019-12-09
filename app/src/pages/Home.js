@@ -4,7 +4,7 @@ import {getAllTrucks} from "../shared/actions/truck";
 import Card from "react-bootstrap/Card";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Image from "react-bootstrap/Image";
-import MainFTFlogo4 from "../images/MainFTFLogo4.png";
+import MainFTFlogo5 from "../images/MainFTFLogo5.png";
 
 
 export const Home = () => {
@@ -24,7 +24,7 @@ export const Home = () => {
 			<container-fluid>
 				<Jumbotron>
 					<div className="d-flex justify-content-center">
-						<Image src={MainFTFlogo4} fluid alt="logo"/>
+						<Image src={MainFTFlogo5} fluid alt="logo"/>
 					</div>
 				</Jumbotron>
 			</container-fluid>
