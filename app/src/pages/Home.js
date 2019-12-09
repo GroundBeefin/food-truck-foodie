@@ -31,8 +31,7 @@ export const Home = () => {
 			{trucks.map(truck => {
 				return (
 					<Card style={{width: '18rem'}} key={truck.truckId}>
-						<Card.Img variant="top" src={truck.truckAvatarUrl}/>
-						<Card.Body>
+						<Card.Img variant="top" src={truck.truckAvatarUrl}/><Card.Body>
 							<Card.Text>{truck.truckName}</Card.Text>
 							<Card.Text>{truck.truckMenuUrl}</Card.Text>
 							<Card.Text>{truck.truckFoodType}</Card.Text>
