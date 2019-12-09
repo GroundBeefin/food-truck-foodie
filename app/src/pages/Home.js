@@ -2,6 +2,8 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllTrucks} from "../shared/actions/truck";
 import Card from "react-bootstrap/Card";
+import Jumbotron from "react-bootstrap/Jumbotron";
+import Image from "react-bootstrap/Image";
 
 
 export const Home = () => {
@@ -18,6 +20,13 @@ export const Home = () => {
 
 	return (
 		<>
+			<container-fluid>
+				<Jumbotron>
+					<div className="d-flex justify-content-center">
+						<Image src={MainFTFlogo4} fluid alt="logo"/>
+					</div>
+				</Jumbotron>
+			</container-fluid>
 			{trucks.map(truck => {
 				return (
 					<Card style={{width: '18rem'}} key={truck.truckId}>
