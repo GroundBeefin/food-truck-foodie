@@ -1,6 +1,6 @@
 /* Global styles */
 body {
-	background: coral url("images/test3.jpg");
+	background: coral url("images/test3.jpg") fixed;
 	background-size: cover;
 
 }
@@ -10,6 +10,7 @@ body {
 	/*background-color: #C12902;*/
 	/*border: solid #F6D758 1px;*/
 	background: transparent;
+	padding: 0;
 }
 
 
