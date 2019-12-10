@@ -22,11 +22,7 @@ export const SignUpFormContent = (props) => {
 				<div className="form-group">
 					<label htmlFor="userEmail">Email Address</label>
 					<div className="input-group">
-						<div className="input-group-prepend">
-							<div className="input-group-text">
-								<FontAwesomeIcon icon="envelope"/>
-							</div>
-						</div>
+
 						<input
 							className="form-control"
 							id="userEmail"
@@ -49,11 +45,7 @@ export const SignUpFormContent = (props) => {
 					<div className="form-group">
 						<label htmlFor="userAvatarUrl">Avatar</label>
 						<div className="input-group">
-							<div className="input-group-prepend">
-								<div className="input-group-text">
-									<FontAwesomeIcon icon="dove"/>
-								</div>
-							</div>
+
 							<input
 								className="form-control"
 								id="userAvatarUrl"
@@ -78,11 +70,7 @@ export const SignUpFormContent = (props) => {
 					<div className="form-group">
 						<label htmlFor="userName">Name</label>
 						<div className="input-group">
-							<div className="input-group-prepend">
-								<div className="input-group-text">
-									<FontAwesomeIcon icon="dove"/>
-								</div>
-							</div>
+
 							<input
 								className="form-control"
 								id="userName"
@@ -110,11 +98,7 @@ export const SignUpFormContent = (props) => {
 				<div className="form-group">
 					<label htmlFor="userPassword">Password</label>
 					<div className="input-group">
-						<div className="input-group-prepend">
-							<div className="input-group-text">
-								<FontAwesomeIcon icon="key"/>
-							</div>
-						</div>
+
 						<input
 							id="userPassword"
 							className="form-control"
@@ -132,13 +116,8 @@ export const SignUpFormContent = (props) => {
 				<div className="form-group">
 					<label htmlFor="userPasswordConfirm">Confirm Your Password</label>
 					<div className="input-group">
-						<div className="input-group-prepend">
-							<div className="input-group-text">
-								<FontAwesomeIcon icon="key"/>
-							</div>
-						</div>
-						<input
 
+						<input
 							className="form-control"
 							type="password"
 							id="userPasswordConfirm"

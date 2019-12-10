@@ -22,11 +22,6 @@ export const SignInFormContent = (props) => {
 				<div className="form-group">
 					<label htmlFor="userEmail">Email Address</label>
 					<div className="input-group">
-						<div className="input-group-prepend">
-							<div className="input-group-text">
-								<FontAwesomeIcon icon="envelope"/>
-							</div>
-						</div>
 						<input
 							className="form-control"
 							id="userEmail"
@@ -51,11 +46,6 @@ export const SignInFormContent = (props) => {
 				<div className="form-group">
 					<label htmlFor="userPassword">Password</label>
 					<div className="input-group">
-						<div className="input-group-prepend">
-							<div className="input-group-text">
-								<FontAwesomeIcon icon="key"/>
-							</div>
-						</div>
 						<input
 							id="userPassword"
 							className="form-control"
