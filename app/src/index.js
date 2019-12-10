@@ -30,7 +30,7 @@ const Routing = (store) => (
 			<Switch>
 				<Route exact path="/" component={Home}/>
 				<Route component={FourOhFour}/>
-				<Route exact path="/UserPage/:userId" component={UserPage} userId=":userId"/>
+				<Route exact path="/UserPage" component={"/"} userId=":userId"/>
 			</Switch>
 			<Footer/>
 		</BrowserRouter>

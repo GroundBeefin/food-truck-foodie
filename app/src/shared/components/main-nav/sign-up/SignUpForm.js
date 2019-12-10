@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {httpConfig} from "../../../utils/http-config";
 import * as Yup from "yup";
 import {Formik} from "formik";
-
 import {SignUpFormContent} from "./SignUpFormContent";
 import {useHistory} from "react-router";
 
