@@ -4,6 +4,7 @@ import {httpConfig} from "../../../utils/http-config";
 import {Formik} from "formik/dist/index";
 import * as Yup from "yup";
 
+
 import {SignInFormContent} from "./SignInFormContent";
 
 
@@ -33,7 +34,7 @@ export const SignInForm = () => {
 				if(reply.status === 200 && reply.headers["x-jwt-token"]) {
 					window.localStorage.removeItem("jwt-token");
 					window.localStorage.setItem("jwt-token", reply.headers["x-jwt-token"]);
-					resetForm();
+					// resetForm();
 					setTimeout(() => {
 						//setToPosts(true);
 						window.location = "/";
