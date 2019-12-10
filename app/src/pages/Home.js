@@ -30,14 +30,18 @@ export const Home = () => {
 			</container-fluid>
 			{trucks.map(truck => {
 				return (
-					<Card style={{width: '18rem'}} key={truck.truckId}>
-						<Card.Img variant="top" src={truck.truckAvatarUrl}/>
-						<Card.Body>
-							<Card.Text>{truck.truckName}</Card.Text>
-							<Card.Text>{truck.truckMenuUrl}</Card.Text>
-							<Card.Text>{truck.truckFoodType}</Card.Text>
-						</Card.Body>
-					</Card>)
+					<container-fluid>
+						<div className="d-flex justify-content-center  mb-3 pb-3">
+						<Card style={{width: '20rem'}} key={truck.truckId}>
+							<Card.Body>
+							<Card.Img variant="top" src={truck.truckAvatarUrl}/>
+								<Card.Text>{truck.truckName}</Card.Text>
+								<Card.Text>{truck.truckFoodType}</Card.Text>
+							</Card.Body>
+						</Card>
+						</div>
+						<br />
+					</container-fluid>)
 			})}
 		</>
 	)
