@@ -28,7 +28,7 @@ export const Home = () => {
 					</div>
 				</Jumbotron>
 				<div className="d-flex justify-content-center  my-3 py-3">
-				<h1>LOCAL TRUCKS</h1>
+					<h1>LOCAL TRUCKS</h1>
 				</div>
 			</container-fluid>
 			{trucks.map(truck => {
