@@ -28,12 +28,11 @@ $user3 = new User(generateUuidV4(), null, "http://box5352.temp.domains/~diadelo2
 $user3->insert($pdo);
 echo "Dominic's user profile :". $user3->getUserId() . PHP_EOL;
 
-$user4 = new User(generateUuidV4(), null, "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212a7878d20d5:0x236f059d7227e146!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG", "leonela.naguti+4@gmail.com", $hash, "Sweet pea");
+$user4 = new User(generateUuidV4(), null, "https://unsplash.com/photos/ozKgHSxluxQ", "leonela.naguti+8@gmail.com", $hash, "Sweet pea");
 $user4->insert($pdo);
 echo "Sweet's user profile :". $user->getUserId() . PHP_EOL;
 
-$user5 = new User(generateUuidV4(), null, "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212b9cc4cafbf:0x91635cd3e370f456!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipO6UhAI5ppc8fhGrj_ZIzw81tjW6QoSMHzSiJ5x%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipO6UhAI5ppc8fhGrj_ZIzw81tjW6QoSMHzSiJ5x
-https://www.google.com/maps/uv?hl=en&pb=!1s0x872212a7878d20d5:0x236f059d7227e146!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG", "leonela.naguti+4@gmail.com", $hash, "Papa Joe Daddieo");
+$user5 = new User(generateUuidV4(), null, "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212b9cc4cafbf:0x91635cd3e370f456!3m1!7e115!4shttps://lh5.googleusercontent.com", "leonela.naguti+9@gmail.com", $hash, "Papa Joe Daddieo");
 $user5->insert($pdo);
 echo "Papa's user profile :". $user->getUserId() . PHP_EOL;
 
@@ -41,7 +40,7 @@ echo "Papa's user profile :". $user->getUserId() . PHP_EOL;
 
 //$truckUserId = generateUuidV4();
 
-$truck = new Truck(generateUuidV4(), $user->getUserId(), "https://static.wixstatic.com/media/2462fd_0d26898bbf88def0a5de05dee979da49.jpg/v1/fill/w_549,h_348,al_c,q_90,usm_0.66_1.00_0.01/2462fd_0d26898bbf88def0a5de05dee979da49.webp", "leonela.naguti+4@gmail.com", "Comfort Food", "https://www.ilovesupper.com/menu", "The Supper Truck", "505.796.2181", null);
+$truck = new Truck(generateUuidV4(), $user->getUserId(), "https://s3-media0.fl.yelpcdn.com/bphoto/dz9pL1Hk1fOL9sNJYNPMlg/o.jpg", "leonela.naguti+4@gmail.com", "Comfort Food", "https://www.ilovesupper.com/menu", "The Supper Truck", "505.796.2181", null);
 $truck->insert($pdo);
 
 
@@ -51,11 +50,10 @@ $truck2->insert($pdo);
 $truck3 = new Truck(generateUuidV4(), $user3->getUserId(), "http://box5352.temp.domains/~diadelo2/wp-content/uploads/2019/04/DDLT-LogoR.jpg", "leonela.naguti+1@gmail.com", "Mexican", "https://s3-media0.fl.yelpcdn.com/bphoto/BQZUZ_hKFvaNhnHVOXgVYQ/o.jpg", "Dia De Los Takos", "(505) 550-8540", null);
 $truck3->insert($pdo);
 
-$truck4= new Truck(generateUuidV4(), $user->getUserId(), "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212a7878d20d5:0x236f059d7227e146!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG", "leonela.naguti+4@gmail.com", "Comfort Food", "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212a7878d20d5:0x236f059d7227e146!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG", "With Love Waffles Food Truck", "505.933.0424", null);
+$truck4= new Truck(generateUuidV4(), $user->getUserId(), "https://s3-media0.fl.yelpcdn.com/bphoto/b0sUtPQa7Ne3vT6eVVKjaQ/o.jpg", "leonela.naguti+8@gmail.com", "Comfort Food", "https://s3-media0.fl.yelpcdn.com/bphoto/_BR6u8RBYopIeWedZUIgQw/o.jpg", "With Love Waffles Food Truck", "505.933.0424", null);
 $truck4->insert($pdo);
 
-$truck5 = new Truck(generateUuidV4(), $user->getUserId(), "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212b9cc4cafbf:0x91635cd3e370f456!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipO6UhAI5ppc8fhGrj_ZIzw81tjW6QoSMHzSiJ5x%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipO6UhAI5ppc8fhGrj_ZIzw81tjW6QoSMHzSiJ5x
-https://www.google.com/maps/uv?hl=en&pb=!1s0x872212a7878d20d5:0x236f059d7227e146!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG%3Dw260-h175-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipOVaBEPKWD70oMf0Y3F0Ls2UAEtB7aWJ9224jLG", "leonela.naguti+4@gmail.com", "Mexican", "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212b9cc4cafbf:0x91635cd3e370f456!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipN7HALcl7Yr3IbY3TaPO4Rv2Vm8HJFquUtECq8s%3Dw130-h87-n-k-no!5sfood+trucks+in+albuquerque+new+mexico+-+Google+Search&imagekey=!1e10!2sAF1QipN7HALcl7Yr3IbY3TaPO4Rv2Vm8HJFquUtECq8su", "Taco Locos grill", "505.918.0964", null);
+$truck5 = new Truck(generateUuidV4(), $user->getUserId(), "https://s3-media0.fl.yelpcdn.com/bphoto/z5r4JTsLk-Ib_C2A-_4d6w/o.jpg", "leonela.naguti+9@gmail.com", "Mexican", "https://www.google.com/maps/uv?hl=en&pb=!1s0x872212b9cc4cafbf:0x91635cd3e370f456!3m1!7e115!4shttps://lh5.googleusercontent.com/p/AF1QipN7HALcl7Yr3IbY3TaPO4Rv2Vm8HJFquUtECq8s%3Dw130-h87-n-k-no!5sfood+trucks+in+albuquerque+new+mexico", "Taco Locos grill", "505.918.0964", null);
 $truck5->insert($pdo);
 //adding posts for food trucks
 
