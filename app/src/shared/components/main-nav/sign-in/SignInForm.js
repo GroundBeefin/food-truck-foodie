@@ -12,7 +12,7 @@ import {SignInFormContent} from "./SignInFormContent";
 export const SignInForm = () => {
 
 	// state variable to handle redirect to posts page on sign in
-	const [Home] = useState(null);
+	const [UserPage] = useState(null);
 
 	const signIn = {
 		userEmail: "",
@@ -37,7 +37,7 @@ export const SignInForm = () => {
 					// resetForm();
 					setTimeout(() => {
 						//setToPosts(true);
-						window.location = "/";
+						window.location = "UserPage";
 					}, 750);
 					}
 				setStatus({message, type});
@@ -46,8 +46,8 @@ export const SignInForm = () => {
 
 	return (
 		<>
-			{/* redirect user to userPosts page on sign in */}
-			{/*{toPosts ? <Redirect to="/posts" /> : null}*/}
+			{/* redirect user to userPage page on sign in */}
+			{UserPage? <Redirect to="/user" /> : null}
 
 			<Formik
 				initialValues={signIn}

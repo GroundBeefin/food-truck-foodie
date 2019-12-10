@@ -427,5 +427,37 @@ class User implements \JsonSerializable {
 		return ($user);
 	}
 
+	/**
+	 * gets all Users
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray SplFixedArray of Users found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getAllUsers(\PDO $pdo) : \SplFixedArray {
+		//create query template
+		$query = "SELECT  userId, userActivationToken, userAvatarUrl, userEmail, userHash, userName FROM user";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		//build an array of users
+		$users = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$user = new User($row["userId"], $row["userActivationToken"], $row["userAvatarUrl"], $row["userEmail"], $row["userHash"], $row["userName"]);
+				$users[$users->key()] = $user;
+				$users->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($users);
+	}
+
 }
+
+
+
 
