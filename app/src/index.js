@@ -15,6 +15,7 @@ import {applyMiddleware, createStore} from "redux";
 import thunk from "redux-thunk";
 import {combinedReducers} from "./shared/reducers/index";
 // import 'bootstrap/dist/js/bootstrap.bundle.min';
+import {UserPage} from "./pages/UserPage/UserPage";
 
 const store = createStore(combinedReducers, applyMiddleware(thunk));
 
@@ -29,6 +30,7 @@ const Routing = (store) => (
 			<Switch>
 				<Route exact path="/" component={Home}/>
 				<Route component={FourOhFour}/>
+				<Route exact path="/UserPage/:userId" component={UserPage} userId=":userId"/>
 			</Switch>
 			<Footer/>
 		</BrowserRouter>
