@@ -36,7 +36,6 @@ export const Home = () => {
 							<Card.Body>
 							<Card.Img variant="top" src={truck.truckAvatarUrl}/>
 								<Card.Text>{truck.truckName}</Card.Text>
-								<Card.Text>{truck.truckMenuUrl}</Card.Text>
 								<Card.Text>{truck.truckFoodType}</Card.Text>
 							</Card.Body>
 						</Card>
