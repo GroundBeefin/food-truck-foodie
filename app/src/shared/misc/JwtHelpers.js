@@ -24,7 +24,7 @@ export const UseJwtUserName = () => {
 		const token = window.localStorage.getItem("jwt-token");
 		if(token !== null) {
 			const decodedJwt = jwtDecode(token);
-			setUserName(decodedJwt.auth.UserName);
+			setUserName(decodedJwt.auth.userName);
 		}
 	}, [userName]);
 
@@ -32,7 +32,7 @@ export const UseJwtUserName = () => {
 };
 
 export const UseJwtUserId = () => {
-	const [UserId, setUserId] = useState(null);
+	const [userId, setUserId] = useState(null);
 
 	useEffect(() => {
 		const token = window.localStorage.getItem("jwt-token");
