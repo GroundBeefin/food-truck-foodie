@@ -33,7 +33,7 @@ export const Home = () => {
 			</container-fluid>
 			{trucks.map(truck => {
 				return (
-					<container-fluid>
+					<container-fluid >
 						<div className="d-flex justify-content-center  mb-3 pb-3">
 							<Card style={{width: '20rem'}} key={truck.truckId}>
 								<Card.Body>
