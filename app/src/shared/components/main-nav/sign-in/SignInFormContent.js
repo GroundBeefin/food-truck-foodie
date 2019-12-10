@@ -80,6 +80,7 @@ export const SignInFormContent = (props) => {
 					>Reset
 					</button>
 				</div>
+
 				<FormDebugger {...props} />
 			</form>
 			{status && (<div className={status.type}>{status.message}</div>)}
