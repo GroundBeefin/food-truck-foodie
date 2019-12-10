@@ -65,3 +65,15 @@ img[alt="FTF logo"] {
 .card {
 	border: #C12902 3px solid;
 }
+
+h1 {
+	color: #C12902;
+	font-family: "Times New Roman", Times, serif;
+	font-weight: bold;
+	text-shadow:
+		-1px -1px 0 #F6D758,
+		1px -1px 0 #F6D758,
+		-1px 1px 0 #F6D758,
+		1px 1px 0 #F6D758;
+	text-decoration: underline #C12902;
+}
