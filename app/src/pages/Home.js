@@ -31,7 +31,6 @@ export const Home = () => {
 			{trucks.map(truck => {
 				return (
 					<container-fluid>
-						<div className="d-flex justify-content-center mb-3 pb-3 border-dark">
 						<Card style={{width: '20rem'}} key={truck.truckId}>
 							<Card.Body>
 							<Card.Img variant="top" src={truck.truckAvatarUrl}/>
@@ -39,7 +38,7 @@ export const Home = () => {
 								<Card.Text>{truck.truckFoodType}</Card.Text>
 							</Card.Body>
 						</Card>
-						</div>
+
 						<br />
 					</container-fluid>)
 			})}

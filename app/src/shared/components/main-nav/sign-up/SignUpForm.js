@@ -7,7 +7,8 @@ import {SignUpFormContent} from "./SignUpFormContent";
 import {useHistory} from "react-router";
 
 export const SignUpForm = () => {
-	// const history = useHistory()
+
+	// state variable to handle redirect to home page eventually will change to redirect to user page
 	const signUp = {
 		userEmail: "",
 		userName: "",
@@ -35,13 +36,16 @@ export const SignUpForm = () => {
 	const submitSignUp = (values, {resetForm}) => {
 		httpConfig.post("/apis/sign-up/", values)
 			.then(reply => {
-					let {message, type} = reply;
-					setStatus({message, type});
-					if(reply.status === 200) {
-						resetForm();
-					}
+				let {message, type} = reply;
+				setStatus({message, type});
+				if(reply.status === 200) {
+					// resetForm();
+					setTimeout(() => {
+						window.location = "/";
+					}, 750);
 				}
-			);
+				setStatus({message, type});
+			});
 	};
 
 
