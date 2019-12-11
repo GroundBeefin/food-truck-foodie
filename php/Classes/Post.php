@@ -16,7 +16,7 @@ use GroundBeefin\FoodTruckFoodie\ValidateDate;
  **/
 class Post implements \JsonSerializable {
 	use ValidateUuid;
-	use ValidateDate;
+
 	/**
 	 * Id for post; this is the primary key
 	 * @var Uuid/ $postId

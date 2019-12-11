@@ -119,7 +119,7 @@ class Truck  implements \JsonSerializable {
 			$uuid = self::validateUuid($newTruckId);
 		}catch( \InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
-			throw (new $exceptionType($exception->getMessage(), 0,$exception));
+			throw (new $exceptionType($exception->getMessage(), 1,$exception));
 	}
 	//convert and store this truck id
 		$this->truckId = $uuid;
@@ -148,7 +148,7 @@ class Truck  implements \JsonSerializable {
 			$uuid = self::validateUuid($newTruckUserId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
-			throw (new $exceptionType($exception->getMessage(), 0, $exception));
+			throw (new $exceptionType($exception->getMessage(), 2, $exception));
 		}
 		//convert and store this truck user id
 		$this->truckUserId = $uuid;

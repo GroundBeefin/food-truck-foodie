@@ -12,7 +12,7 @@ RUN composer install \
     --prefer-dist
 
 # main build stage
-#FROM webdevops/php-apache:alpine
+FROM webdevops/php-apache:alpine
 
 #Development image for webdevops/php-apache
 FROM webdevops/php-apache-dev
@@ -20,9 +20,9 @@ FROM webdevops/php-apache-dev
 # copy vendor into the project from the prebuild stage
 COPY --from=vendor /app/vendor/ /var/www/vendor/
 
-RUN mkdir /etc/apache2foodie
-COPY config/secrets /etc/apache2/foodie
-RUN touch /etc/apache2/foodie/foodtruckfoodie.ini && php /etc/apache2/foodie/inifilename.php
+RUN mkdir /etc/apache2/capstone-mysql
+COPY config/secrets /etc/apache2/capstone-mysql
+RUN touch /etc/apache2/capstone-mysql/foodie.ini && php /etc/apache2/capstone-mysql/foodie.php
 
 # configure Secrets for protected information
 WORKDIR /var/www

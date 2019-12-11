@@ -7,8 +7,6 @@ services:
          - sql
       env_file:
          - ./docker-compose.env
-      ports:
-         - 80:80
       volumes:
          - ./php/Classes:/var/www/Classes
          - ./php/public_html:/var/www/public_html
@@ -22,8 +20,8 @@ services:
    sql:
       build: ./sql
       volumes:
-         - foodie:/var/lib/mysql
+         - foody:/var/lib/mysql
       env_file:
          - ./docker-compose.env
 volumes:
-   ddc-twitter-sql:
+   foody:

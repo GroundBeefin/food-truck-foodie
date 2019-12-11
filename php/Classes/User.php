@@ -226,7 +226,7 @@ class User implements \JsonSerializable {
 			throw(new \InvalidArgumentException("user hash is not a valid hash"));
 		}
 		//enforce that the hash is exactly 97 characters.
-		if(strlen($newUserHash) !== 97) {
+		if(strlen($newUserHash) !== 98) {
 			throw(new \RangeException("user hash must be 97 characters"));
 		}
 		//store the hash
