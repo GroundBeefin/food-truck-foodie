@@ -70,7 +70,7 @@ try {
 			throw(new \InvalidArgumentException("passwords do not match"));
 		}
 
-		$hash = password_hash($requestObject->userPassword, PASSWORD_ARGON2I, ["time_cost" => 384]);
+		$hash = password_hash($requestObject->userPassword, PASSWORD_ARGON2I, ["time_cost" => 7]);
 		$userActivationToken = bin2hex(random_bytes(16));
 
 		//create the profile object and prepare to insert into the database

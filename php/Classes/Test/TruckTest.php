@@ -112,7 +112,7 @@ class TruckTest extends FoodTruckFoodieTest {
 	public final function setUp(): void {
 		parent::setUp();
 		$password = "abc123";
-		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 384]);
+		$this->VALID_USER_HASH = password_hash($password, PASSWORD_ARGON2I, ["time_cost" => 7]);
 		$this->VALID_USER_ACTIVATION_TOKEN = bin2hex(random_bytes(16));
 
 

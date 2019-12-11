@@ -12,7 +12,7 @@ $secrets = new \Secrets("/etc/apache2/capstone-mysql/foodie.ini");
 $pdo = $secrets->getPdoObject();
 
 
-$hash = password_hash("abc123", PASSWORD_ARGON2I, ["time_cost" => 384]);
+$hash = password_hash("abc123", PASSWORD_ARGON2I, ["time_cost" => 7]);
 
 $user = new User(generateUuidV4(), null, "https://static.wixstatic.com/media/2462fd_0d26898bbf88def0a5de05dee979da49.jpg/v1/fill/w_549,h_348,al_c,q_90,usm_0.66_1.00_0.01/2462fd_0d26898bbf88def0a5de05dee979da49.webp", "leonela.naguti+4@gmail.com", $hash, "Kristen Galegor");
 $user->insert($pdo);
