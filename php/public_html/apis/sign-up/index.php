@@ -80,7 +80,7 @@ try {
 		$user->insert($pdo);
 
 		//compose the email message to send with th activation token
-		$messageSubject = "One step closer to Sticky Head -- Account Activation";
+		$messageSubject = "One step closer to Food Truck Foody -- Account Activation";
 
 		//building the activation link that can travel to another server and still work. This is the link that will be clicked to confirm the account.
 		//make sure URL is /public_html/api/activation/$activation
@@ -94,7 +94,7 @@ try {
 
 		//compose message to send with email
 		$message = <<< EOF
-<h2>Welcome to Food Truck Foodie.</h2>
+<h2>Welcome to Food Truck Foody.</h2>
 <p>In order to start posting you must confirm your account </p>
 <p><a href="$confirmLink">$confirmLink</a></p>
 EOF;
@@ -162,7 +162,7 @@ EOF;
 		}
 
 		// update reply
-		$reply->message = "Thank you for creating a user with Food Truck Foodie";
+		$reply->message = "Thank you for creating a user with Food Truck Foody";
 	} else {
 		throw (new InvalidArgumentException("invalid http request"));
 	}
