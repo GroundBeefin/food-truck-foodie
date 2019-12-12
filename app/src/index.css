@@ -1,0 +1,86 @@
+/* Global styles */
+body {
+	background: coral url("images/test3.jpg") fixed;
+	background-size: cover;
+
+}
+
+/* jumbotron styling */
+.jumbotron {
+	/*background-color: #C12902;*/
+	/*border: solid #F6D758 1px;*/
+	background: transparent;
+	padding: 0;
+}
+
+
+/*.jumbotron h1 {*/
+/*	color: #C12902;*/
+/*	text-shadow: 4px 4px 0 #F6D758;*/
+/*	font-size: 70px;*/
+/*	text-align: center;*/
+/*	font-family: alegreya sans SC;*/
+/*}*/
+
+/*.jumbotron p {*/
+/*	color: white;*/
+/*	font-size: 20px;*/
+/*	text-align: center;*/
+/*	font-family: alegreya sans SC;*/
+/*	!*background-color: #C12902;*!*/
+
+/*}*/
+
+
+/*navBar Styling*/
+img[alt="FTF logo"] {
+	width: 100px;
+	height: auto;
+}
+.signUp {
+	background-color: transparent;
+	border:#C12902 2px solid;
+	color: #C12902;
+}
+
+.signIn {
+	background-color: transparent;
+	border:#F6D758 2px solid;
+	color: #F6D758;
+}
+
+.signUp:hover {
+	color: #F6D758 ;
+	background-color: #C12902;
+	border: #F6D758 2px solid;
+}
+
+
+.signIn:hover {
+	color: #C12902;
+	background-color: #F6D758;
+	border: #C12902 2px solid;
+}
+
+.card {
+	border: #C12902 3px solid;
+
+
+
+}
+
+h1 {
+	color: #C12902;
+	font-family: "Times New Roman", Times, serif;
+	font-weight: bold;
+
+
+
+	text-shadow:
+		-1px -1px 0 #F6D758,
+		1px -1px 0 #F6D758,
+		-1px 1px 0 #F6D758,
+		1px 1px 0 #F6D758;
+
+	text-decoration: underline #C12902;
+}
