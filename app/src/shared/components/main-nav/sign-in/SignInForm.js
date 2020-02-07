@@ -3,21 +3,13 @@ import {Redirect} from "react-router";
 import {httpConfig} from "../../../utils/http-config";
 import {Formik} from "formik/dist/index";
 import * as Yup from "yup";
-
-
+// import {useHistory} from "react-router";
 import {SignInFormContent} from "./SignInFormContent";
-
+import { withRouter} from "react-router";
 
 
 export const SignInForm = () => {
 
-	// state variable to handle redirect to posts page on sign in
-	const [UserPage] = useState(null);
-
-	const signIn = {
-		userEmail: "",
-		userPassword: ""
-	};
 
 	const validator = Yup.object().shape({
 		userEmail: Yup.string()
@@ -27,27 +19,29 @@ export const SignInForm = () => {
 			.required("Password is required")
 	});
 
+
+	const signIn = {
+		userEmail: "",
+		userPassword: ""
+	};
+
 	const submitSignIn = (values, {resetForm, setStatus}) => {
 		httpConfig.post("/apis/sign-in/", values)
 			.then(reply => {
 				let {message, type} = reply;
+				setStatus({message, type});
 				if(reply.status === 200 && reply.headers["x-jwt-token"]) {
 					window.localStorage.removeItem("jwt-token");
 					window.localStorage.setItem("jwt-token", reply.headers["x-jwt-token"]);
-					// resetForm();
-					setTimeout(() => {
-						//setToPosts(true);
-						window.location = "UserPage";
-					}, 750);
-					}
-				setStatus({message, type});
+					resetForm();
+					// handleClose();
+					window.location.reload();
+					} setStatus ({message, type});
 			});
 	};
 
 	return (
 		<>
-			{/* redirect user to userPage page on sign in */}
-			{UserPage? <Redirect to="/user" /> : null}
 
 			<Formik
 				initialValues={signIn}
